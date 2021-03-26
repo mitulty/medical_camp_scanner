@@ -1,0 +1,382 @@
+
+void L_shape_traversal(tuple d_loc)
+{
+	int x_dis = d_loc.x - curr_loc.x;
+	int y_dis = d_loc.y - curr_loc.y;
+	while (x_dis)
+	{
+		if (x_dis < 0)
+		{
+			if (dir_flag != 'w')
+			{
+				if (dir_flag == 'n')
+					left_turn_wls();
+				else if (dir_flag == 'e')
+				{
+					left_turn_wls();
+					left_turn_wls();
+				}
+				else
+					right_turn_wls();
+			}
+			if (grid_matrix[curr_loc.x - 1][curr_loc.y] == -1)
+			{
+				grid_matrix[curr_loc.x - 1][curr_loc.y] = check_path_for_debris();
+			}
+			if (grid_matrix[curr_loc.x - 1][curr_loc.y] == 1)
+			{
+				forward_wls(1);
+				check_plot_scan_status(curr_loc);
+				forward_wls(1);
+			}
+			else
+			{
+				if (dir_flag == 'e')
+					left_turn_wls();
+				else if (dir_flag == 's')
+				{
+					left_turn_wls();
+					left_turn_wls();
+				}
+				else if (dir_flag == 'w')
+					right_turn_wls();
+				break;
+			}
+		}
+		else if (x_dis > 0)
+		{
+			if (dir_flag != 'e')
+			{
+				if (dir_flag == 's')
+					left_turn_wls();
+				else if (dir_flag == 'w')
+				{
+					right_turn_wls();
+					right_turn_wls();
+				}
+				else
+					right_turn_wls();
+			}
+			if (grid_matrix[curr_loc.x + 1][curr_loc.y] == -1)
+			{
+				grid_matrix[curr_loc.x + 1][curr_loc.y] = check_path_for_debris();
+			}
+			if (grid_matrix[curr_loc.x + 1][curr_loc.y] == 1)
+			{
+				forward_wls(1);
+				check_plot_scan_status(curr_loc);
+				forward_wls(1);
+			}
+			else
+			{
+				if (dir_flag == 'e')
+					left_turn_wls();
+				else if (dir_flag == 's')
+				{
+					left_turn_wls();
+					left_turn_wls();
+				}
+				else if (dir_flag == 'w')
+					right_turn_wls();
+				break;
+			}
+		}
+		x_dis = d_loc.x - curr_loc.x;
+	}
+	while (y_dis)
+	{
+		if (y_dis < 0)
+		{
+			if (dir_flag != 'n')
+			{
+				if (dir_flag == 'w')
+					left_turn_wls();
+				else if (dir_flag == 's')
+				{
+					left_turn_wls();
+					left_turn_wls();
+				}
+				else
+					right_turn_wls();
+			}
+			if (grid_matrix[curr_loc.x][curr_loc.y - 1] == -1)
+			{
+				grid_matrix[curr_loc.x][curr_loc.y - 1] = check_path_for_debris();
+			}
+			if (grid_matrix[curr_loc.x - 1][curr_loc.y - 1] == 1)
+			{
+				forward_wls(1);
+				check_plot_scan_status(curr_loc);
+				forward_wls(1);
+			}
+			else
+			{
+				if (dir_flag == 'e')
+					left_turn_wls();
+				else if (dir_flag == 's')
+				{
+					left_turn_wls();
+					left_turn_wls();
+				}
+				else if (dir_flag == 'w')
+					right_turn_wls();
+				break;
+			}
+		}
+		else if (y_dis > 0)
+		{
+			if (dir_flag != 's')
+			{
+				if (dir_flag == 'e')
+					left_turn_wls();
+				else if (dir_flag == 'n')
+				{
+					right_turn_wls();
+					right_turn_wls();
+				}
+				else
+					right_turn_wls();
+			}
+			if (grid_matrix[curr_loc.x][curr_loc.y + 1] == -1)
+			{
+				grid_matrix[curr_loc.x][curr_loc.y + 1] = check_path_for_debris();
+			}
+			if (grid_matrix[curr_loc.x - 1][curr_loc.y + 1] == 1)
+			{
+				forward_wls(1);
+				check_plot_scan_status(curr_loc);
+				forward_wls(1);
+			}
+			else
+			{
+				if (dir_flag == 'e')
+					left_turn_wls();
+				else if (dir_flag == 's')
+				{
+					left_turn_wls();
+					left_turn_wls();
+				}
+				else if (dir_flag == 'w')
+					right_turn_wls();
+				break;
+			}
+		}
+		y_dis = d_loc.y - curr_loc.y;
+	}
+}
+
+void scan_plot(int plot)
+{
+	tuple dest_loc = get_nearest_coordinate(curr_loc, plot);
+	while (!((dest_loc.x == curr_loc.x) && (dest_loc.y == curr_loc.y)))
+	{
+		//find_path(dest_loc);
+		if ((dest_loc.x != curr_loc.x) && (dest_loc.y != curr_loc.y))
+			L_shape_traversal(dest_loc);
+		else if ((dest_loc.x != curr_loc.x))
+		{
+			while (1)
+				;
+		}
+		else
+		{
+			while (1)
+				;
+		}
+	}
+}
+
+int check_path_for_debris(void)
+{
+	int c = 0;
+	forward();
+	_delay_ms(100);
+	stop();
+	_delay_ms(10);
+	left();
+	velocity(50, 50);
+	for (int i = 0; i < 200; i++)
+	{
+		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
+		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
+		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
+		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
+			c = 1;
+		_delay_ms(1);
+	}
+	right();
+	velocity(50, 50);
+	for (int i = 0; i < 400; i++)
+	{
+		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
+		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
+		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
+		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
+			c = 1;
+		_delay_ms(1);
+	}
+	left();
+	velocity(50, 50);
+	for (int i = 0; i < 200; i++)
+	{
+		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
+		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
+		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
+		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
+			c = 1;
+		_delay_ms(1);
+	}
+	back();
+	_delay_ms(100);
+	stop();
+	_delay_ms(10);
+	return c;
+}
+void check_plot_scan_status(tuple cloc)
+{
+	if (cloc.x == 0)
+	{
+		if (grid_matrix[cloc.x + 1][cloc.y] == -5)
+		{
+			if (dir_flag == 'n')
+			{
+				left_degrees(90);
+				grid_matrix[cloc.x + 1][cloc.y] = color_type();
+				right_degrees(90);
+			}
+			else
+			{
+				right_degrees(90);
+				grid_matrix[cloc.x + 1][cloc.y] = color_type();
+				left_degrees(90);
+			}
+		}
+		return;
+	}
+	if (cloc.x == 8)
+	{
+		if (grid_matrix[cloc.x - 1][cloc.y] == -5)
+		{
+			if (dir_flag == 'n')
+			{
+				left_degrees(90);
+				grid_matrix[cloc.x - 1][cloc.y] = color_type();
+				right_degrees(90);
+			}
+			else
+			{
+				right_degrees(90);
+				grid_matrix[cloc.x - 1][cloc.y] = color_type();
+				left_degrees(90);
+			}
+		}
+		return;
+	}
+	if (cloc.y == 0)
+	{
+		if (grid_matrix[cloc.x][cloc.y + 1] == -5)
+		{
+			if (dir_flag == 'w')
+			{
+				left_degrees(90);
+				grid_matrix[cloc.x][cloc.y + 1] = color_type();
+				right_degrees(90);
+			}
+			else
+			{
+				right_degrees(90);
+				grid_matrix[cloc.x][cloc.y + 1] = color_type();
+				left_degrees(90);
+			}
+		}
+		return;
+	}
+	if (cloc.y == 8)
+	{
+		if (grid_matrix[cloc.x][cloc.y - 1] == -5)
+		{
+			if (dir_flag == 'w')
+			{
+				left_degrees(90);
+				grid_matrix[cloc.x][cloc.y - 1] = color_type();
+				right_degrees(90);
+			}
+			else
+			{
+				right_degrees(90);
+				grid_matrix[cloc.x][cloc.y - 1] = color_type();
+				left_degrees(90);
+			}
+		}
+		return;
+	}
+	if (dir_flag == 'e' || dir_flag == 'w')
+	{
+		if (grid_matrix[cloc.x][cloc.y - 1] == -5)
+		{
+			if (dir_flag == 'w')
+			{
+				left_degrees(90);
+				grid_matrix[cloc.x][cloc.y - 1] = color_type();
+				right_degrees(90);
+			}
+			else
+			{
+				right_degrees(90);
+				grid_matrix[cloc.x][cloc.y - 1] = color_type();
+				left_degrees(90);
+			}
+		}
+		if (grid_matrix[cloc.x][cloc.y + 1] == -5)
+		{
+			if (dir_flag == 'w')
+			{
+				right_degrees(90);
+				grid_matrix[cloc.x][cloc.y + 1] = color_type();
+				left_degrees(90);
+			}
+			else
+			{
+				left_degrees(90);
+				grid_matrix[cloc.x][cloc.y + 1] = color_type();
+				right_degrees(90);
+			}
+		}
+		return;
+	}
+
+	if (dir_flag == 'n' || dir_flag == 's')
+	{
+		if (grid_matrix[cloc.x - 1][cloc.y] == -5)
+		{
+			if (dir_flag == 'n')
+			{
+				left_degrees(90);
+				grid_matrix[cloc.x - 1][cloc.y] = color_type();
+				right_degrees(90);
+			}
+			else
+			{
+				right_degrees(90);
+				grid_matrix[cloc.x - 1][cloc.y] = color_type();
+				left_degrees(90);
+			}
+		}
+		if (grid_matrix[cloc.x + 1][cloc.y] == -5)
+		{
+			if (dir_flag == 'n')
+			{
+				right_degrees(90);
+				grid_matrix[cloc.x + 1][cloc.y] = color_type();
+				left_degrees(90);
+			}
+			else
+			{
+				left_degrees(90);
+				grid_matrix[cloc.x + 1][cloc.y] = color_type();
+				right_degrees(90);
+			}
+		}
+		return;
+	}
+}
