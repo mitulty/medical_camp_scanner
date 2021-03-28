@@ -3,9 +3,8 @@ DEVICE=atmega2560
 CFLAGS?=-g -Wno-unused-value -Wno-unused-result 
 AVR_GCC= avr-gcc -Wall -O0 -mmcu=$(DEVICE) -std=gnu99
 all: compile upload clean
-compile: adc_sensors.o buzzer_bargraph.o color_sensor.o lcd.o motor_control.o uart.o position_control_interrupt.o main.c path_finder.c
+compile: adc_sensors.o buzzer_bargraph.o color_sensor.o lcd.o motor_control.o uart.o position_control_interrupt.o main.c path_finder.o
 	$(AVR_GCC) $(CFLAGS)  -c main.c -o main.o
-	$(AVR_GCC) $(CFLAGS)  -c path_finder.c -o path_finder.o
 	$(AVR_GCC) -o robot_controller.elf main.o path_finder.o adc_sensors.o buzzer_bargraph.o color_sensor.o lcd.o motor_control.o uart.o position_control_interrupt.o
 	avr-objcopy -j .text -j .data -O ihex robot_controller.elf robot_controller.hex
 	avr-size --format=avr --mcu=$(DEVICE) robot_controller.elf
@@ -33,6 +32,10 @@ uart.o: $(LIB)/uart.c
 
 position_control_interrupt.o: $(LIB)/position_control_interrupt.c
 		$(AVR_GCC) $(CFLAGS) -c $(LIB)/position_control_interrupt.c
+
+path_finder.o: path_finder.c
+		$(AVR_GCC) $(CFLAGS) -c path_finder.c
+
 clean:
 		$(RM) -rf *.o
 		$(RM) -rf robot_controller.elf

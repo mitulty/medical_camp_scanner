@@ -9,7 +9,31 @@
 #include "path_finder.h"
 #include <stdio.h>
 #include <math.h>
+#define INFINITE 9999
+int r=-1,f=-1;
 
+void initialize_node_coord_matrix(void)
+{
+    int j = 0;
+    for (int i = 0; i < 25; i++)
+    {
+        node_coord_matrix[i].x = j * 2;
+        if (i < 5)
+            node_coord_matrix[i].y = 0;
+        else if (i < 10)
+            node_coord_matrix[i].y = 2;
+        else if (i < 15)
+            node_coord_matrix[i].y = 4;
+        else if (i < 20)
+            node_coord_matrix[i].y = 6;
+        else
+            node_coord_matrix[i].y = 8;
+        if (j == 4)
+            j = 0;
+        else
+            j++;
+    }
+}
 void initialize_plot_coord_matrix(void)
 {
     int x = 1;
@@ -37,25 +61,6 @@ void initialize_plot_coord_matrix(void)
     }
 }
 
-void print_plot_coord_matrix(void)
-{
-    for (int i = 0; i < 16; i++)
-    {
-        printf("\n%d= ", (i + 1));
-        for (int j = 0; j < 4; j++)
-            printf("(%d,%d) ", plot_coord_matrix[i][j].x, plot_coord_matrix[i][j].y);
-    }
-    printf("\n");
-}
-
-void print_ind_plot_coord_arr(int plot)
-{
-    printf("\nFor plot %d:",plot+1);
-    for (int j = 0; j < 4; j++)
-            printf(" (%d,%d) ", plot_coord_matrix[plot][j].x, plot_coord_matrix[plot][j].y);
-    printf("\n");
-}
-
 void initialize_grid_matrix(void)
 {
     for (int i = 0; i < 9; i++)
@@ -70,6 +75,270 @@ void initialize_grid_matrix(void)
         }
 }
 
+void initialize_adjacency_matrix(void)
+{
+    for (int m = 0; m < 25; m++)
+        for (int n = 0; n < 25; n++)
+            adjacency_matrix[m][n] = 0;
+}
+
+void update_adjacency_matrix(void)
+{
+    tuple coord_a, coord_b;
+    for (int m = 0; m < 25; m++)
+    {
+        coord_a = node_coord_matrix[m];
+        for (int n = 0; n < 25; n++)
+        {
+            coord_b = node_coord_matrix[n];
+            if ((coord_b.x == coord_a.x + 2) && (coord_b.y == coord_a.y))
+                adjacency_matrix[m][n] = grid_matrix[coord_a.x + 1][coord_a.y];
+            if ((coord_b.x == coord_a.x - 2) && (coord_b.y == coord_a.y))
+                adjacency_matrix[m][n] = grid_matrix[coord_a.x - 1][coord_a.y];
+            if ((coord_b.x == coord_a.x) && (coord_b.y == coord_a.y + 2))
+                adjacency_matrix[m][n] = grid_matrix[coord_a.x][coord_a.y + 1];
+            if ((coord_b.x == coord_a.x) && (coord_b.y == coord_a.y - 2))
+                adjacency_matrix[m][n] = grid_matrix[coord_a.x][coord_a.y - 1];
+        }
+    }
+}
+
+tuple get_nearest_coordinate(tuple cloc, int plot)
+{
+    int x_dis, y_dis;
+    float d, max = 100.0;
+    tuple node;
+    for (int i = 0; i < 4; i++)
+    {
+        x_dis = pow((cloc.x - plot_coord_matrix[plot][i].x), 2);
+        y_dis = pow((cloc.y - plot_coord_matrix[plot][i].y), 2);
+        d = sqrt(x_dis + y_dis);
+        if (d < max)
+        {
+            node.x = plot_coord_matrix[plot][i].x;
+            node.y = plot_coord_matrix[plot][i].y;
+            max = d;
+        }
+    }
+    return node;
+}
+
+int get_node_from_coord(tuple coord)
+{
+    for (int i = 0; i < 25; i++)
+        if ((node_coord_matrix[i].x == coord.x) && (node_coord_matrix[i].y == coord.y))
+            return i;
+    return -1;
+}
+
+// int get_plot_from_coord(tuple coord)
+// {
+//     for (int i = 0 ; i < 25 ; i++)
+//         for(int j = 0 ; j< 4 ; j++)
+//             if(coord.x == plot_coord_matrix[i][j].x) && if(coord.y == plot_coord_matrix[i][j].y)
+//                 return i;
+                
+// }
+void dijkstra(int G[25][25], int n, int startnode, int v)
+{
+    top = -1;
+    int count, mindistance, nextnode, i, j;
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            if (G[i][j] == 0) //Will make the 0 to infinte that means no direct edge between i and j
+                cost[i][j] = INFINITE;
+            else
+                cost[i][j] = 1;
+    for (i = 0; i < n; i++)
+    {
+        distance[i] = cost[startnode][i];
+        pred[i] = startnode;
+        visited[i] = 0;
+    }
+    distance[startnode] = 0;
+    visited[startnode] = 1;
+    count = 1;
+    while (count < n - 1)
+    {
+        mindistance = INFINITE;
+        for (i = 0; i < n; i++)
+            if (distance[i] < mindistance && !visited[i])
+            {
+                mindistance = distance[i];
+                nextnode = i;
+            }
+        visited[nextnode] = 1;
+        for (i = 0; i < n; i++)
+            if (!visited[i])
+                if (mindistance + cost[nextnode][i] < distance[i])
+                {
+                    distance[i] = mindistance + cost[nextnode][i];
+                    pred[i] = nextnode;
+                }
+        count++;
+    }
+    i = v;
+    if (i != startnode)
+    {
+        // printf("\nDistance of node%d = %d", i, distance[i]);
+        // printf("\nPath=%d", i);
+        //Do while loop for path printing from start node to end node
+        j = i;
+        do
+        {
+            push(j);
+            j = pred[j];
+           // printf("<-%d", j);
+        } while (j != startnode);
+     //   printf("\n");
+    }
+}
+
+void push(int x)
+{
+    if (top >= 24)
+    {
+        return;
+    }
+    else
+    {
+        top++;
+        path_stack[top] = x;
+    }
+}
+int pop()
+{
+    int y;
+    if (top <= -1)
+    {
+        return -1;
+    }
+    else
+    {
+        y = path_stack[top];
+        top--;
+        return y;
+    }
+}
+
+void scan_plot(int plot)
+{
+    tuple dest_loc, next_loc;
+    dest_loc = get_nearest_coordinate(curr_loc, plot);
+    int d_node, s_node, node;
+    while (!((dest_loc.x == curr_loc.x) && (dest_loc.y == curr_loc.y)))
+    {
+        dest_loc = get_nearest_coordinate(curr_loc, plot);
+        d_node = get_node_from_coord(dest_loc);
+        s_node = get_node_from_coord(curr_loc);
+        dijkstra(adjacency_matrix, 25, s_node, d_node);
+        while (1)
+        {
+            node = pop();
+            next_loc = node_coord_matrix[node];
+            if ((next_loc.x == curr_loc.x + 2) && (next_loc.y == curr_loc.y))
+            {
+                if (grid_matrix[curr_loc.x + 1][curr_loc.y] == -1)
+                {
+                  //  grid_matrix[curr_loc.x + 1][curr_loc.y] = check_path_for_debris();
+                    update_adjacency_matrix();
+                }
+                if (grid_matrix[curr_loc.x + 1][curr_loc.y] == 1)
+                {
+                   // move_robot(next_loc);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else if ((next_loc.x == curr_loc.x - 2) && (next_loc.y == curr_loc.y))
+            {
+                if (grid_matrix[curr_loc.x - 1][curr_loc.y] == -1)
+                {
+                   // grid_matrix[curr_loc.x - 1][curr_loc.y] = check_path_for_debris();
+                    update_adjacency_matrix();
+                }
+                if (grid_matrix[curr_loc.x - 1][curr_loc.y] == 1)
+                {
+                   // move_robot(next_loc);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+             else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y + 2))
+            {
+                if (grid_matrix[curr_loc.x][curr_loc.y + 1] == -1)
+                {
+                  //  grid_matrix[curr_loc.x][curr_loc.y + 1] = check_path_for_debris();
+                    update_adjacency_matrix();
+                }
+                if (grid_matrix[curr_loc.x][curr_loc.y + 1] == 1)
+                {
+                  //  move_robot(next_loc);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y - 2))
+            {
+                if (grid_matrix[curr_loc.x][curr_loc.y - 1] == -1)
+                {
+                 //   grid_matrix[curr_loc.x][curr_loc.y - 1] = check_path_for_debris();
+                    update_adjacency_matrix();
+                }
+                if (grid_matrix[curr_loc.x][curr_loc.y - 1] == 1)
+                {
+                 //   move_robot(next_loc);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+    }
+}
+/*
+void print_stack_content(void)
+{
+    if (top >= 0)
+    {
+        printf("\n The elements in STACK \n");
+        for (int i = top; i >= 0; i--)
+            printf("%d\n", path_stack[i]);
+    }
+    else
+    {
+        printf("\n The STACK is empty");
+    }
+}
+
+void print_plot_coord_matrix(void)
+{
+    for (int i = 0; i < 16; i++)
+    {
+        printf("\n%d= ", (i + 1));
+        for (int j = 0; j < 4; j++)
+            printf("(%d,%d) ", plot_coord_matrix[i][j].x, plot_coord_matrix[i][j].y);
+    }
+    printf("\n");
+}
+
+void print_ind_plot_coord_arr(int plot)
+{
+    printf("\nFor plot %d:", plot + 1);
+    for (int j = 0; j < 4; j++)
+        printf(" (%d,%d) ", plot_coord_matrix[plot][j].x, plot_coord_matrix[plot][j].y);
+    printf("\n");
+}
+
 void print_grid_matrix(void)
 {
     for (int i = 0; i < 9; i++)
@@ -80,43 +349,53 @@ void print_grid_matrix(void)
         }
         printf("\n");
     }
+    printf("\n");
 }
 
-tuple get_nearest_coordinate(tuple curr_loc,int plot)
+void print_adjacency_matrix(void)
 {
-        int x_dis,y_dis;
-        float d,max=100.0;
-        tuple node;
-        print_ind_plot_coord_arr(plot);
-        for(int i =0;i<4;i++)
-            {
-                x_dis=pow((curr_loc.x-plot_coord_matrix[plot][i].x),2);
-                y_dis=pow((curr_loc.y-plot_coord_matrix[plot][i].y),2);
-                d=sqrt(x_dis+y_dis);
-                //printf(" Val Obtained for (%d,%d): %f\n",plot_coord_matrix[plot][i].x,plot_coord_matrix[plot][i].y,d);
-                if(d<max)
-                    {
-                        node.x = plot_coord_matrix[plot][i].x;
-                        node.y = plot_coord_matrix[plot][i].y;
-                        max = d;
-                    }
-
-            }
-        return node;    
+    printf("\t0     1     2     3     4     5     6     7     8     9    10    11    12     13    14    15    16    17    18    19    20    21    22    23    24\n");
+    printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (int i = 0; i < 25; i++)
+    {
+        printf(" %2d| ", i);
+        for (int j = 0; j < 25; j++)
+        {
+            printf("  %2d  ", adjacency_matrix[i][j]);
+        }
+        printf("\n--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    }
+    printf("\n");
 }
 
+void print_node_coord_matrix(void)
+{
+    for (int i = 0; i < 25; i++)
+    {
+
+        printf(" i: %d (%d,%d) \n", i + 1, node_coord_matrix[i].x, node_coord_matrix[i].y);
+    }
+    printf("\n");
+}
 
 int main(int argc, char *argv[])
 {
     initialize_grid_matrix();
-    print_grid_matrix();
     initialize_plot_coord_matrix();
+    initialize_adjacency_matrix();
+    initialize_node_coord_matrix();
+    update_adjacency_matrix();
+
     print_plot_coord_matrix();
-    tuple curr_loc={4,8}, dest_loc= get_nearest_coordinate(curr_loc,12);
-    printf("\nReturned Coodinate: %d %d for 13\n",dest_loc.x,dest_loc.y);    
-    dest_loc=get_nearest_coordinate(dest_loc,13);
-    printf("\nReturned Coodinate: %d %d for 14\n",dest_loc.x,dest_loc.y);    
+    print_grid_matrix();
+    print_adjacency_matrix();
+    print_node_coord_matrix();
+    print_stack_content();
+    dijkstra(adjacency_matrix, 25, 0, 23);
+    print_stack_content();
+    dijkstra(adjacency_matrix, 25, 10, 24);
+    print_stack_content();
+
     return 1;
 }
-
-
+*/
