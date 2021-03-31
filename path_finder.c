@@ -57,6 +57,10 @@ void initialize_plot_coord_matrix(void)
         plot_coord_matrix[i][3].x = x - 1;
         plot_coord_matrix[i][3].y = y + 1;
 
+
+        plot_coord_matrix[i][4].x = x;
+        plot_coord_matrix[i][4].y = y;
+
         x += 2;
     }
 }
@@ -131,14 +135,15 @@ int get_node_from_coord(tuple coord)
     return -1;
 }
 
-// int get_plot_from_coord(tuple coord)
-// {
-//     for (int i = 0 ; i < 25 ; i++)
-//         for(int j = 0 ; j< 4 ; j++)
-//             if(coord.x == plot_coord_matrix[i][j].x) && if(coord.y == plot_coord_matrix[i][j].y)
-//                 return i;
-                
-// }
+int get_plot_from_coord(tuple coord)
+{
+    for (int i = 0 ; i < 25 ; i++)
+            if((coord.x == plot_coord_matrix[i][5].x) && (coord.y == plot_coord_matrix[i][5].y))
+                return i;
+    return -1;
+    
+}
+
 void dijkstra(int G[25][25], int n, int startnode, int v)
 {
     top = -1;
@@ -285,7 +290,6 @@ void scan_plot(int plot)
                     break;
                 }
             }
-
             else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y - 2))
             {
                 if (grid_matrix[curr_loc.x][curr_loc.y - 1] == -1)
@@ -305,7 +309,7 @@ void scan_plot(int plot)
         }
     }
 }
-/*
+
 void print_stack_content(void)
 {
     if (top >= 0)
@@ -325,7 +329,7 @@ void print_plot_coord_matrix(void)
     for (int i = 0; i < 16; i++)
     {
         printf("\n%d= ", (i + 1));
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 5; j++)
             printf("(%d,%d) ", plot_coord_matrix[i][j].x, plot_coord_matrix[i][j].y);
     }
     printf("\n");
@@ -398,4 +402,4 @@ int main(int argc, char *argv[])
 
     return 1;
 }
-*/
+

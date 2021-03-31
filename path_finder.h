@@ -14,7 +14,7 @@ typedef struct tuple
 
 tuple curr_loc, goal_loc;
 int grid_matrix[9][9];
-tuple plot_coord_matrix[16][4];
+tuple plot_coord_matrix[16][5];
 tuple node_coord_matrix[25];
 int adjacency_matrix[25][25];
 int visited[25];

@@ -51,13 +51,13 @@ int main(int argc, char *argv[])
 	right_turn_wls();
 	_delay_ms(100);
 	for (int i = 0; i < 4; i++)
-{
-	forward_wls(1);
-	_delay_ms(100);
-	check_plot_scan_status();
-	forward_wls(1);
-	_delay_ms(100);
-}
+	{
+		forward_wls(1);
+		_delay_ms(100);
+		check_plot_scan_status();
+		forward_wls(1);
+		_delay_ms(100);
+	}
 	right_turn_wls();
 	_delay_ms(100);
 
@@ -68,13 +68,13 @@ int main(int argc, char *argv[])
 	_delay_ms(100);
 
 	for (int i = 0; i < 4; i++)
-{
-	forward_wls(1);
-	_delay_ms(100);
-	check_plot_scan_status();
-	forward_wls(1);
-	_delay_ms(100);
-}
+	{
+		forward_wls(1);
+		_delay_ms(100);
+		check_plot_scan_status();
+		forward_wls(1);
+		_delay_ms(100);
+	}
 
 	left_turn_wls();
 	_delay_ms(100);
@@ -98,13 +98,9 @@ int main(int argc, char *argv[])
 	//------------------------------------------------------------------------------------------------------
 	while (1)
 		;
-	curr_loc.x = 4;
-	curr_loc.y = 8;
-	goal_loc.x = 8;
-	goal_loc.y = 4;
 	// while (plot_no < 16)
 	// {
-	// 	scan_plot(plot_order[plot_no] - 1,curr_loc);
+	// 	scan_plot(plot_order[plot_no] - 1);
 	// 	plot_no++;
 	//	}
 	return 1;
@@ -226,12 +222,13 @@ int check_path_for_debris(void)
 }
 void check_plot_scan_status()
 {
+	linear_distance_mm(10);
 	lcd_clear();
-	lcd_string(1,4,"(");
-	lcd_numeric_value(1,7,curr_loc.x,1);
-	lcd_string(1,9,",");
-	lcd_numeric_value(1,11,curr_loc.y,1);
-	lcd_string(1,13,")");
+	lcd_string(1, 4, "(");
+	lcd_numeric_value(1, 7, curr_loc.x, 1);
+	lcd_string(1, 9, ",");
+	lcd_numeric_value(1, 11, curr_loc.y, 1);
+	lcd_string(1, 13, ")");
 	_delay_ms(100);
 	if (curr_loc.x == 0)
 	{
@@ -239,7 +236,7 @@ void check_plot_scan_status()
 		{
 			if (dir_flag == 'n')
 			{
-				
+
 				left_degrees(90);
 				grid_matrix[curr_loc.x + 1][curr_loc.y] = color_type();
 				right_degrees(90);
@@ -379,7 +376,9 @@ void check_plot_scan_status()
 		}
 		return;
 	}
+	allign_at_node();
 }
+
 void forward_wls(unsigned char node)
 {
 	unsigned char node_reached = 0;
@@ -404,7 +403,7 @@ void forward_wls(unsigned char node)
 				++node_reached;
 				lcd_numeric_value(2, 5, node_reached, 2);
 				_delay_ms(500);
-			//	wls_readings_print_lcd();
+				//	wls_readings_print_lcd();
 				break;
 			}
 			else if (center_wl_sensor_data > THRESHOLD_WLS)
@@ -539,7 +538,7 @@ void allign_at_node()
 	left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 	center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 	right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-	if (left_wl_sensor_data > THRESHOLD_WLS || center_wl_sensor_data > THRESHOLD_WLS || right_wl_sensor_data > THRESHOLD_WLS)			
+	if (left_wl_sensor_data > THRESHOLD_WLS || center_wl_sensor_data > THRESHOLD_WLS || right_wl_sensor_data > THRESHOLD_WLS)
 		return;
 	int limit = 50;
 	int found = 0;
@@ -597,11 +596,11 @@ void allign_at_node()
 		stop();
 		_delay_ms(1000);
 		limit += 50;
-		if(found = 1)
+		if (found == 1)
 			break;
-
 	}
 }
+
 void setup(void)
 {
 	int init_setup_success = 0;
@@ -703,6 +702,6 @@ void right_turn_wls_degress(int degrees)
 			velocity(150, 150);
 		}
 		_delay_ms(2);
-	}	allign_at_node();
-
+	}
+	allign_at_node();
 }
