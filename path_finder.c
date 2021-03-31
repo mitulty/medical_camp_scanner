@@ -309,7 +309,7 @@ void scan_plot(int plot)
         }
     }
 }
-
+/*
 void print_stack_content(void)
 {
     if (top >= 0)
@@ -403,3 +403,4 @@ int main(int argc, char *argv[])
     return 1;
 }
 
+*/

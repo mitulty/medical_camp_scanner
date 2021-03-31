@@ -38,9 +38,20 @@ char dir_flag = 'n';
 int main(int argc, char *argv[])
 {
 	setup();
-	forward_wls(1);
-	curr_loc.x = 4;
-	curr_loc.y = 8;
+	//forward_wls(1);
+	//curr_loc.x = 4;
+	//curr_loc.y = 8;
+	//---------------------------------------------Test Zone-----------------------------------------------
+		 int c;
+		while (1)
+		{
+		 c=color_type();
+		 lcd_clear();
+		 lcd_string(1,5,"Color Sensor Reaing");
+		 lcd_numeric_value(2,2,c,2);
+		 _delay_ms(1000);
+		}
+		 
 	//-----------------------------------------------------------------------------------------------------
 	left_turn_wls();
 	_delay_ms(100);
@@ -612,7 +623,9 @@ void setup(void)
 	{
 		init_setup_success = adc_init_setup(); // Initialize ADC
 	} while (init_setup_success != 1);
-
+	setup_uart();   // UART INIT
+	init_devices(); // Color Sensor Pins
+	color_sensor_scaling();
 	position_encoder_pin_config();
 	position_encoder_interrupt_config();
 	initialize_grid_matrix();
@@ -623,13 +636,13 @@ void setup(void)
 	LED_bargraph_config();
 	lcd_port_config();	   // Initialize the LCD port
 	lcd_init();			   // Initialize the LCD
-	uart_init(UBRR_VALUE); // Initialize the UART
+	//uart_init(UBRR_VALUE); // Initialize the UART
 	lcd_clear();
 	lcd_string(1, 5, "BitBoot");
 	lcd_string(2, 4, "IIT  BOMBAY");
-	buzzer_on();
+	//buzzer_on();
 	_delay_ms(500);
-	buzzer_off();
+	//buzzer_off();
 	goal_loc.x = 8;
 	goal_loc.y = 4;
 }
