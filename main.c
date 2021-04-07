@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	curr_loc.y = 8;
 	dir_flag = 'n';
 	int status = 0;
-	tuple dest_loc,plot_coordinate;
+	tuple dest_loc, plot_coordinate;
 	//---------------------------------------------Test Zone-----------------------------------------------
 	// forward_wls(1);
 	// left_turn_wls_degress(90);
@@ -81,26 +81,26 @@ int main(int argc, char *argv[])
 	{
 		if (status == 0)
 			dest_loc = get_nearest_coordinate(curr_loc, plot_order[plot_no] - 1);
-		scan_plot(plot_order[plot_no] - 1,dest_loc);
+		scan_plot(plot_order[plot_no] - 1, dest_loc);
 		status = final_mid_point(plot_order[plot_no] - 1);
 		if (status == 1)
-			{
+		{
 			plot_no++;
 			status = 0;
-			}
+		}
 		else
 		{
 			status = -1;
 			plot_coordinate.x = plot_coord_matrix[plot_order[plot_no] - 1][4].x;
 			plot_coordinate.x = plot_coord_matrix[plot_order[plot_no] - 1][4].y;
-			if(curr_loc.x - plot_coordinate.x == 1)
+			if (curr_loc.x - plot_coordinate.x == 1)
 				dest_loc.x = curr_loc.x - 2;
 			else
 				dest_loc.x = curr_loc.x + 2;
-			if(curr_loc.y - plot_coordinate.y == 1)
+			if (curr_loc.y - plot_coordinate.y == 1)
 				dest_loc.y = curr_loc.y - 2;
 			else
-				dest_loc.y = curr_loc.y + 2;		 
+				dest_loc.y = curr_loc.y + 2;
 		}
 	}
 
