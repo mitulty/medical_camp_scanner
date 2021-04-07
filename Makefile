@@ -37,7 +37,7 @@ position_control_interrupt.o: $(LIB)/position_control_interrupt.c
 		$(AVR_GCC) $(CFLAGS) -c $(LIB)/position_control_interrupt.c
 
 path_finder.o: path_finder.c
-		$(AVR_GCC) $(CFLAGS) -c path_finder.c
+		$(AVR_GCC) $(CFLAGS) -c path_finder.c -lm
 
 clean:
 		$(RM) -rf *.o

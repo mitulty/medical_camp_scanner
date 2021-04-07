@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	curr_loc.x = 4;
 	curr_loc.y = 8;
 	dir_flag = 'n';
-	int status;
+	int status = 0;
 	tuple dest_loc,plot_coordinate;
 	//---------------------------------------------Test Zone-----------------------------------------------
 	// forward_wls(1);
@@ -80,9 +80,9 @@ int main(int argc, char *argv[])
 	while (plot_no < 16)
 	{
 		if (status == 0)
-			dest_loc = get_nearest_coordinate(curr_loc, plot);
+			dest_loc = get_nearest_coordinate(curr_loc, plot_order[plot_no] - 1);
 		scan_plot(plot_order[plot_no] - 1,dest_loc);
-		status = final_mid_point(plot);
+		status = final_mid_point(plot_order[plot_no] - 1);
 		if (status == 1)
 			{
 			plot_no++;
@@ -179,7 +179,6 @@ int check_path_for_debris(void)
 	if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
 		return 1;
 
-	int c = 0, turn_limit;
 	float ReqdShaftCount = 0;
 	unsigned long int ReqdShaftCountInt = 0;
 
@@ -190,20 +189,19 @@ int check_path_for_debris(void)
 	left();
 	ShaftCountRight = 0;
 	ShaftCountLeft = 0;
-	while (((ShaftCountRight >= ReqdShaftCountInt) || (ShaftCountLeft >= ReqdShaftCountInt)) && c == 0)
+	while ((ShaftCountRight >= ReqdShaftCountInt) || (ShaftCountLeft >= ReqdShaftCountInt))
 	{
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
 		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
 		{
-			c = 1;
 			stop();
 			velocity(0, 0);
 			return 1;
 		}
 	}
-	while (((ShaftCountRight >= 2 * ReqdShaftCountInt) || (ShaftCountLeft >= 2 * ReqdShaftCountInt)) && c == 0)
+	while ((ShaftCountRight >= 2 * ReqdShaftCountInt) || (ShaftCountLeft >= 2 * ReqdShaftCountInt))
 	{
 		right();
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
@@ -211,13 +209,12 @@ int check_path_for_debris(void)
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
 		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
 		{
-			c = 1;
 			stop();
 			velocity(0, 0);
 			return 1;
 		}
 	}
-	while (((ShaftCountRight >= ReqdShaftCountInt) || (ShaftCountLeft >= ReqdShaftCountInt)) && c == 0)
+	while ((ShaftCountRight >= ReqdShaftCountInt) || (ShaftCountLeft >= ReqdShaftCountInt))
 	{
 		left();
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
@@ -225,7 +222,6 @@ int check_path_for_debris(void)
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
 		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
 		{
-			c = 1;
 			stop();
 			velocity(0, 0);
 			return 1;
@@ -233,18 +229,14 @@ int check_path_for_debris(void)
 	}
 	stop();
 	velocity(0, 0);
-	return c;
+	return 0;
 }
 
 void check_plot_scan_status()
 {
 	int plot;
-	forward();
 	velocity(150, 150);
-	_delay_ms(100);
-	stop();
-	velocity(0, 0);
-	_delay_ms(100);
+	forward_mm(60);
 	if (curr_loc.x == 0)
 	{
 		if (grid_matrix[curr_loc.y][curr_loc.x + 1] == -5)
@@ -651,7 +643,7 @@ void right_turn_wls_degress(int degrees)
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-		ReqdShaftCount = (dgrid_matrix[curr_loc.y][curr_loc.x + 1] egrees - 20) / distance_resolution; // division by resolution to get shaft count
+		ReqdShaftCount = (degrees - 20) / distance_resolution; // division by resolution to get shaft count
 		ReqdShaftCountInt = (unsigned long int)ReqdShaftCount;
 
 		ShaftCountRight = 0;
@@ -740,7 +732,7 @@ int final_mid_point(int plot_no)
 		dir_1 = 'w';
 
 	mid_point_2.x = curr_loc.x;
-	mid_point_2.y = coo.y;
+	mid_point_2.y = coord_plot.y;
 	if ((curr_loc.x == mid_point_2.x) && ((mid_point_2.y - curr_loc.y) == -1))
 		dir_2 = 'n';
 	else if ((curr_loc.x == mid_point_2.x) && ((mid_point_2.y - curr_loc.y) == 1))
@@ -750,7 +742,7 @@ int final_mid_point(int plot_no)
 	else if ((curr_loc.y == mid_point_2.y) && ((mid_point_2.x - curr_loc.x) == 1))
 		dir_2 = 'w';
 
-	if (dir_flag != dir_1 &&dir_flag != = dir_2)
+	if (dir_flag != dir_1 && dir_flag != dir_2)
 	{
 		if (dir_flag == 'n')
 		{
