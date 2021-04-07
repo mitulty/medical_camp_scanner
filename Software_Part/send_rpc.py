@@ -3,12 +3,21 @@ import time
 import requests
 
 
-TIME=10
+TIME = 10
+scan_data = {}
+fner_data = {}
 DEVICE_ID = '29a5e8d0-9167-11eb-950e-efef5c07c810'
-JWT_TOKEN = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiaXRib290QGNzNjg0LmVkdSIsInNjb3BlcyI6WyJURU5BTlRfQURNSU4iXSwidXNlcklkIjoiNTdjMzk4MDAtNzAyMS0xMWViLTk1MGUtZWZlZjVjMDdjODEwIiwiZmlyc3ROYW1lIjoiQml0Qm9vdCIsImxhc3ROYW1lIjoiQElJVEIiLCJlbmFibGVkIjp0cnVlLCJpc1B1YmxpYyI6ZmFsc2UsInRlbmFudElkIjoiNTc2MjY1MzAtNzAyMS0xMWViLTk1MGUtZWZlZjVjMDdjODEwIiwiY3VzdG9tZXJJZCI6IjEzODE0MDAwLTFkZDItMTFiMi04MDgwLTgwODA4MDgwODA4MCIsImlzcyI6InRoaW5nc2JvYXJkLmlvIiwiaWF0IjoxNjE3MTI1MjIxLCJleHAiOjE2MTcxMzQyMjF9.CAK6rBIkngJT0Z6LwFfvo0nH4u8ARgtnS1VQI3JftntIN-vbrVbVAIiqs0q6uMK1U7Cpy-UVOjP-gHiDHVqHQg'
+JWT_TOKEN = ''
 BASE = 'https://thingsboard.e-yantra.org/api'
 
 if __name__ == "__main__":
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+    data = '{"username":"bitboot@cs684.edu", "password":"bitboot123#"}'
+    response = requests.post('https://thingsboard.e-yantra.org/api/auth/login', headers=headers, data=data)
+    JWT_TOKEN = response.json()['token']
     with open('rpc.json','r') as fp:
         json_data=fp.read()
     rpc_list = json.loads(json_data)
@@ -31,3 +40,4 @@ if __name__ == "__main__":
             print(e)
         time.sleep(TIME)
 #curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"username":"bitboot@cs684.edu", "password":"bitboot123#"}' 'https://thingsboard.e-yantra.org/api/auth/login'
+

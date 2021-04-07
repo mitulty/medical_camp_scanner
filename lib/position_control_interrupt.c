@@ -63,15 +63,12 @@
 
 #include "firebird_avr.h" // Header file included that contains macro definitions essential for Firebird V robot
 #include "motor_control.h"
+#include "position_control_interrupt.h"
 #include <util/delay.h> // Standard AVR Delay Library
 
 //---------------------------------- GLOBAL VARIABLES --------------------------------------------------
 
-#define angle_resolution 4.090	  //resolution used for angle rotation
-#define distance_resolution 5.338 //resolution used for distance traversal
 
-unsigned long int ShaftCountLeft = 0;  //to keep track of left position encoder
-unsigned long int ShaftCountRight = 0; //to keep track of right position encoder
 unsigned int Degrees;				   //to accept angle in degrees for turning
 
 //---------------------------------- FUNCTIONS ----------------------------------------------------------

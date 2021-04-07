@@ -89,10 +89,13 @@ were adapted from the Arduino HardwareSerial.h library by Tim Sharpe on
  * constants and macros
  */
 
+volatile unsigned int count_time;	// Used in ISR of Timer2 to store ms elasped
+unsigned int seconds_time ;		// Stores seconds elasped
+
 /* Enable USART 1, 2, 3 as required */
 /* Can be defined in compiler symbol setup with -D option (preferred) */
-#ifndef USART0_ENABLED
-	#define USART0_ENABLED /**< Enable USART0 */
+#ifndef USART3_ENABLED
+	#define USART3_ENABLED /**< Enable USART0 */
 #endif
 //#define USART1_ENABLED
 //#define USART2_ENABLED 
@@ -431,7 +434,10 @@ extern uint16_t uart3_available(void);
 extern void uart3_flush(void);
 
 /**@}*/
+// Extra Functions specific to project only
 void setup_uart(void);
+
+char uart3_readByte(void);
 
 #endif // UART_H 
 

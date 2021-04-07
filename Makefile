@@ -43,3 +43,4 @@ clean:
 		$(RM) -rf *.o
 		$(RM) -rf robot_controller.elf
 		$(RM) -rf robot_controller.hex
+		$(RM) -rf path_finder

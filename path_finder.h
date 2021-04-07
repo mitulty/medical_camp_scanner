@@ -17,15 +17,19 @@ int grid_matrix[9][9];
 tuple plot_coord_matrix[16][5];
 tuple node_coord_matrix[25];
 int adjacency_matrix[25][25];
+char dir_flag;
 int visited[25];
 int cost[25][25], distance[25], pred[25],path_stack[25];
 int top;
 
 // scans the plot
-void scan_plot(int);
+void scan_plot(int,tuple);
 
 //moves robot to the next loc
 void move_robot(tuple);
+
+// Turn accordingly
+void turn_accordingly(tuple);
 
 //push into stack
 void push(int);
@@ -52,16 +56,20 @@ tuple get_nearest_coordinate(tuple,int);
 int get_node_from_coord(tuple);
 
 // gives the plot number for a particular coordinate
-int get_plot_from_coord(tuple coord);
+int get_plot_from_coord(int,int);
 
 // updates the adjacency matrix from the grid matrix
 void update_adjacency_matrix(void);
 
 // implements the BFS Algorithm using the adjacency matrix
-void dijkstra(int G[25][25], int n, int startnode, int v);
+void dijkstra(int G[25][25], int , int , int );
 
 // checks path for debris
 int check_path_for_debris(void);
+
+// Final mid point
+int final_mid_point(int);
+
 
 // void print_ind_plot_coord_arr(int);
 // void print_plot_coord_matrix(void);

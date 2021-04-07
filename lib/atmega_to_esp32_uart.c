@@ -3,22 +3,16 @@ TITLE	: UART Communication: ATmega 2560 & ESP32
 DATE	: 2019/11/12
 AUTHOR	: e-Yantra Team
 
-AIM: To send data on UART#0 of ATMega 2560 to ESP32
+AIM: To send data from UART#0 of ATMega 2560 to ESP32
 */
 
-
-#define F_CPU 16000000UL		// Define Crystal Frequency of eYFi-Mega Board
+#define F_CPUL 14745600L
 #include <avr/io.h>				// Standard AVR IO Library
 #include <util/delay.h>			// Standard AVR Delay Library
 #include <avr/interrupt.h>		// Standard AVR Interrupt Library
 #include "uart.h"				// Third Party UART Library
+#define MESSAGE	"Initialised Tx from ATmega 2560> Hello ESP32!\n" // Message to be sent on UART #0
 
-#define PIN_LED_GREEN	PH5		// Macro for Pin Number of Green Led
-#define MESSAGE			"Tx from ATmega 2560> Hello ESP32!\n" // Message to be sent on UART #0
-
-volatile unsigned int count = 0;	// Used in ISR of Timer2 to store ms elasped
-unsigned int seconds = 0;			// Stores seconds elasped
-char rx_byte;
 
 void init_timer2(void){
 	cli();	// Turn off global interrupts
@@ -37,43 +31,29 @@ void init_timer2(void){
 
 //Timer2 Overflow Interrupt Vector
 ISR(TIMER2_OVF_vect) {
-  count++;	// increment after 1 ms               
+  count_time++;	// increment after 1 ms               
   
   // increment seconds variable after 1000 ms
-  if(count > 999){
-	seconds++;
+  if(count_time > 999){
+	seconds_time++;
 	
-	uart0_puts(MESSAGE);    // Send data on UART #0 after 1 second
-
-    count = 0;          
+	//uart3_puts(MESSAGE);    // Send data on UART #3 after 1 second
+//	lcd_clear();
+//	lcd_string(2,2,MESSAGE);
+    count_time = 0;          
   }
   
   TCNT2 = 130;           	// Reset Timer to 130 out of 255
   TIFR2  &= ~(1 << TOV2);	// Timer2 INT Flag Reg: Clear Timer Overflow Flag
 };
 
-
-void init_led(void){
-	DDRH    |= (1 << PIN_LED_GREEN);    
-	PORTH   |= (1 << PIN_LED_GREEN);    
-}
-
-void led_greenOn(void){
-	PORTH &= ~(1 << PIN_LED_GREEN);
-
-}
-
-void led_greenOff(void){
-	PORTH |= (1 << PIN_LED_GREEN);
-}
-
-
-char uart0_readByte(void){
+char uart3_readByte(void)
+{
 
 	uint16_t rx;
 	uint8_t rx_status, rx_data;
 
-	rx = uart0_getc();
+	rx = uart3_getc();
 	rx_status = (uint8_t)(rx >> 8);
 	rx = rx << 8;
 	rx_data = (uint8_t)(rx >> 8);
@@ -88,28 +68,9 @@ char uart0_readByte(void){
 
 void setup_uart(void) 
 {
-	init_led();
 	init_timer2();
 
-	uart0_init(UART_BAUD_SELECT(115200, F_CPU));
-	uart0_flush();
-
-
-		rx_byte = uart0_readByte();
-
-		if(rx_byte != -1){
-			uart0_putc(rx_byte);
-			// led_greenOn();
-		}
-
-		// Turn On green led if seconds elasped are even else turn it off
-		if((seconds % 2) == 0){
-			led_greenOn();
-			
-		} else {
-			led_greenOff();
-		}
-
-
-	
+	uart3_init(UART_BAUD_SELECT(115200, F_CPUL));
+	uart3_flush();
+	uart3_puts(MESSAGE);
 }

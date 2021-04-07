@@ -101,20 +101,21 @@ void get_wls_data(void);
 int plot_order[16] = {13, 14, 9, 10, 1, 2, 4, 3, 8, 7, 12, 11, 16, 15}, plot_no = 0;
 int done = 0;
 
-void get_wls_data(void)
+void get_wls_data(int c)
 {
 	left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 	center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 	right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-	printf("\n%d %d %d\n", left_wl_sensor_data, center_wl_sensor_data, right_wl_sensor_data);
+	printf("\n %d : %d %d %d\n",c, left_wl_sensor_data, center_wl_sensor_data, right_wl_sensor_data);
 }
 void traverse(void)
 {
 
 	//-----------------------------------Test Zone---------------------------------------------------
+
 		forward_wls(1);
 		left_turn_wls();
-		get_wls_data();
+		get_wls_data(4);
 		while(1);
 	//-----------------------------Setup Functions----------------------------------------------------	
 	initialize_grid_matrix();
@@ -227,7 +228,6 @@ int check_path_for_debris(void)
 	stop();
 	_delay_ms(10);
 	left();
-	velocity(50, 50);
 	for (int i = 0; i < 30; i++)
 	{
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
@@ -241,7 +241,6 @@ int check_path_for_debris(void)
 	stop();
 	_delay_ms(10);
 	right();
-	velocity(50, 50);
 	for (int i = 0; i < 60; i++)
 	{
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
@@ -255,7 +254,6 @@ int check_path_for_debris(void)
 	stop();
 	_delay_ms(10);
 	left();
-	velocity(50, 50);
 	for (int i = 0; i < 30; i++)
 	{
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
@@ -550,27 +548,29 @@ void left_turn_wls(void)
 //	allign_at_node();
 	forward();
 	velocity(80, 80);
-	_delay_ms(350);
+	_delay_ms(500);
 	stop();
 	left();
-	velocity(80, 80);
-	_delay_ms(300);
-	get_wls_data();
+	_delay_ms(100);
+	stop();
+	// while(1);
+	//get_wls_data(1);
 	while (1)
 	{
 		// get the ADC converted data of center white line sensors from their appropriate channel number
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
+	//	get_wls_data(2);
 		if (center_wl_sensor_data > THRESHOLD_WLS)
 		{
 			stop();
 			velocity(0,0);
-			get_wls_data();
+			//get_wls_data(3);
 			break;
 		}
 		else
 		{
 			left();
-			velocity(80, 80);
+			//velocity(80, 80);
 		}
 	}
 	if (dir_flag == 'n')
@@ -601,7 +601,6 @@ void right_turn_wls(void)
 	_delay_ms(350);
 	stop();
 	right();
-	velocity(80, 80);
 	_delay_ms(200);
 	while (1)
 	{
@@ -615,7 +614,6 @@ void right_turn_wls(void)
 		else
 		{
 			right();
-			velocity(80, 80);
 		}
 	}
 	//	printf("\n\texit value %d \n", convert_analog_channel_data(center_wl_sensor_channel));
@@ -634,8 +632,7 @@ void right_turn_wls(void)
 void left_turn_90(void)
 {
 	left();
-	velocity(80, 80);
-	_delay_ms(300);
+	_delay_ms(100);
 	stop();
 	velocity(0,0);
 }
@@ -643,8 +640,7 @@ void left_turn_90(void)
 void right_turn_90(void)
 {
 	right();
-	velocity(80, 80);
-	_delay_ms(300);
+	_delay_ms(100);
 	stop();
 	velocity(0,0);
 }
@@ -662,7 +658,6 @@ void allign_at_node()
 	while (1)
 	{
 		left();
-		velocity(150, 100);
 		for (int i = 0; i < (limit); i++)
 		{
 			left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
@@ -678,7 +673,6 @@ void allign_at_node()
 		stop();
 		_delay_ms(5);
 		right();
-		velocity(150, 100);
 		for (int i = 0; i < (limit * 1.7); i++)
 		{
 			left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
@@ -694,7 +688,6 @@ void allign_at_node()
 		stop();
 		_delay_ms(5);
 		left();
-		velocity(150, 100);
 		for (int i = 0; i < limit; i++)
 		{
 			left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);

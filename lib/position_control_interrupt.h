@@ -6,6 +6,12 @@
 #ifndef POSITION_CONTROL_INTERRUPT_H_
 #define POSITION_CONTROL_INTERRUPT_H_
 
+#define angle_resolution 4.090	  //resolution used for angle rotation
+#define distance_resolution 5.338 //resolution used for distance traversal
+
+unsigned long int ShaftCountLeft ;  //to keep track of left position encoder
+unsigned long int ShaftCountRight ; //to keep track of right position encoder
+	
 // Function to configure left and right encoder pins
 void position_encoder_pin_config (void);
 

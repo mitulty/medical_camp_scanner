@@ -2,6 +2,9 @@
     "C_Cpp.errorSquiggles": "Disabled",
     "files.associations": {
         "tuple": "cpp",
-        "uart.h": "c"
-    }
+        "uart.h": "c",
+        "chrono": "c",
+        "algorithm": "c"
+    },
+    "cmake.configureOnOpen": false
 }

@@ -10,8 +10,7 @@
 #include <stdio.h>
 #include <math.h>
 #define INFINITE 9999
-int r=-1,f=-1;
-
+int r = -1, f = -1;
 void initialize_node_coord_matrix(void)
 {
     int j = 0;
@@ -57,7 +56,6 @@ void initialize_plot_coord_matrix(void)
         plot_coord_matrix[i][3].x = x - 1;
         plot_coord_matrix[i][3].y = y + 1;
 
-
         plot_coord_matrix[i][4].x = x;
         plot_coord_matrix[i][4].y = y;
 
@@ -96,13 +94,13 @@ void update_adjacency_matrix(void)
         {
             coord_b = node_coord_matrix[n];
             if ((coord_b.x == coord_a.x + 2) && (coord_b.y == coord_a.y))
-                adjacency_matrix[m][n] = grid_matrix[coord_a.x + 1][coord_a.y];
+                adjacency_matrix[m][n] = grid_matrix[coord_a.y][coord_a.x + 1];
             if ((coord_b.x == coord_a.x - 2) && (coord_b.y == coord_a.y))
-                adjacency_matrix[m][n] = grid_matrix[coord_a.x - 1][coord_a.y];
+                adjacency_matrix[m][n] = grid_matrix[coord_a.y][coord_a.x - 1];
             if ((coord_b.x == coord_a.x) && (coord_b.y == coord_a.y + 2))
-                adjacency_matrix[m][n] = grid_matrix[coord_a.x][coord_a.y + 1];
+                adjacency_matrix[m][n] = grid_matrix[coord_a.y + 1][coord_a.x];
             if ((coord_b.x == coord_a.x) && (coord_b.y == coord_a.y - 2))
-                adjacency_matrix[m][n] = grid_matrix[coord_a.x][coord_a.y - 1];
+                adjacency_matrix[m][n] = grid_matrix[coord_a.y - 1][coord_a.x];
         }
     }
 }
@@ -135,13 +133,12 @@ int get_node_from_coord(tuple coord)
     return -1;
 }
 
-int get_plot_from_coord(tuple coord)
+int get_plot_from_coord(int x, int y)
 {
-    for (int i = 0 ; i < 25 ; i++)
-            if((coord.x == plot_coord_matrix[i][5].x) && (coord.y == plot_coord_matrix[i][5].y))
-                return i;
+    for (int i = 0; i < 25; i++)
+        if ((x == plot_coord_matrix[i][5].x) && (y == plot_coord_matrix[i][5].y))
+            return i;
     return -1;
-    
 }
 
 void dijkstra(int G[25][25], int n, int startnode, int v)
@@ -193,9 +190,9 @@ void dijkstra(int G[25][25], int n, int startnode, int v)
         {
             push(j);
             j = pred[j];
-           // printf("<-%d", j);
+            // printf("<-%d", j);
         } while (j != startnode);
-     //   printf("\n");
+        //   printf("\n");
     }
 }
 
@@ -226,31 +223,31 @@ int pop()
     }
 }
 
-void scan_plot(int plot)
+void scan_plot(int plot, tuple destination_location)
 {
-    tuple dest_loc, next_loc;
-    dest_loc = get_nearest_coordinate(curr_loc, plot);
+    tuple next_loc;
     int d_node, s_node, node;
-    while (!((dest_loc.x == curr_loc.x) && (dest_loc.y == curr_loc.y)))
+    d_node = get_node_from_coord(destination_location);
+    while (!((destination_location.x == curr_loc.x) && (destination_location.y == curr_loc.y)))
     {
-        dest_loc = get_nearest_coordinate(curr_loc, plot);
-        d_node = get_node_from_coord(dest_loc);
+        //        destination_location = get_nearest_coordinate(curr_loc, plot);
         s_node = get_node_from_coord(curr_loc);
         dijkstra(adjacency_matrix, 25, s_node, d_node);
-        while (1)
+        while (top > -1)
         {
             node = pop();
             next_loc = node_coord_matrix[node];
+            turn_accordingly(next_loc);
             if ((next_loc.x == curr_loc.x + 2) && (next_loc.y == curr_loc.y))
             {
-                if (grid_matrix[curr_loc.x + 1][curr_loc.y] == -1)
+                if (grid_matrix[curr_loc.y][curr_loc.x + 1] == -1)
                 {
-                  //  grid_matrix[curr_loc.x + 1][curr_loc.y] = check_path_for_debris();
+                    grid_matrix[curr_loc.y][curr_loc.x + 1] = check_path_for_debris();
                     update_adjacency_matrix();
                 }
-                if (grid_matrix[curr_loc.x + 1][curr_loc.y] == 1)
+                if (grid_matrix[curr_loc.y][curr_loc.x + 1] == 1)
                 {
-                   // move_robot(next_loc);
+                    move_robot(next_loc);
                 }
                 else
                 {
@@ -259,14 +256,14 @@ void scan_plot(int plot)
             }
             else if ((next_loc.x == curr_loc.x - 2) && (next_loc.y == curr_loc.y))
             {
-                if (grid_matrix[curr_loc.x - 1][curr_loc.y] == -1)
+                if (grid_matrix[curr_loc.y][curr_loc.x - 1] == -1)
                 {
-                   // grid_matrix[curr_loc.x - 1][curr_loc.y] = check_path_for_debris();
+                    grid_matrix[curr_loc.y][curr_loc.x - 1] = check_path_for_debris();
                     update_adjacency_matrix();
                 }
-                if (grid_matrix[curr_loc.x - 1][curr_loc.y] == 1)
+                if (grid_matrix[curr_loc.y][curr_loc.x - 1] == 1)
                 {
-                   // move_robot(next_loc);
+                    move_robot(next_loc);
                 }
                 else
                 {
@@ -274,16 +271,16 @@ void scan_plot(int plot)
                 }
             }
 
-             else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y + 2))
+            else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y + 2))
             {
-                if (grid_matrix[curr_loc.x][curr_loc.y + 1] == -1)
+                if (grid_matrix[curr_loc.y + 1][curr_loc.x] == -1)
                 {
-                  //  grid_matrix[curr_loc.x][curr_loc.y + 1] = check_path_for_debris();
+                    grid_matrix[curr_loc.y + 1][curr_loc.x] = check_path_for_debris();
                     update_adjacency_matrix();
                 }
-                if (grid_matrix[curr_loc.x][curr_loc.y + 1] == 1)
+                if (grid_matrix[curr_loc.y + 1][curr_loc.x] == 1)
                 {
-                  //  move_robot(next_loc);
+                    move_robot(next_loc);
                 }
                 else
                 {
@@ -292,14 +289,14 @@ void scan_plot(int plot)
             }
             else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y - 2))
             {
-                if (grid_matrix[curr_loc.x][curr_loc.y - 1] == -1)
+                if (grid_matrix[curr_loc.y - 1][curr_loc.x] == -1)
                 {
-                 //   grid_matrix[curr_loc.x][curr_loc.y - 1] = check_path_for_debris();
+                    grid_matrix[curr_loc.y - 1][curr_loc.x] = check_path_for_debris();
                     update_adjacency_matrix();
                 }
-                if (grid_matrix[curr_loc.x][curr_loc.y - 1] == 1)
+                if (grid_matrix[curr_loc.y - 1][curr_loc.x] == 1)
                 {
-                 //   move_robot(next_loc);
+                    move_robot(next_loc);
                 }
                 else
                 {
@@ -345,11 +342,13 @@ void print_ind_plot_coord_arr(int plot)
 
 void print_grid_matrix(void)
 {
-    for (int i = 0; i < 9; i++)
+    printf("\n");
+	for (int i = 0; i < 9; i++)
     {
-        for (int j = 0; j < 9; j++)
+
+		for (int j = 0; j < 9; j++)
         {
-            printf("  %2d  ", grid_matrix[i][j]);
+            printf(" {(%d,%d):%2d}  ", j,i,grid_matrix[i][j]);
         }
         printf("\n");
     }
@@ -360,7 +359,8 @@ void print_adjacency_matrix(void)
 {
     printf("\t0     1     2     3     4     5     6     7     8     9    10    11    12     13    14    15    16    17    18    19    20    21    22    23    24\n");
     printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    for (int i = 0; i < 25; i++)
+
+	for (int i = 0; i < 25; i++)
     {
         printf(" %2d| ", i);
         for (int j = 0; j < 25; j++)
@@ -389,18 +389,21 @@ int main(int argc, char *argv[])
     initialize_adjacency_matrix();
     initialize_node_coord_matrix();
     update_adjacency_matrix();
-
     print_plot_coord_matrix();
     print_grid_matrix();
     print_adjacency_matrix();
     print_node_coord_matrix();
     print_stack_content();
+    printf("\n-------------------------------------------------------------------------------------------------------------------------------\n");
     dijkstra(adjacency_matrix, 25, 0, 23);
     print_stack_content();
-    dijkstra(adjacency_matrix, 25, 10, 24);
+    grid_matrix[0][1]= 0;
+    update_adjacency_matrix();
+    print_grid_matrix();
+    print_adjacency_matrix();
+    dijkstra(adjacency_matrix, 25, 0, 23);
     print_stack_content();
-
+    printf("\n-------------------------------------------------------------------------------------------------------------------------------\n");
     return 1;
 }
-
 */
