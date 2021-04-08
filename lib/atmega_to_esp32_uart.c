@@ -72,5 +72,5 @@ void setup_uart(void)
 
 	uart3_init(UART_BAUD_SELECT(115200, F_CPUL));
 	uart3_flush();
-	uart3_puts(MESSAGE);
+	//uart3_puts(MESSAGE);
 }

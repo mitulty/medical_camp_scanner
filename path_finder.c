@@ -135,7 +135,7 @@ int get_node_from_coord(tuple coord)
 
 int get_plot_from_coord(int x, int y)
 {
-    for (int i = 0; i < 25; i++)
+    for (int i = 0; i < 16; i++)
         if ((x == plot_coord_matrix[i][5].x) && (y == plot_coord_matrix[i][5].y))
             return i;
     return -1;
@@ -223,89 +223,7 @@ int pop()
     }
 }
 
-void scan_plot(int plot, tuple destination_location)
-{
-    tuple next_loc;
-    int d_node, s_node, node;
-    d_node = get_node_from_coord(destination_location);
-    while (!((destination_location.x == curr_loc.x) && (destination_location.y == curr_loc.y)))
-    {
-        //        destination_location = get_nearest_coordinate(curr_loc, plot);
-        s_node = get_node_from_coord(curr_loc);
-        dijkstra(adjacency_matrix, 25, s_node, d_node);
-        while (top > -1)
-        {
-            node = pop();
-            next_loc = node_coord_matrix[node];
-            turn_accordingly(next_loc);
-            if ((next_loc.x == curr_loc.x + 2) && (next_loc.y == curr_loc.y))
-            {
-                if (grid_matrix[curr_loc.y][curr_loc.x + 1] == -1)
-                {
-                    grid_matrix[curr_loc.y][curr_loc.x + 1] = check_path_for_debris();
-                    update_adjacency_matrix();
-                }
-                if (grid_matrix[curr_loc.y][curr_loc.x + 1] == 1)
-                {
-                    move_robot(next_loc);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else if ((next_loc.x == curr_loc.x - 2) && (next_loc.y == curr_loc.y))
-            {
-                if (grid_matrix[curr_loc.y][curr_loc.x - 1] == -1)
-                {
-                    grid_matrix[curr_loc.y][curr_loc.x - 1] = check_path_for_debris();
-                    update_adjacency_matrix();
-                }
-                if (grid_matrix[curr_loc.y][curr_loc.x - 1] == 1)
-                {
-                    move_robot(next_loc);
-                }
-                else
-                {
-                    break;
-                }
-            }
 
-            else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y + 2))
-            {
-                if (grid_matrix[curr_loc.y + 1][curr_loc.x] == -1)
-                {
-                    grid_matrix[curr_loc.y + 1][curr_loc.x] = check_path_for_debris();
-                    update_adjacency_matrix();
-                }
-                if (grid_matrix[curr_loc.y + 1][curr_loc.x] == 1)
-                {
-                    move_robot(next_loc);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y - 2))
-            {
-                if (grid_matrix[curr_loc.y - 1][curr_loc.x] == -1)
-                {
-                    grid_matrix[curr_loc.y - 1][curr_loc.x] = check_path_for_debris();
-                    update_adjacency_matrix();
-                }
-                if (grid_matrix[curr_loc.y - 1][curr_loc.x] == 1)
-                {
-                    move_robot(next_loc);
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-    }
-}
 /*
 void print_stack_content(void)
 {
@@ -325,9 +243,10 @@ void print_plot_coord_matrix(void)
 {
     for (int i = 0; i < 16; i++)
     {
-        printf("\n%d= ", (i + 1));
+       printf("\n%d =[",i+1);
         for (int j = 0; j < 5; j++)
-            printf("(%d,%d) ", plot_coord_matrix[i][j].x, plot_coord_matrix[i][j].y);
+            printf("(%d,%d),", plot_coord_matrix[i][j].x, plot_coord_matrix[i][j].y);
+       printf("]\n");
     }
     printf("\n");
 }
@@ -374,11 +293,14 @@ void print_adjacency_matrix(void)
 
 void print_node_coord_matrix(void)
 {
+ //   printf("\n[");
     for (int i = 0; i < 25; i++)
     {
 
         printf(" i: %d (%d,%d) \n", i + 1, node_coord_matrix[i].x, node_coord_matrix[i].y);
+       // printf(" (%d,%d),",node_coord_matrix[i].x, node_coord_matrix[i].y);
     }
+
     printf("\n");
 }
 

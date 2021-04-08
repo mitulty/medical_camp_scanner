@@ -28,9 +28,16 @@ void setup(void);
 void wls_readings_print_lcd(void);
 void check_plot_scan_status();
 void allign_at_node(void);
-void send_data_uart(int, int, int);
 void receive_uart_data(void);
 void uturn(void);
+void wls_loc_orient_print_lcd(void);
+int check_path_for_debris(void);
+int final_mid_point(int);
+void send_data_uart_b(int, int, int, int);
+void send_data_uart_a(int, int, int);
+void scan_plot(int, tuple);
+void move_robot(tuple);
+void turn_accordingly(tuple);
 
 // To store 8-bit data of left, center and right white line sensors
 unsigned char left_wl_sensor_data, center_wl_sensor_data, right_wl_sensor_data;
@@ -51,70 +58,136 @@ int main(int argc, char *argv[])
 	curr_loc.x = 4;
 	curr_loc.y = 8;
 	dir_flag = 'n';
+	top = -1;
 	int status = 0;
+	int plot_scan = -1;
+	send_data_uart_a(2, 4, 8);
 	tuple dest_loc, plot_coordinate;
+	wls_loc_orient_print_lcd();
 	//---------------------------------------------Test Zone-----------------------------------------------
-	// forward_wls(1);
+	//forward_wls(8);
+	//while (1);
+	// _delay_ms(100);
 	// left_turn_wls_degress(90);
+	// _delay_ms(100);
 	// forward_wls(2);
+	// _delay_ms(100);
+	// while(1);
 	// right_turn_wls_degress(90);
-	// forward_wls(1);
-	// while (1)
-	// 	;
-	// forward_wls(2);
-	// right_turn_wls_degress(90);
+	// _delay_ms(100);
 	// forward_wls(8);
+	// _delay_ms(100);
 	// right_turn_wls_degress(90);
+	// _delay_ms(100);
 	// forward_wls(4);
+	// _delay_ms(100);
 	// right_turn_wls_degress(90);
+	// _delay_ms(100);
 	// forward_wls(8);
+	// _delay_ms(100);
 	// left_turn_wls_degress(90);
+	// _delay_ms(100);
 	// forward_wls(2);
+	// _delay_ms(100);
 	// left_turn_wls_degress(90);
+	// _delay_ms(100);
 	// forward_wls(4);
+	// _delay_ms(100);
 	// right_turn_wls_degress(90);
+	// _delay_ms(100);
 	// forward_wls(1);
-	// while (1)
-	// 	;
+	// _delay_ms(100);
+	// forward_mm(30);
+	// while(1);
+
 	//----------------------------------------------Main Code--------------------------------------------------------
 	while (plot_no < 16)
 	{
-		if (status == 0)
-			dest_loc = get_nearest_coordinate(curr_loc, plot_order[plot_no] - 1);
-		scan_plot(plot_order[plot_no] - 1, dest_loc);
-		status = final_mid_point(plot_order[plot_no] - 1);
-		if (status == 1)
+		plot_scan = plot_order[plot_no] - 1;
+		tuple plot_coord = plot_coord_matrix[plot_scan][4];
+		lcd_clear();
+		lcd_string(1, 2, "Scanning Plot");
+		lcd_numeric_value(2, 1, plot_scan, 2);
+		lcd_wr_char(2, 4, '(');
+		lcd_numeric_value(2, 5, plot_coord.x, 1);
+		lcd_wr_char(2, 6, ',');
+		lcd_numeric_value(2, 7, plot_coord.y, 1);
+		lcd_wr_char(2, 8, ')');
+		_delay_ms(1000);
+		if (grid_matrix[plot_coord.y][plot_coord.x] == -5)
+		{
+			while (1)
+			{
+				if (status == 0)
+					dest_loc = get_nearest_coordinate(curr_loc, plot_scan);
+
+				lcd_clear();
+				lcd_string(1, 2, "Dest Loc");
+				lcd_wr_char(2, 1, '(');
+				lcd_numeric_value(2, 2, dest_loc.x, 1);
+				lcd_wr_char(2, 3, ',');
+				lcd_numeric_value(2, 5, dest_loc.y, 1);
+				lcd_wr_char(2, 6, ')');
+				_delay_ms(2000);
+
+				scan_plot(plot_scan, dest_loc);
+
+				lcd_clear();
+				lcd_string(1, 1, "Corner Node");
+				buzzer_on();
+				_delay_ms(500);
+				buzzer_off();
+
+				if (grid_matrix[plot_coord.y][plot_coord.x] != -5)
+					break;
+				status = final_mid_point(plot_scan);
+				lcd_clear();
+				lcd_string(1, 1, "Status Returned");
+				lcd_numeric_value(2, 2, status, 2);
+				_delay_ms(2000);
+				if (status == 1)
+				{
+					plot_no++;
+					status = 0;
+					break;
+				}
+				else
+				{
+					status = -1;
+					plot_coordinate.x = plot_coord_matrix[plot_scan][4].x;
+					plot_coordinate.x = plot_coord_matrix[plot_scan][4].y;
+					if (curr_loc.x - plot_coordinate.x == 1)
+						dest_loc.x = curr_loc.x - 2;
+					else
+						dest_loc.x = curr_loc.x + 2;
+					if (curr_loc.y - plot_coordinate.y == 1)
+						dest_loc.y = curr_loc.y - 2;
+					else
+						dest_loc.y = curr_loc.y + 2;
+				}
+			}
+		}
+		else
 		{
 			plot_no++;
 			status = 0;
 		}
-		else
-		{
-			status = -1;
-			plot_coordinate.x = plot_coord_matrix[plot_order[plot_no] - 1][4].x;
-			plot_coordinate.x = plot_coord_matrix[plot_order[plot_no] - 1][4].y;
-			if (curr_loc.x - plot_coordinate.x == 1)
-				dest_loc.x = curr_loc.x - 2;
-			else
-				dest_loc.x = curr_loc.x + 2;
-			if (curr_loc.y - plot_coordinate.y == 1)
-				dest_loc.y = curr_loc.y - 2;
-			else
-				dest_loc.y = curr_loc.y + 2;
-		}
 	}
-
 	return 1;
 }
-
 void move_robot(tuple n_loc)
 {
 	_delay_ms(100);
 	forward_wls(1);
+	send_data_uart_a(2, curr_loc.x, curr_loc.y);
 	_delay_ms(100);
 	check_plot_scan_status();
 	_delay_ms(100);
 	forward_wls(1);
+	send_data_uart_a(2, curr_loc.x, curr_loc.y);
+	_delay_ms(100);
+	wls_loc_orient_print_lcd();
+	_delay_ms(1000);
 }
 
 void turn_accordingly(tuple n_loc)
@@ -149,7 +222,7 @@ void turn_accordingly(tuple n_loc)
 	{
 		if (dir_flag != 'n')
 		{
-			if (dir_flag == 'w')
+			if (dir_flag == 'e')
 				left_turn_wls_degress(90);
 			else if (dir_flag == 's') // 180 degrees turn.
 				uturn();
@@ -161,7 +234,7 @@ void turn_accordingly(tuple n_loc)
 	{
 		if (dir_flag != 's')
 		{
-			if (dir_flag == 'e')
+			if (dir_flag == 'w')
 				left_turn_wls_degress(90);
 			else if (dir_flag == 'n') // 180 degrees turn.
 				uturn();
@@ -173,10 +246,14 @@ void turn_accordingly(tuple n_loc)
 
 int check_path_for_debris(void)
 {
+	lcd_clear();
+	lcd_string(1, 2, "Checking Debris");
+	_delay_ms(1000);
 	left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 	center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 	right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-	if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
+	wls_readings_print_lcd();
+	if (left_wl_sensor_data < THRESHOLD_WLS || center_wl_sensor_data < THRESHOLD_WLS || right_wl_sensor_data < THRESHOLD_WLS)
 		return 1;
 
 	float ReqdShaftCount = 0;
@@ -235,8 +312,6 @@ int check_path_for_debris(void)
 void check_plot_scan_status()
 {
 	int plot;
-	velocity(150, 150);
-	forward_mm(60);
 	if (curr_loc.x == 0)
 	{
 		if (grid_matrix[curr_loc.y][curr_loc.x + 1] == -5)
@@ -247,7 +322,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y][curr_loc.x + 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x + 1, curr_loc.y);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -257,7 +332,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y][curr_loc.x + 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x + 1, curr_loc.y);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -274,7 +349,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y][curr_loc.x - 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x - 1, curr_loc.y);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -284,7 +359,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y][curr_loc.x - 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x - 1, curr_loc.y);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -301,7 +376,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y + 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y + 1);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -311,7 +386,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y + 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y + 1);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -328,7 +403,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y - 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y - 1);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -338,7 +413,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y - 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y - 1);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -349,13 +424,13 @@ void check_plot_scan_status()
 	{
 		if (grid_matrix[curr_loc.y - 1][curr_loc.x] == -5)
 		{
-			if (dir_flag == 'w')
+			if (dir_flag == 'e')
 			{
 				left_degrees(90);
 				_delay_ms(10);
 				grid_matrix[curr_loc.y - 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y - 1);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -365,7 +440,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y - 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y - 1);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -378,7 +453,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y + 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y + 1);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -388,7 +463,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y + 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y + 1);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -406,7 +481,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y][curr_loc.x - 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x - 1, curr_loc.y);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -416,8 +491,9 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y][curr_loc.x - 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x - 1, curr_loc.y);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
 				left_degrees(90);
+				_delay_ms(100);
 			}
 		}
 		if (grid_matrix[curr_loc.y][curr_loc.x + 1] == -5)
@@ -428,8 +504,9 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y][curr_loc.x + 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x + 1, curr_loc.y);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
 				left_degrees(90);
+				_delay_ms(100);
 			}
 			else
 			{
@@ -437,8 +514,9 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y][curr_loc.x + 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x + 1, curr_loc.y);
-				send_data_uart(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
 				right_degrees(90);
+				_delay_ms(100);
 			}
 		}
 		return;
@@ -465,7 +543,8 @@ void forward_wls(unsigned char node)
 				lcd_string(1, 2, "Node Reached");
 				++node_reached;
 				lcd_numeric_value(2, 5, node_reached, 2);
-				//	wls_readings_print_lcd();
+				//wls_readings_print_lcd();
+				//_delay_ms(2000);
 				break;
 			}
 			else if (center_wl_sensor_data > THRESHOLD_WLS)
@@ -477,25 +556,28 @@ void forward_wls(unsigned char node)
 			else if (left_wl_sensor_data > THRESHOLD_WLS)
 			{
 				prev = 1;
-				velocity(50, 200);
+				velocity(120, 200);
 				// printf("\n left");
 			}
 			else if (right_wl_sensor_data > THRESHOLD_WLS)
 			{
 				prev = 2;
-				velocity(200, 50);
+				velocity(200, 120);
 				// printf("\n right");
 			}
 			else
 			{
 				if (prev == 1)
-					velocity(50, 200);
+					velocity(120, 200);
 				else if (prev == 2)
-					velocity(200, 50);
+					velocity(200, 120);
 			}
+			_delay_ms(10);
 		}
 		velocity(200, 200);
-		forward_mm(60);
+		forward_mm(35);
+		//wls_readings_print_lcd();
+		//_delay_ms(2000);
 	}
 	if (dir_flag == 'n')
 		curr_loc.y -= node;
@@ -542,6 +624,7 @@ void setup(void)
 	goal_loc.x = 8;
 	goal_loc.y = 4;
 }
+
 void wls_readings_print_lcd(void)
 {
 	left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
@@ -562,10 +645,30 @@ void wls_readings_print_lcd(void)
 	lcd_clear();
 }
 
-void send_data_uart(int x, int y, int z)
+void wls_loc_orient_print_lcd(void)
+{
+	lcd_clear();
+	lcd_string(1, 2, "Loc & Orient");
+	lcd_wr_char(2, 1, '(');
+	lcd_numeric_value(2, 2, curr_loc.x, 1);
+	lcd_wr_char(2, 3, ',');
+	lcd_numeric_value(2, 5, curr_loc.y, 1);
+	lcd_wr_char(2, 6, ')');
+	lcd_wr_char(2, 9, dir_flag);
+	_delay_ms(2000);
+}
+
+void send_data_uart_a(int x, int y, int z)
 {
 	char uart_data_Tx[6];
 	sprintf(uart_data_Tx, "%d:%d:%d", x, y, z);
+	uart3_puts(uart_data_Tx);
+}
+
+void send_data_uart_b(int a, int x, int y, int z)
+{
+	char uart_data_Tx[6];
+	sprintf(uart_data_Tx, "%d:%d:%d:%d", a, x, y, z);
 	uart3_puts(uart_data_Tx);
 }
 
@@ -578,7 +681,6 @@ void receive_uart_data(void)
 	lcd_wr_char(2, 5, order);
 	if (order <= 17 && order >= 0)
 	{
-		send_data_uart(1, 5, 5);
 		buzzer_on();
 		_delay_ms(1000);
 		buzzer_off();
@@ -590,7 +692,7 @@ void receive_uart_data(void)
 void left_turn_wls_degress(int degrees)
 {
 	velocity(200, 200);
-	forward_mm(20);
+	forward_mm(60);
 	left_degrees(50);
 	float ReqdShaftCount = 0;
 	unsigned long int ReqdShaftCountInt = 0;
@@ -632,7 +734,7 @@ void left_turn_wls_degress(int degrees)
 void right_turn_wls_degress(int degrees)
 {
 	velocity(200, 200);
-	forward_mm(20);
+	forward_mm(60);
 	right_degrees(50);
 	float ReqdShaftCount = 0;
 	unsigned long int ReqdShaftCountInt = 0;
@@ -722,14 +824,19 @@ int final_mid_point(int plot_no)
 	tuple coord_plot = plot_coord_matrix[plot_no][4];
 	mid_point_1.x = coord_plot.x;
 	mid_point_1.y = curr_loc.y;
+
+	lcd_clear();
+	lcd_string(1, 2, "Mid-Point Check");
+	_delay_ms(1500);
+
 	if ((curr_loc.x == mid_point_1.x) && ((mid_point_1.y - curr_loc.y) == -1))
 		dir_1 = 'n';
 	else if ((curr_loc.x == mid_point_1.x) && ((mid_point_1.y - curr_loc.y) == 1))
 		dir_1 = 's';
 	else if ((curr_loc.y == mid_point_1.y) && ((mid_point_1.x - curr_loc.x) == -1))
-		dir_1 = 'e';
-	else if ((curr_loc.y == mid_point_1.y) && ((mid_point_1.x - curr_loc.x) == 1))
 		dir_1 = 'w';
+	else if ((curr_loc.y == mid_point_1.y) && ((mid_point_1.x - curr_loc.x) == 1))
+		dir_1 = 'e';
 
 	mid_point_2.x = curr_loc.x;
 	mid_point_2.y = coord_plot.y;
@@ -738,56 +845,67 @@ int final_mid_point(int plot_no)
 	else if ((curr_loc.x == mid_point_2.x) && ((mid_point_2.y - curr_loc.y) == 1))
 		dir_2 = 's';
 	else if ((curr_loc.y == mid_point_2.y) && ((mid_point_2.x - curr_loc.x) == -1))
-		dir_2 = 'e';
-	else if ((curr_loc.y == mid_point_2.y) && ((mid_point_2.x - curr_loc.x) == 1))
 		dir_2 = 'w';
+	else if ((curr_loc.y == mid_point_2.y) && ((mid_point_2.x - curr_loc.x) == 1))
+		dir_2 = 'e';
+
+	lcd_clear();
+	lcd_string(1, 2, "Mid-Point 1");
+	lcd_wr_char(2, 1, '(');
+	lcd_numeric_value(2, 2, mid_point_1.x, 1);
+	lcd_wr_char(2, 3, ',');
+	lcd_numeric_value(2, 5, mid_point_1.y, 1);
+	lcd_wr_char(2, 6, ')');
+	lcd_wr_char(2, 9, dir_1);
+	_delay_ms(2500);
+
+	lcd_clear();
+	lcd_string(1, 2, "Mid-Point 2");
+	lcd_wr_char(2, 1, '(');
+	lcd_numeric_value(2, 2, mid_point_2.x, 1);
+	lcd_wr_char(2, 3, ',');
+	lcd_numeric_value(2, 5, mid_point_2.y, 1);
+	lcd_wr_char(2, 6, ')');
+	lcd_wr_char(2, 9, dir_2);
+	_delay_ms(2500);
 
 	if (dir_flag != dir_1 && dir_flag != dir_2)
 	{
 		if (dir_flag == 'n')
 		{
 			if ((dir_2 == 'w') || (dir_1 == 'w'))
-			{
 				left_turn_wls_degress(90);
-			}
 			else if ((dir_2 == 'e') || (dir_1 == 'e'))
-			{
 				right_turn_wls_degress(90);
-			}
+			else
+				uturn();
 		}
-
 		else if (dir_flag == 'e')
 		{
 			if ((dir_2 == 'n') || (dir_1 == 'n'))
-			{
 				left_turn_wls_degress(90);
-			}
 			else if ((dir_2 == 's') || (dir_1 == 's'))
-			{
 				right_turn_wls_degress(90);
-			}
+			else
+				uturn();
 		}
 		else if (dir_flag == 'w')
 		{
 			if ((dir_2 == 's') || (dir_1 == 's'))
-			{
 				left_turn_wls_degress(90);
-			}
 			else if ((dir_2 == 'n') || (dir_1 == 'n'))
-			{
 				right_turn_wls_degress(90);
-			}
+			else
+				uturn();
 		}
 		else if (dir_flag == 's')
 		{
 			if ((dir_2 == 'w') || (dir_1 == 'w'))
-			{
 				left_turn_wls_degress(90);
-			}
 			else if ((dir_2 == 'e') || (dir_1 == 'e'))
-			{
 				right_turn_wls_degress(90);
-			}
+			else
+				uturn();
 		}
 	}
 	if (dir_flag == dir_1)
@@ -797,26 +915,155 @@ int final_mid_point(int plot_no)
 		if (grid_matrix[mid_point_1.y][mid_point_1.x] == 1)
 		{
 			forward_wls(1);
+			send_data_uart_a(2, curr_loc.x, curr_loc.y);
 			_delay_ms(100);
 			check_plot_scan_status();
 			forward_wls(1);
+			send_data_uart_a(2, curr_loc.x, curr_loc.y);
 			_delay_ms(100);
+			wls_loc_orient_print_lcd();
+			_delay_ms(1000);
 			return 1;
 		}
 	}
-	else
+	else if (dir_flag == dir_2)
 	{
 		if (grid_matrix[mid_point_2.y][mid_point_2.x] == -1)
 			grid_matrix[mid_point_2.y][mid_point_2.x] = check_path_for_debris();
 		if (grid_matrix[mid_point_2.y][mid_point_2.x] == 1)
 		{
 			forward_wls(1);
+			send_data_uart_a(2, curr_loc.x, curr_loc.y);
 			_delay_ms(100);
 			check_plot_scan_status();
 			forward_wls(1);
+			send_data_uart_a(2, curr_loc.x, curr_loc.y);
 			_delay_ms(100);
+			wls_loc_orient_print_lcd();
+			_delay_ms(1000);
 			return 1;
 		}
 	}
 	return 0;
+}
+
+void scan_plot(int plot, tuple destination_location)
+{
+	tuple next_loc;
+	int d_node, s_node, node;
+	d_node = get_node_from_coord(destination_location);
+	lcd_clear();
+	lcd_string(1, 1, "Scanning Algo..");
+	_delay_ms(1000);
+	lcd_clear();
+	lcd_string(1, 1, "Destination Node");
+	lcd_numeric_value(2, 1, d_node, 2);
+	_delay_ms(1000);
+	while (!((destination_location.x == curr_loc.x) && (destination_location.y == curr_loc.y)))
+	{
+		s_node = get_node_from_coord(curr_loc);
+		lcd_clear();
+		lcd_string(1, 1, "Source Node");
+		lcd_numeric_value(2, 1, s_node, 2);
+		lcd_wr_char(2, 3, '(');
+		lcd_numeric_value(2, 4, curr_loc.x, 1);
+		lcd_wr_char(2, 5, ',');
+		lcd_numeric_value(2, 6, curr_loc.y, 1);
+		lcd_wr_char(2, 7, ')');
+		_delay_ms(2000);
+		lcd_clear();
+		lcd_string(1, 1, "Top Value Initial");
+		lcd_numeric_value(2, 2, top, 2);
+		_delay_ms(2000);
+		dijkstra(adjacency_matrix, 25, s_node, d_node);
+		while (top > -1)
+		{
+			lcd_clear();
+			lcd_string(1, 1, "Top Value Final");
+			lcd_numeric_value(2, 2, top, 2);
+			_delay_ms(2000);
+			node = pop();
+			next_loc = node_coord_matrix[node];
+			lcd_clear();
+			lcd_string(1, 1, "Next Node");
+			lcd_numeric_value(2, 1, node, 2);
+			lcd_wr_char(2, 3, '(');
+			lcd_numeric_value(2, 4, next_loc.x, 1);
+			lcd_wr_char(2, 5, ',');
+			lcd_numeric_value(2, 6, next_loc.y, 1);
+			lcd_wr_char(2, 7, ')');
+			_delay_ms(2000);
+			turn_accordingly(next_loc);
+			wls_loc_orient_print_lcd();
+			if ((next_loc.x == curr_loc.x + 2) && (next_loc.y == curr_loc.y))
+			{
+				if (grid_matrix[curr_loc.y][curr_loc.x + 1] == -1)
+				{
+					grid_matrix[curr_loc.y][curr_loc.x + 1] = check_path_for_debris();
+					send_data_uart_b(4, curr_loc.x + 1, curr_loc.y, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+					update_adjacency_matrix();
+				}
+				if (grid_matrix[curr_loc.y][curr_loc.x + 1] == 1)
+				{
+					move_robot(next_loc);
+				}
+				else
+				{
+					break;
+				}
+			}
+			else if ((next_loc.x == curr_loc.x - 2) && (next_loc.y == curr_loc.y))
+			{
+				if (grid_matrix[curr_loc.y][curr_loc.x - 1] == -1)
+				{
+					grid_matrix[curr_loc.y][curr_loc.x - 1] = check_path_for_debris();
+					send_data_uart_b(4, curr_loc.x - 1, curr_loc.y, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+					update_adjacency_matrix();
+				}
+				if (grid_matrix[curr_loc.y][curr_loc.x - 1] == 1)
+				{
+					move_robot(next_loc);
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y + 2))
+			{
+				if (grid_matrix[curr_loc.y + 1][curr_loc.x] == -1)
+				{
+					grid_matrix[curr_loc.y + 1][curr_loc.x] = check_path_for_debris();
+					send_data_uart_b(4, curr_loc.x, curr_loc.y + 1, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+					update_adjacency_matrix();
+				}
+				if (grid_matrix[curr_loc.y + 1][curr_loc.x] == 1)
+				{
+					move_robot(next_loc);
+				}
+				else
+				{
+					break;
+				}
+			}
+			else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y - 2))
+			{
+				if (grid_matrix[curr_loc.y - 1][curr_loc.x] == -1)
+				{
+					grid_matrix[curr_loc.y - 1][curr_loc.x] = check_path_for_debris();
+					send_data_uart_b(4, curr_loc.x, curr_loc.y - 1, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+					update_adjacency_matrix();
+				}
+				if (grid_matrix[curr_loc.y - 1][curr_loc.x] == 1)
+				{
+					move_robot(next_loc);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+	}
 }

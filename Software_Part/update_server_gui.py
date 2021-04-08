@@ -12,10 +12,10 @@ def coap_send(payload):
 def on_message(client, userdata, message):
 	temp = str(message.payload.decode("utf-8"))
 	print(temp)
-	print(int(temp[1]))
-	if(int(temp[1]==3)):
-		with open('data.json', 'w') as outfile:
-			json_data=fp.read()
+	#print(int(temp[1]))
+	#if(int(temp[1]==3)):
+	#	with open('data.json', 'w') as outfile:
+	#		json_data=fp.read()
 		#coap_send(json_data)
 	client.publish("LOCATION_CS684", temp)
 def on_connect(client,userdata,flags,rc):

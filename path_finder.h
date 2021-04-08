@@ -22,14 +22,6 @@ int visited[25];
 int cost[25][25], distance[25], pred[25],path_stack[25];
 int top;
 
-// scans the plot
-void scan_plot(int,tuple);
-
-//moves robot to the next loc
-void move_robot(tuple);
-
-// Turn accordingly
-void turn_accordingly(tuple);
 
 //push into stack
 void push(int);
@@ -63,12 +55,6 @@ void update_adjacency_matrix(void);
 
 // implements the BFS Algorithm using the adjacency matrix
 void dijkstra(int G[25][25], int , int , int );
-
-// checks path for debris
-int check_path_for_debris(void);
-
-// Final mid point
-int final_mid_point(int);
 
 
 // void print_ind_plot_coord_arr(int);
