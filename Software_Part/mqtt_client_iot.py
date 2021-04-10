@@ -37,7 +37,7 @@ def on_message(client, userdata, msg):
 
 
 host_url = "thingsboard.e-yantra.org"
-device_access_token = "QoUDGL9Ky2x72LCV6FIe"
+device_access_token ="QoUDGL9Ky2x72LCV6FIe"# "Yju85G2v378HSN7oXhQK"
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
@@ -49,7 +49,5 @@ try:
     while True:
         pass
 except KeyboardInterrupt:
-    client.loop_stop()
-    client.disconnect()
     client.loop_stop()
     client.disconnect()

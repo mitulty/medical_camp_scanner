@@ -35,14 +35,15 @@ int check_path_for_debris(void);
 int final_mid_point(int);
 void send_data_uart_b(int, int, int, int);
 void send_data_uart_a(int, int, int);
-void scan_plot(int, tuple);
-void move_robot(tuple);
+void traverse(int, tuple);
+void move_robot(void);
 void turn_accordingly(tuple);
+void turn_towards_mid_point(char);
 
 // To store 8-bit data of left, center and right white line sensors
 unsigned char left_wl_sensor_data, center_wl_sensor_data, right_wl_sensor_data;
 
-int plot_order[16] = {13, 14, 9, 10, 1, 2, 4, 3, 8, 7, 12, 11, 16, 15}, plot_no = 0;
+int plot_order[16] = {14, 13, 9, 10, 6, 5, 1, 2, 3, 4, 8, 7, 11, 12, 16, 15}, plot_no = 0;
 int done = 0;
 int prev = 0;
 char dir_flag = 'n';
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
 	//---------------------------------------------Setup Zone-----------------------------------------------
 
 	setup();
-	forward_wls(1);
+	//forward_wls(1);
 	curr_loc.x = 4;
 	curr_loc.y = 8;
 	dir_flag = 'n';
@@ -63,7 +64,12 @@ int main(int argc, char *argv[])
 	int plot_scan = -1;
 	send_data_uart_a(2, 4, 8);
 	tuple dest_loc, plot_coordinate;
-	wls_loc_orient_print_lcd();
+	//wls_loc_orient_print_lcd();
+	while (1)
+	{
+		receive_uart_data();
+		_delay_ms(2000);
+	}
 	//---------------------------------------------Test Zone-----------------------------------------------
 	//forward_wls(8);
 	//while (1);
@@ -130,7 +136,7 @@ int main(int argc, char *argv[])
 				lcd_wr_char(2, 6, ')');
 				_delay_ms(2000);
 
-				scan_plot(plot_scan, dest_loc);
+				traverse(plot_scan, dest_loc);
 
 				lcd_clear();
 				lcd_string(1, 1, "Corner Node");
@@ -139,7 +145,11 @@ int main(int argc, char *argv[])
 				buzzer_off();
 
 				if (grid_matrix[plot_coord.y][plot_coord.x] != -5)
-					break;
+					{
+						status = 0;
+						plot_no++;
+						break;
+					}
 				status = final_mid_point(plot_scan);
 				lcd_clear();
 				lcd_string(1, 1, "Status Returned");
@@ -155,7 +165,7 @@ int main(int argc, char *argv[])
 				{
 					status = -1;
 					plot_coordinate.x = plot_coord_matrix[plot_scan][4].x;
-					plot_coordinate.x = plot_coord_matrix[plot_scan][4].y;
+					plot_coordinate.y = plot_coord_matrix[plot_scan][4].y;
 					if (curr_loc.x - plot_coordinate.x == 1)
 						dest_loc.x = curr_loc.x - 2;
 					else
@@ -175,7 +185,7 @@ int main(int argc, char *argv[])
 	}
 	return 1;
 }
-void move_robot(tuple n_loc)
+void move_robot()
 {
 	_delay_ms(100);
 	forward_wls(1);
@@ -678,13 +688,14 @@ void receive_uart_data(void)
 	int order = rx_byte - 96;
 	lcd_clear();
 	lcd_wr_char(2, 2, rx_byte);
-	lcd_wr_char(2, 5, order);
+	lcd_numeric_value(2, 5, order, 2);
 	if (order <= 17 && order >= 0)
 	{
 		buzzer_on();
 		_delay_ms(1000);
+		send_data_uart_a(1, 4, 3);
 		buzzer_off();
-		_delay_ms(1000);
+		_delay_ms(500);
 	}
 	uart3_flush();
 }
@@ -868,47 +879,7 @@ int final_mid_point(int plot_no)
 	lcd_wr_char(2, 6, ')');
 	lcd_wr_char(2, 9, dir_2);
 	_delay_ms(2500);
-
-	if (dir_flag != dir_1 && dir_flag != dir_2)
-	{
-		if (dir_flag == 'n')
-		{
-			if ((dir_2 == 'w') || (dir_1 == 'w'))
-				left_turn_wls_degress(90);
-			else if ((dir_2 == 'e') || (dir_1 == 'e'))
-				right_turn_wls_degress(90);
-			else
-				uturn();
-		}
-		else if (dir_flag == 'e')
-		{
-			if ((dir_2 == 'n') || (dir_1 == 'n'))
-				left_turn_wls_degress(90);
-			else if ((dir_2 == 's') || (dir_1 == 's'))
-				right_turn_wls_degress(90);
-			else
-				uturn();
-		}
-		else if (dir_flag == 'w')
-		{
-			if ((dir_2 == 's') || (dir_1 == 's'))
-				left_turn_wls_degress(90);
-			else if ((dir_2 == 'n') || (dir_1 == 'n'))
-				right_turn_wls_degress(90);
-			else
-				uturn();
-		}
-		else if (dir_flag == 's')
-		{
-			if ((dir_2 == 'w') || (dir_1 == 'w'))
-				left_turn_wls_degress(90);
-			else if ((dir_2 == 'e') || (dir_1 == 'e'))
-				right_turn_wls_degress(90);
-			else
-				uturn();
-		}
-	}
-	if (dir_flag == dir_1)
+	if(dir_flag == dir_1)
 	{
 		if (grid_matrix[mid_point_1.y][mid_point_1.x] == -1)
 			grid_matrix[mid_point_1.y][mid_point_1.x] = check_path_for_debris();
@@ -926,8 +897,46 @@ int final_mid_point(int plot_no)
 			return 1;
 		}
 	}
-	else if (dir_flag == dir_2)
+	else if(dir_flag == dir_2)
 	{
+		if (grid_matrix[mid_point_2.y][mid_point_2.x] == -1)
+			grid_matrix[mid_point_2.y][mid_point_2.x] = check_path_for_debris();
+		if (grid_matrix[mid_point_2.y][mid_point_2.x] == 1)
+		{
+			forward_wls(1);
+			send_data_uart_a(2, curr_loc.x, curr_loc.y);
+			_delay_ms(100);
+			check_plot_scan_status();
+			forward_wls(1);
+			send_data_uart_a(2, curr_loc.x, curr_loc.y);
+			_delay_ms(100);
+			wls_loc_orient_print_lcd();
+			_delay_ms(1000);
+			return 1;
+		}
+	}
+	if (dir_flag != dir_1)
+	{
+		turn_towards_mid_point(dir_1);
+		if (grid_matrix[mid_point_1.y][mid_point_1.x] == -1)
+			grid_matrix[mid_point_1.y][mid_point_1.x] = check_path_for_debris();
+		if (grid_matrix[mid_point_1.y][mid_point_1.x] == 1)
+		{
+			forward_wls(1);
+			send_data_uart_a(2, curr_loc.x, curr_loc.y);
+			_delay_ms(100);
+			check_plot_scan_status();
+			forward_wls(1);
+			send_data_uart_a(2, curr_loc.x, curr_loc.y);
+			_delay_ms(100);
+			wls_loc_orient_print_lcd();
+			_delay_ms(1000);
+			return 1;
+		}
+	}
+	if (dir_flag != dir_2)
+	{
+		turn_towards_mid_point(dir_2);
 		if (grid_matrix[mid_point_2.y][mid_point_2.x] == -1)
 			grid_matrix[mid_point_2.y][mid_point_2.x] = check_path_for_debris();
 		if (grid_matrix[mid_point_2.y][mid_point_2.x] == 1)
@@ -947,7 +956,50 @@ int final_mid_point(int plot_no)
 	return 0;
 }
 
-void scan_plot(int plot, tuple destination_location)
+void turn_towards_mid_point(char dir)
+{
+	if (dir_flag != dir)
+	{
+		if (dir_flag == 'n')
+		{
+			if (dir == 'w')
+				left_turn_wls_degress(90);
+			else if (dir == 'e')
+				right_turn_wls_degress(90);
+			else
+				uturn();
+		}
+		else if (dir_flag == 'e')
+		{
+			if (dir == 'n')
+				left_turn_wls_degress(90);
+			else if (dir == 's')
+				right_turn_wls_degress(90);
+			else
+				uturn();
+		}
+		else if (dir_flag == 'w')
+		{
+			if (dir == 's')
+				left_turn_wls_degress(90);
+			else if (dir == 'n')
+				right_turn_wls_degress(90);
+			else
+				uturn();
+		}
+		else if (dir_flag == 's')
+		{
+			if (dir == 'e')
+				left_turn_wls_degress(90);
+			else if (dir == 'w')
+				right_turn_wls_degress(90);
+			else
+				uturn();
+		}
+	}
+}
+
+void traverse(int plot, tuple destination_location)
 {
 	tuple next_loc;
 	int d_node, s_node, node;

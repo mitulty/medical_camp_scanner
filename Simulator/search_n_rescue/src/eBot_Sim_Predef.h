@@ -8,7 +8,6 @@
 #ifndef EBOT_SIM_PREDEF_H_
 #define EBOT_SIM_PREDEF_H_
 
-
 //---------------------------------- INCLUDES ----------------------------------
 
 #include <stdio.h>
@@ -17,12 +16,10 @@
 #include <thread>
 
 extern "C" {
-	#include "extApi.h"
+#include "extApi.h"
 }
 
-
 //---------------------------------- CONSTANTS ----------------------------------
-
 
 #define LINEAR_VELOCITY_MAX			10
 
@@ -51,7 +48,7 @@ void init_prox_sensors(void);
 void init_sensors(void);
 int init_setup(void);
 unsigned char convert_analog_channel_data(unsigned char);
-int print_color_sensor_data(void);
+char print_color_sensor_data(void);
 int print_ir_prox_5_data(unsigned char);
 void set_motor_velocities(void);
 void forward(void);
@@ -67,8 +64,5 @@ void _delay_ms(unsigned int);
 void stop_simulation(void);
 void exit_remote_api_server(void);
 void clean_up(void);
-
-
-//---------------------------------------------------------------------------------------------------------
 
 #endif /* EBOT_SIM_PREDEF_H_ */

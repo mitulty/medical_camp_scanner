@@ -10,7 +10,6 @@
 
 #include "eBot_Sim_Predef.h"
 
-
 //------------------------------ GLOBAL VARIABLES -------------------------------
 
 // store the client id for connection with CoppeliaSim
@@ -132,13 +131,11 @@ void get_white_line_sensor_data(void)
 	return_code = simxGetVisionSensorImage(client_id, *white_line_sensor_handle, resolution, &white_line_sensor_data, 1, simx_opmode_buffer);
 }
 
-
 void get_color_sensor_data(void)
 {
 	return_code = -1;
 	return_code = simxGetVisionSensorImage(client_id, *color_sensor_handle, resolution, &color_sensor_data, 0, simx_opmode_buffer);
 }
-
 
 void init_vision_sensors(void)
 {
@@ -183,7 +180,6 @@ unsigned char get_front_prox_sensor_distance(unsigned char prox_sensor_num)
 	return front_prox_sensor_distance;
 }
 
-
 void init_prox_sensors(void)
 {
 	return_code = -1;
@@ -193,7 +189,6 @@ void init_prox_sensors(void)
 		get_front_prox_sensor_distance(FRONT_IR_PROX_NUMBER);
 	} while (return_code != simx_return_ok); // || return_code == simx_return_novalue_flag);
 }
-
 
 void filter_red(void)
 {
@@ -228,7 +223,6 @@ void init_sensors(void)
 	init_vision_sensors();
 	init_prox_sensors();
 }
-
 
 /**
  * @brief      Initializes the setup by connecting to CoppeliaSim and starting the simulation
@@ -323,31 +317,32 @@ int print_ir_prox_5_data(unsigned char front_prox_sensor_data)
 }
 
 
-int print_color_sensor_data(void)
+char print_color_sensor_data(void)
 {
 	int red,green,blue;
-	filter_red();
-	red = color_sensor_pulse_count;
-	printf("\n\tRed data: %03d\n", color_sensor_pulse_count);
-	_delay_ms(500);
 
-	filter_green();
-	green = color_sensor_pulse_count;
-	printf("\n\tGreen data: %03d\n", color_sensor_pulse_count);
-	_delay_ms(500);
+			filter_red();
+			red = color_sensor_pulse_count;
+			//printf("\n\tRed data: %03d\n", color_sensor_pulse_count);
+			_delay_ms(50);
 
-	filter_blue();
-	blue = color_sensor_pulse_count;
-	printf("\n\tBlue data: %03d\n", color_sensor_pulse_count);
-	_delay_ms(500);
+			filter_green();
+			green = color_sensor_pulse_count;
+			//printf("\n\tGreen data: %03d\n", color_sensor_pulse_count);
+			_delay_ms(50);
+
+			filter_blue();
+			blue = color_sensor_pulse_count;
+			//printf("\n\tBlue data: %03d\n", color_sensor_pulse_count);
+			_delay_ms(50);
 
 	if(red > 2000 && blue < 2000 && green < 2000)
-		return 5;
+		return 'R';
 	if(red < 2000 && blue < 2000 && green > 2000)
-		return 4;
+		return 'G';
 	if(red > 2000 && blue > 2000 && green > 2000)
-		return 3;
-	return 3;
+		return 'B';
+	return 'W';
 }
 
 
@@ -539,4 +534,3 @@ void clean_up(void)
 		client_id = -1;
 	}
 }
-

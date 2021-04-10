@@ -1,0 +1,3037 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="2" >
+    <style>
+        .container {
+          position: relative;
+          text-align: center;
+          color: white;
+        }
+
+        .bottom-left {
+          position: absolute;
+          bottom: 8px;
+          left: 16px;
+        }
+
+        .top-left {
+          position: absolute;
+          top: 45px;
+          left: -290px;
+        }
+
+        .top-right {
+          position: absolute;
+          top: 45px;
+          right: 0px;
+        }
+
+        .bottom-right {
+          position: absolute;
+          bottom: 8px;
+          right: 16px;
+        }
+
+        .centered {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        #containers {height: 44px; width:100%; display: flex;}
+        #leftThing {
+          width: 25%;
+          color: white;
+          background-color: rgb(225, 149, 240);
+        }
+        #content {
+          width: 75%;
+          color: white;
+          background-color: rgb(119, 119, 119);
+        }
+
+        .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        top: -5px;
+        left: 105%;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+
+
+
+    </style>
+  </head>
+  <body>
+
+    <div> 
+      <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p00" style="width:10px;height:10px;border:1px solid #000;margin-left:5px;margin-top:55px;background-color:#000"></div>
+      <div id="p01" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:55px;background-color:#000"></div>
+      <div id="p02" style="width:10px;height:10px;border:1px solid #000;margin-left:56px;margin-top:55px;background-color:#000"></div>
+      <div id="p03" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:55px;background-color:#000"></div>
+      <div id="p04" style="width:10px;height:10px;border:1px solid #000;margin-left:57px;margin-top:55px;background-color:#000000"></div>
+      <div id="p05" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:55px;background-color:#000"></div>
+      <div id="p06" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:55px;background-color:#000"></div>
+      <div id="p07" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:55px;background-color:#000"></div>
+      <div id="p08" style="width:10px;height:10px;border:1px solid #000;margin-left:59px;margin-top:55px;background-color:#000"></div>
+    </div>
+    
+    <div> 
+      <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p10" style="width:10px;height:10px;border:1px solid #000;margin-left:4px;margin-top:40px;background-color:#000"></div>
+      <div id="p12" style="width:10px;height:10px;border:1px solid #000;margin-left:121px;margin-top:40px;background-color:#000"></div>
+      <div id="p14" style="width:10px;height:10px;border:1px solid #000;margin-left:122px;margin-top:40px;background-color:#000"></div>
+      <div id="p16" style="width:10px;height:10px;border:1px solid #000;margin-left:123px;margin-top:40px;background-color:#000"></div>
+      <div id="p18" style="width:10px;height:10px;border:1px solid #000;margin-left:122px;margin-top:40px;background-color:#000"></div>
+    </div>
+    
+    <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p20" style="width:10px;height:10px;border:1px solid #000;margin-left:5px;margin-top:46px;background-color:#000"></div>
+      <div id="p21" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p22" style="width:10px;height:10px;border:1px solid #000;margin-left:56px;margin-top:46px;background-color:#000"></div>
+      <div id="p23" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p24" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+      <div id="p25" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p26" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+      <div id="p27" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p28" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+    </div>
+    
+    <div> 
+      <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p30" style="width:10px;height:10px;border:1px solid #000;margin-left:4px;margin-top:40px;background-color:#000"></div>
+      <div id="p32" style="width:10px;height:10px;border:1px solid #000;margin-left:121px;margin-top:40px;background-color:#000"></div>
+      <div id="p34" style="width:10px;height:10px;border:1px solid #000;margin-left:122px;margin-top:40px;background-color:#000"></div>
+      <div id="p36" style="width:10px;height:10px;border:1px solid #000;margin-left:123px;margin-top:40px;background-color:#000"></div>
+      <div id="p38" style="width:10px;height:10px;border:1px solid #000;margin-left:122px;margin-top:40px;background-color:#000"></div>
+    </div>
+    
+    <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p40" style="width:10px;height:10px;border:1px solid #000;margin-left:5px;margin-top:46px;background-color:#000"></div>
+      <div id="p41" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p42" style="width:10px;height:10px;border:1px solid #000;margin-left:56px;margin-top:46px;background-color:#000"></div>
+      <div id="p43" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p44" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+      <div id="p45" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p46" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+      <div id="p47" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p48" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+    </div>
+    
+    <div> 
+      <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p50" style="width:10px;height:10px;border:1px solid #000;margin-left:4px;margin-top:40px;background-color:rgb(0, 0, 0)"></div>
+      <div id="p52" style="width:10px;height:10px;border:1px solid #000;margin-left:121px;margin-top:40px;background-color:#000"></div>
+      <div id="p54" style="width:10px;height:10px;border:1px solid #000;margin-left:122px;margin-top:40px;background-color:#000"></div>
+      <div id="p56" style="width:10px;height:10px;border:1px solid #000;margin-left:123px;margin-top:40px;background-color:#000"></div>
+      <div id="p58" style="width:10px;height:10px;border:1px solid #000;margin-left:122px;margin-top:40px;background-color:#000"></div>
+    </div>
+    
+    <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p60" style="width:10px;height:10px;border:1px solid #000;margin-left:5px;margin-top:46px;background-color:#000"></div>
+      <div id="p61" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p62" style="width:10px;height:10px;border:1px solid #000;margin-left:56px;margin-top:46px;background-color:#000"></div>
+      <div id="p63" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p64" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+      <div id="p65" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p66" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+      <div id="p67" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p68" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+    </div>
+    
+    <div> 
+      <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p70" style="width:10px;height:10px;border:1px solid #000;margin-left:4px;margin-top:40px;background-color:#000"></div>
+      <div id="p72" style="width:10px;height:10px;border:1px solid #000;margin-left:121px;margin-top:40px;background-color:#000"></div>
+      <div id="p74" style="width:10px;height:10px;border:1px solid #000;margin-left:122px;margin-top:40px;background-color:#000"></div>
+      <div id="p76" style="width:10px;height:10px;border:1px solid #000;margin-left:123px;margin-top:40px;background-color:#000"></div>
+      <div id="p78" style="width:10px;height:10px;border:1px solid #000;margin-left:122px;margin-top:40px;background-color:#000"></div>
+    </div>
+    
+    <div style="display:flex; flex-direction: row;align-items: center">
+      <div id="p80" style="width:10px;height:10px;border:1px solid #000;margin-left:5px;margin-top:46px;background-color:#000"></div>
+      <div id="p81" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p82" style="width:10px;height:10px;border:1px solid #000;margin-left:56px;margin-top:46px;background-color:#000"></div>
+      <div id="p83" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p84" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+      <div id="p85" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p86" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+      <div id="p87" style="width:10px;height:10px;border:1px solid #000;margin-left:52px;margin-top:46px;background-color:#000"></div>
+      <div id="p88" style="width:10px;height:10px;border:1px solid #000;margin-left:58px;margin-top:46px;background-color:#000"></div>
+    </div>
+    
+
+<div> 
+  <div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p00r" style="width:12px;height:12px;border:0px solid #000;margin-left:1254px;margin-top:-892px;background-color:#000"></div>
+  <div id="p01r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-892px;background-color:#000"></div>
+  <div id="p02r" style="width:12px;height:12px;border:0px solid #000;margin-left:57px;margin-top:-892px;background-color:#000"></div>
+  <div id="p03r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-892px;background-color:#000"></div>
+  <div id="p04r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-892px;background-color:#000000"></div>
+  <div id="p05r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-892px;background-color:#000"></div>
+  <div id="p06r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-892px;background-color:#000"></div>
+  <div id="p07r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-892px;background-color:#000"></div>
+  <div id="p08r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-892px;background-color:#000"></div>
+</div>
+
+<div> 
+  <div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p10r" style="width:12px;height:12px;border:0px solid #000;margin-left:1253px;margin-top:-790px;background-color:#000"></div>
+  <div id="p12r" style="width:12px;height:12px;border:0px solid #000;margin-left:121px;margin-top:-790px;background-color:#000"></div>
+  <div id="p14r" style="width:12px;height:12px;border:0px solid #000;margin-left:122px;margin-top:-790px;background-color:#000"></div>
+  <div id="p16r" style="width:12px;height:12px;border:0px solid #000;margin-left:123px;margin-top:-790px;background-color:#000"></div>
+  <div id="p18r" style="width:12px;height:12px;border:0px solid #000;margin-left:122px;margin-top:-790px;background-color:#000"></div>
+</div>
+
+<div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p20r" style="width:12px;height:12px;border:0px solid #000;margin-left:1254px;margin-top:-675px;background-color:#000"></div>
+  <div id="p21r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-675px;background-color:#000"></div>
+  <div id="p22r" style="width:12px;height:12px;border:0px solid #000;margin-left:57px;margin-top:-675px;background-color:#000"></div>
+  <div id="p23r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-675px;background-color:#000"></div>
+  <div id="p24r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-675px;background-color:#000"></div>
+  <div id="p25r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-675px;background-color:#000"></div>
+  <div id="p26r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-675px;background-color:#000"></div>
+  <div id="p27r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-675px;background-color:#000"></div>
+  <div id="p28r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-675px;background-color:#000"></div>
+</div>
+
+<div> 
+  <div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p30r" style="width:12px;height:12px;border:0px solid #000;margin-left:1253px;margin-top:-565px;background-color:#000"></div>
+  <div id="p32r" style="width:12px;height:12px;border:0px solid #000;margin-left:121px;margin-top:-565px;background-color:#000"></div>
+  <div id="p34r" style="width:12px;height:12px;border:0px solid #000;margin-left:122px;margin-top:-565px;background-color:#000"></div>
+  <div id="p36r" style="width:12px;height:12px;border:0px solid #000;margin-left:123px;margin-top:-565px;background-color:#000"></div>
+  <div id="p38r" style="width:12px;height:12px;border:0px solid #000;margin-left:122px;margin-top:-565px;background-color:#000"></div>
+</div>
+
+<div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p40r" style="width:12px;height:12px;border:0px solid #000;margin-left:1254px;margin-top:-455px;background-color:#000"></div>
+  <div id="p41r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-455px;background-color:#000"></div>
+  <div id="p42r" style="width:12px;height:12px;border:0px solid #000;margin-left:57px;margin-top:-455px;background-color:#000"></div>
+  <div id="p43r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-455px;background-color:#000"></div>
+  <div id="p44r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-455px;background-color:#000"></div>
+  <div id="p45r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-455px;background-color:#000"></div>
+  <div id="p46r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-455px;background-color:#000"></div>
+  <div id="p47r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-455px;background-color:#000"></div>
+  <div id="p48r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-455px;background-color:#000"></div>
+</div>
+
+<div> 
+  <div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p50r" style="width:12px;height:12px;border:0px solid #000;margin-left:1253px;margin-top:-350px;background-color:rgb(0, 0, 0)"></div>
+  <div id="p52r" style="width:12px;height:12px;border:0px solid #000;margin-left:121px;margin-top:-350px;background-color:#000"></div>
+  <div id="p54r" style="width:12px;height:12px;border:0px solid #000;margin-left:122px;margin-top:-350px;background-color:#000"></div>
+  <div id="p56r" style="width:12px;height:12px;border:0px solid #000;margin-left:123px;margin-top:-350px;background-color:#000"></div>
+  <div id="p58r" style="width:12px;height:12px;border:0px solid #000;margin-left:122px;margin-top:-350px;background-color:#000"></div>
+</div>
+
+<div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p60r" style="width:12px;height:12px;border:0px solid #000;margin-left:1254px;margin-top:-235px;background-color:#000"></div>
+  <div id="p61r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-235px;background-color:#000"></div>
+  <div id="p62r" style="width:12px;height:12px;border:0px solid #000;margin-left:57px;margin-top:-235px;background-color:#000"></div>
+  <div id="p63r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-235px;background-color:#000"></div>
+  <div id="p64r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-235px;background-color:#000"></div>
+  <div id="p65r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-235px;background-color:#000"></div>
+  <div id="p66r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-235px;background-color:#000"></div>
+  <div id="p67r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-235px;background-color:#000"></div>
+  <div id="p68r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-235px;background-color:#000"></div>
+</div>
+
+<div> 
+  <div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p70r" style="width:12px;height:12px;border:0px solid #000;margin-left:1253px;margin-top:-125px;background-color:#000"></div>
+  <div id="p72r" style="width:12px;height:12px;border:0px solid #000;margin-left:121px;margin-top:-125px;background-color:#000"></div>
+  <div id="p74r" style="width:12px;height:12px;border:0px solid #000;margin-left:122px;margin-top:-125px;background-color:#000"></div>
+  <div id="p76r" style="width:12px;height:12px;border:0px solid #000;margin-left:122px;margin-top:-125px;background-color:#000"></div>
+  <div id="p78r" style="width:12px;height:12px;border:0px solid #000;margin-left:123px;margin-top:-125px;background-color:#000"></div>
+</div>
+
+<div style="display:flex; flex-direction: row;align-items: center">
+  <div id="p80r" style="width:12px;height:12px;border:0px solid #000;margin-left:1254px;margin-top:-15px;background-color:#000"></div>
+  <div id="p81r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-15px;background-color:#000"></div>
+  <div id="p82r" style="width:12px;height:12px;border:0px solid #000;margin-left:57px;margin-top:-15px;background-color:#000"></div>
+  <div id="p83r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-15px;background-color:#000"></div>
+  <div id="p84r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-15px;background-color:#000"></div>
+  <div id="p85r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-15px;background-color:#000"></div>
+  <div id="p86r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-15px;background-color:#000"></div>
+  <div id="p87r" style="width:12px;height:12px;border:0px solid #000;margin-left:52px;margin-top:-15px;background-color:#000"></div>
+  <div id="p88r" style="width:12px;height:12px;border:0px solid #000;margin-left:58px;margin-top:-15px;background-color:#000"></div>
+</div>
+
+<script>
+  function myFunction2r() {
+        document.getElementById("p00r").style.backgroundColor = "black"
+        document.getElementById("p01r").style.backgroundColor = "black"
+        document.getElementById("p02r").style.backgroundColor = "black"
+        document.getElementById("p03r").style.backgroundColor = "black"
+        document.getElementById("p04r").style.backgroundColor = "black"
+        document.getElementById("p05r").style.backgroundColor = "black"
+        document.getElementById("p06r").style.backgroundColor = "black"
+        document.getElementById("p07r").style.backgroundColor = "black"
+        document.getElementById("p08r").style.backgroundColor = "black"
+        document.getElementById("p10r").style.backgroundColor = "black"
+        document.getElementById("p12r").style.backgroundColor = "black"
+        document.getElementById("p14r").style.backgroundColor = "black"
+        document.getElementById("p16r").style.backgroundColor = "black"
+        document.getElementById("p18r").style.backgroundColor = "black"
+
+        document.getElementById("p20r").style.backgroundColor = "black"
+        document.getElementById("p21r").style.backgroundColor = "black"
+        document.getElementById("p22r").style.backgroundColor = "black"
+        document.getElementById("p23r").style.backgroundColor = "black"
+        document.getElementById("p24r").style.backgroundColor = "black"
+        document.getElementById("p25r").style.backgroundColor = "black"
+        document.getElementById("p26r").style.backgroundColor = "black"
+        document.getElementById("p27r").style.backgroundColor = "black"
+        document.getElementById("p28r").style.backgroundColor = "black"
+        document.getElementById("p30r").style.backgroundColor = "black"
+        document.getElementById("p32r").style.backgroundColor = "black"
+        document.getElementById("p34r").style.backgroundColor = "black"
+        document.getElementById("p36r").style.backgroundColor = "black"
+        document.getElementById("p38r").style.backgroundColor = "black"
+
+        document.getElementById("p40r").style.backgroundColor = "black"
+        document.getElementById("p41r").style.backgroundColor = "black"
+        document.getElementById("p42r").style.backgroundColor = "black"
+        document.getElementById("p43r").style.backgroundColor = "black"
+        document.getElementById("p44r").style.backgroundColor = "black"
+        document.getElementById("p45r").style.backgroundColor = "black"
+        document.getElementById("p46r").style.backgroundColor = "black"
+        document.getElementById("p47r").style.backgroundColor = "black"
+        document.getElementById("p48r").style.backgroundColor = "black"
+        document.getElementById("p50r").style.backgroundColor = "black"
+        document.getElementById("p52r").style.backgroundColor = "black"
+        document.getElementById("p54r").style.backgroundColor = "black"
+        document.getElementById("p56r").style.backgroundColor = "black"
+        document.getElementById("p58r").style.backgroundColor = "black"
+
+        document.getElementById("p60r").style.backgroundColor = "black"
+        document.getElementById("p61r").style.backgroundColor = "black"
+        document.getElementById("p62r").style.backgroundColor = "black"
+        document.getElementById("p63r").style.backgroundColor = "black"
+        document.getElementById("p64r").style.backgroundColor = "black"
+        document.getElementById("p65r").style.backgroundColor = "black"
+        document.getElementById("p66r").style.backgroundColor = "black"
+        document.getElementById("p67r").style.backgroundColor = "black"
+        document.getElementById("p68r").style.backgroundColor = "black"
+        document.getElementById("p70r").style.backgroundColor = "black"
+        document.getElementById("p72r").style.backgroundColor = "black"
+        document.getElementById("p74r").style.backgroundColor = "black"
+        document.getElementById("p76r").style.backgroundColor = "black"
+        document.getElementById("p78r").style.backgroundColor = "black"
+
+        document.getElementById("p80r").style.backgroundColor = "black"
+        document.getElementById("p81r").style.backgroundColor = "black"
+        document.getElementById("p82r").style.backgroundColor = "black"
+        document.getElementById("p83r").style.backgroundColor = "black"
+        document.getElementById("p84r").style.backgroundColor = "black"
+        document.getElementById("p85r").style.backgroundColor = "black"
+        document.getElementById("p86r").style.backgroundColor = "black"
+        document.getElementById("p87r").style.backgroundColor = "black"
+        document.getElementById("p88r").style.backgroundColor = "black"
+
+
+        if( {{ mr }} == 0  && {{ nr }} == 0 )
+        {
+        document.getElementById("p00r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 0  && {{ nr }} == 1 )
+        {
+        document.getElementById("p01r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 0  && {{ nr }} == 2 )
+        {
+        document.getElementById("p02r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 0  && {{ nr }} == 3 )
+        {
+        document.getElementById("p03r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 0  && {{ nr }} == 4 )
+        {
+        document.getElementById("p04r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 0  && {{ nr }} == 5 )
+        {
+        document.getElementById("p05r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 0  && {{ nr }} == 6 )
+        {
+        document.getElementById("p06r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 0  && {{ nr }} == 7 )
+        {
+        document.getElementById("p07r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 0  && {{ nr }} == 8 )
+        {
+        document.getElementById("p08r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 1  && {{ nr }} == 0 )
+        {
+        document.getElementById("p10r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 1  && {{ nr }} == 2 )
+        {
+        document.getElementById("p12r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 1  && {{ nr }} == 4 )
+        {
+        document.getElementById("p14r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 1  && {{ nr }} == 6 )
+        {
+        document.getElementById("p16r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 1  && {{ nr }} == 8 )
+        {
+        document.getElementById("p18r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 2  && {{ nr }} == 0 )
+        {
+        document.getElementById("p20r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 2  && {{ nr }} == 1 )
+        {
+        document.getElementById("p21r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 2  && {{ nr }} == 2 )
+        {
+        document.getElementById("p22r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 2  && {{ nr }} == 3 )
+        {
+        document.getElementById("p23r").style.backgroundColor = "#00e6e6"
+        }
+        else if( {{ mr }} == 2  && {{ nr }} == 4 )
+        {
+        document.getElementById("p24r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 2  && {{ nr }} == 5 )
+        {
+        document.getElementById("p25r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 2  && {{ nr }} == 6 )
+        {
+        document.getElementById("p26r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 2  && {{ nr }} == 7 )
+        {
+        document.getElementById("p27r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 2  && {{ nr }} == 8 )
+        {
+        document.getElementById("p28r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 3  && {{ nr }} == 0 )
+        {
+        document.getElementById("p30r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 3  && {{ nr }} == 2 )
+        {
+        document.getElementById("p32r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 3  && {{ nr }} == 4 )
+        {
+        document.getElementById("p34r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 3  && {{ nr }} == 6 )
+        {
+        document.getElementById("p36r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 3  && {{ nr }} == 8 )
+        {
+        document.getElementById("p38r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 0 )
+        {
+        document.getElementById("p40r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 1 )
+        {
+        document.getElementById("p41r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 2 )
+        {
+        document.getElementById("p42r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 3 )
+        {
+        document.getElementById("p43r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 4 )
+        {
+        document.getElementById("p44r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 5 )
+        {
+        document.getElementById("p45r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 6 )
+        {
+        document.getElementById("p46r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 7 )
+        {
+        document.getElementById("p47r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 4  && {{ nr }} == 8 )
+        {
+        document.getElementById("p48r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 5  && {{ nr }} == 0 )
+        {
+        document.getElementById("p50r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 5  && {{ nr }} == 2 )
+        {
+        document.getElementById("p52r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 5  && {{ nr }} == 4 )
+        {
+        document.getElementById("p54r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 5  && {{ nr }} == 6 )
+        {
+        document.getElementById("p56r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 5  && {{ nr }} == 8 )
+        {
+        document.getElementById("p58r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 0 )
+        {
+        document.getElementById("p60r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 1 )
+        {
+        document.getElementById("p61r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 2 )
+        {
+        document.getElementById("p62r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 3 )
+        {
+        document.getElementById("p63r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 4 )
+        {
+        document.getElementById("p64r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 5 )
+        {
+        document.getElementById("p65r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 6 )
+        {
+        document.getElementById("p66r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 7 )
+        {
+        document.getElementById("p67r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 6  && {{ nr }} == 8 )
+        {
+        document.getElementById("p68r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 7  && {{ nr }} == 0 )
+        {
+        document.getElementById("p70r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 7  && {{ nr }} == 2 )
+        {
+        document.getElementById("p72r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 7  && {{ nr }} == 4 )
+        {
+        document.getElementById("p74r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 7  && {{ nr }} == 6 )
+        {
+        document.getElementById("p76r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 7  && {{ nr }} == 8 )
+        {
+        document.getElementById("p78r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 0 )
+        {
+        document.getElementById("p80r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 1 )
+        {
+        document.getElementById("p81r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 2 )
+        {
+        document.getElementById("p82r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 3 )
+        {
+        document.getElementById("p83r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 4 )
+        {
+        document.getElementById("p84r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 5 )
+        {
+        document.getElementById("p85r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 6 )
+        {
+        document.getElementById("p86r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 7 )
+        {
+        document.getElementById("p87r").style.backgroundColor = "#00e6e6"
+        }else if( {{ mr }} == 8  && {{ nr }} == 8 )
+        {
+        document.getElementById("p88r").style.backgroundColor = "#00e6e6"
+        }
+        
+      }
+      myFunction2r()
+</script>
+
+      <div class="top-left" style="margin-right: 500px;margin-top: 20px;">
+        
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="1c" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="2c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="3c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="4c" style="width:134px;height:2px;border:2px solid #000;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; align-items: center">
+          
+          <div id="1r" style="width:2px;height:100px;border:2px solid #000;margin-left:305px;margin-top: 0px;"></div>
+
+          <div class="tooltip" id="row1" style="width:55px;height:55px;border:2px solid #000;margin-left: 32px;margin-top: 0px;">
+            <span class="tooltiptext" id = "demo1"></span>
+           <script>
+           if({{ matrix[1][1] }} == -5)
+            {
+              document.getElementById("demo1").innerHTML = "Plot : 1 ";
+            }
+            else if({{ matrix[1][1] }} == 3)
+            {
+              document.getElementById("demo1").innerHTML = "No Injury "+ "<br>" +" Plot : 1 ";
+            }
+            else if({{ matrix[1][1] }} == 4)
+            {
+              document.getElementById("demo1").innerHTML = "Minor Injury "+ "<br>" +" Plot : 1 ";
+            }
+            else if({{ matrix[1][1] }} == 5)
+            {
+              document.getElementById("demo1").innerHTML = "Major Injury "+ "<br>" +" Plot : 1 ";
+            }
+
+           </script>
+          </div>
+          
+          <div id="2r" style="width:2px;height:100px;border:2px solid #000;margin-left: 36px;margin-top: 0px;"></div>
+
+
+          <div class="tooltip" id="row2" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;margin-top: 0px;">
+            <span class="tooltiptext" id = "demo2"></span>
+           <script>
+            if({{ matrix[1][3] }} == -5)
+            {
+              document.getElementById("demo2").innerHTML = "Plot : 2 ";
+            }
+            else if({{ matrix[1][3] }} == 3)
+            {
+              document.getElementById("demo2").innerHTML = "No Injury "+ "<br>" +" Plot : 2 ";
+            }
+            else if({{ matrix[1][3] }} == 4)
+            {
+              document.getElementById("demo2").innerHTML = "Minor Injury "+ "<br>" +" Plot : 2 ";
+            }
+            else if({{ matrix[1][3] }} == 5)
+            {
+              document.getElementById("demo2").innerHTML = "Major Injury "+ "<br>" +" Plot : 2 ";
+            }
+
+           </script>
+          </div>
+
+
+          <div id="3r" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;margin-top: 0px;"></div>
+
+
+          <div class="tooltip" id="row3" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;margin-top: 0px;">
+            <span class="tooltiptext" id = "demo3"></span>
+           <script>
+            if({{ matrix[1][5] }} == -5)
+            {
+              document.getElementById("demo3").innerHTML = "	Black: 3";
+            }
+            else if({{ matrix[1][5] }} == 3)
+            {
+              document.getElementById("demo3").innerHTML = "No Injury "+ "<br>" +" Plot : 3 ";
+            }
+            else if({{ matrix[1][5] }} == 4)
+            {
+              document.getElementById("demo3").innerHTML = "Minor Injury "+ "<br>" +" Plot : 3 ";
+            }
+            else if({{ matrix[1][5] }} == 5)
+            {
+              document.getElementById("demo3").innerHTML = "Major Injury "+ "<br>" +" Plot : 3 ";
+            }
+
+           </script>
+          </div>
+
+
+          <div id="4r" style="width:2px;height:100px;border:2px solid #000;margin-left: 35px;margin-top: 0px;"></div>
+
+
+          <div class="tooltip" id="row4" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;margin-top: 0px;">
+            <span class="tooltiptext" id = "demo4"></span>
+           <script>
+            if({{ matrix[1][7] }} == -5)
+            {
+              document.getElementById("demo4").innerHTML = "	Black: 4";
+            }
+            else if({{ matrix[1][7] }} == 3)
+            {
+              document.getElementById("demo4").innerHTML = "No Injury "+ "<br>" +" Plot : 4 ";
+            }
+            else if({{ matrix[1][7] }} == 4)
+            {
+              document.getElementById("demo4").innerHTML = "Minor Injury "+ "<br>" +" Plot : 4 ";
+            }
+            else if({{ matrix[1][7] }} == 5)
+            {
+              document.getElementById("demo4").innerHTML = "Major Injury "+ "<br>" +" Plot : 4 ";
+            }
+
+           </script>
+          </div>
+
+
+          <div id="5r" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;margin-top: 0px;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="5c" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="6c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="7c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="8c" style="width:134px;height:2px;border:2px solid #000;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; align-items: center">
+          <div id="6r" style="width:2px;height:100px;border:2px solid #000;margin-left:305px"></div>
+
+
+          <div class="tooltip" id="row5" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo5"></span>
+            <script>
+             if({{ matrix[3][1] }} == -5)
+            {
+              document.getElementById("demo5").innerHTML = "	Black: 5";
+            }
+            else if({{ matrix[3][1] }} == 3)
+            {
+              document.getElementById("demo5").innerHTML = "No Injury "+ "<br>" +" Plot : 5 ";
+            }
+            else if({{ matrix[3][1] }} == 4)
+            {
+              document.getElementById("demo5").innerHTML = "Minor Injury "+ "<br>" +" Plot : 5 ";
+            }
+            else if({{ matrix[3][1] }} == 5)
+            {
+              document.getElementById("demo5").innerHTML = "Major Injury "+ "<br>" +" Plot : 5 ";
+            }
+ 
+            </script>
+          </div>
+
+
+          <div id="7r" style="width:2px;height:100px;border:2px solid #000;margin-left: 33px;"></div>
+
+
+          <div class="tooltip" id="row6" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo6"></span>
+            <script>
+              if({{ matrix[3][3] }} == -5)
+            {
+              document.getElementById("demo6").innerHTML = "	Black: 6";
+            }
+            else if({{ matrix[3][3] }} == 3)
+            {
+              document.getElementById("demo6").innerHTML = "No Injury "+ "<br>" +" Plot : 6 ";
+            }
+            else if({{ matrix[3][3] }} == 4)
+            {
+              document.getElementById("demo6").innerHTML = "Minor Injury "+ "<br>" +" Plot : 6 ";
+            }
+            else if({{ matrix[3][3] }} == 5)
+            {
+              document.getElementById("demo6").innerHTML = "Major Injury "+ "<br>" +" Plot : 6 ";
+            }
+ 
+            </script>
+          </div>
+
+
+          <div id="8r" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+
+
+          <div class="tooltip" id="row7" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo7"></span>
+            <script>
+              if({{ matrix[3][5] }} == -5)
+            {
+              document.getElementById("demo7").innerHTML = "	Black: 7";
+            }
+            else if({{ matrix[3][5] }} == 3)
+            {
+              document.getElementById("demo7").innerHTML = "No Injury "+ "<br>" +" Plot : 7 ";
+            }
+            else if({{ matrix[3][5] }} == 4)
+            {
+              document.getElementById("demo7").innerHTML = "Minor Injury "+ "<br>" +" Plot : 7 ";
+            }
+            else if({{ matrix[3][5] }} == 5)
+            {
+              document.getElementById("demo7").innerHTML = "Major Injury "+ "<br>" +" Plot : 7 ";
+            }
+ 
+            </script>
+          </div>
+
+
+          <div id="9r" style="width:2px;height:100px;border:2px solid #000;margin-left: 35px;"></div>
+
+
+          <div class="tooltip" id="row8" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo8"></span>
+            <script>
+              if({{ matrix[3][7] }} == -5)
+            {
+              document.getElementById("demo8").innerHTML = "	Black: 8";
+            }
+            else if({{ matrix[3][7] }} == 3)
+            {
+              document.getElementById("demo8").innerHTML = "No Injury "+ "<br>" +" Plot : 8 ";
+            }
+            else if({{ matrix[3][7] }} == 4)
+            {
+              document.getElementById("demo8").innerHTML = "Minor Injury "+ "<br>" +" Plot : 8 ";
+            }
+            else if({{ matrix[3][7] }} == 5)
+            {
+              document.getElementById("demo8").innerHTML = "Major Injury "+ "<br>" +" Plot : 8 ";
+            }
+ 
+            </script>
+          </div>
+
+
+          <div id="10r" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="9c" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="10c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="11c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="12c" style="width:134px;height:2px;border:2px solid #000;"></div>
+          <div style="width:60px;height:2px;border:2px solid #000;background-color: #000;">
+            <img src="{{ aid_img }}" alt="Trulli" width="35" height="35" style="margin-left:40px;margin-top:-17px">
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; align-items: center">
+          
+          <div id="11r" style="width:2px;height:100px;border:2px solid #000;margin-left:305px"></div>
+          
+          <div class="tooltip" id="row9" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo9"></span>
+            <script>
+            if({{ matrix[5][1] }} == -5)
+            {
+              document.getElementById("demo9").innerHTML = "	Black: 9";
+            }
+            else if({{ matrix[5][1] }} == 3)
+            {
+              document.getElementById("demo9").innerHTML = "No Injury "+ "<br>" +" Plot : 9 ";
+            }
+            else if({{ matrix[5][1] }} == 4)
+            {
+              document.getElementById("demo9").innerHTML = "Minor Injury "+ "<br>" +" Plot : 9 ";
+            }
+            else if({{ matrix[5][1] }} == 5)
+            {
+              document.getElementById("demo9").innerHTML = "Major Injury "+ "<br>" +" Plot : 9 ";
+            }
+ 
+            </script>
+          </div>
+          
+          <div id="12r" style="width:2px;height:100px;border:2px solid #000;margin-left: 33px;"></div>
+          
+          <div class="tooltip" id="row10" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo10"></span>
+            <script>
+              if({{ matrix[5][3] }} == -5)
+            {
+              document.getElementById("demo10").innerHTML = "	Black: 10";
+            }
+            else if({{ matrix[5][3] }} == 3)
+            {
+              document.getElementById("demo10").innerHTML = "No Injury "+ "<br>" +" Plot : 10 ";
+            }
+            else if({{ matrix[5][3] }} == 4)
+            {
+              document.getElementById("demo10").innerHTML = "Minor Injury "+ "<br>" +" Plot : 10 ";
+            }
+            else if({{ matrix[5][3] }} == 5)
+            {
+              document.getElementById("demo10").innerHTML = "Major Injury "+ "<br>" +" Plot : 10 ";
+            }
+ 
+            </script>
+          </div>
+          
+          <div id="13r" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+          
+          <div class="tooltip" id="row11" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo11"></span>
+            <script>
+              if({{ matrix[5][5] }} == -5)
+            {
+              document.getElementById("demo11").innerHTML = "	Black: 11";
+            }
+            else if({{ matrix[5][5] }} == 3)
+            {
+              document.getElementById("demo11").innerHTML = "No Injury "+ "<br>" +" Plot : 11 ";
+            }
+            else if({{ matrix[5][5] }} == 4)
+            {
+              document.getElementById("demo11").innerHTML = "Minor Injury "+ "<br>" +" Plot : 11 ";
+            }
+            else if({{ matrix[5][5] }} == 5)
+            {
+              document.getElementById("demo11").innerHTML = "Major Injury "+ "<br>" +" Plot : 11 ";
+            }
+ 
+            </script>
+          </div>
+          
+          <div id="14r" style="width:2px;height:100px;border:2px solid #000;margin-left: 35px;"></div>
+          
+          <div class="tooltip" id="row12" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo12"></span>
+            <script>
+              if({{ matrix[5][7] }} == -5)
+            {
+              document.getElementById("demo12").innerHTML = "	Black: 12";
+            }
+            else if({{ matrix[5][7] }} == 3)
+            {
+              document.getElementById("demo12").innerHTML = "No Injury "+ "<br>" +" Plot : 12 ";
+            }
+            else if({{ matrix[5][7] }} == 4)
+            {
+              document.getElementById("demo12").innerHTML = "Minor Injury "+ "<br>" +" Plot : 12 ";
+            }
+            else if({{ matrix[5][7] }} == 5)
+            {
+              document.getElementById("demo12").innerHTML = "Major Injury "+ "<br>" +" Plot : 12 ";
+            }
+ 
+            </script>
+          </div>
+          
+          <div id="15r" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="13c" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="14c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="15c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="16c" style="width:134px;height:2px;border:2px solid #000;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; align-items: center">
+          
+          <div id="16r" style="width:2px;height:100px;border:2px solid #000;margin-left:305px"></div>
+          
+          <div class="tooltip" id="row13" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo13"></span>
+            <script>
+            if({{ matrix[7][1] }} == -5)
+            {
+              document.getElementById("demo13").innerHTML = "	Black: 13";
+            }
+            else if({{ matrix[7][1] }} == 3)
+            {
+              document.getElementById("demo13").innerHTML = "No Injury "+ "<br>" +" Plot : 13 ";
+            }
+            else if({{ matrix[7][1] }} == 4)
+            {
+              document.getElementById("demo13").innerHTML = "Minor Injury "+ "<br>" +" Plot : 13 ";
+            }
+            else if({{ matrix[7][1] }} == 5)
+            {
+              document.getElementById("demo13").innerHTML = "Major Injury "+ "<br>" +" Plot : 13 ";
+            }
+ 
+ 
+            </script>
+          </div>
+          
+          <div id="17r" style="width:2px;height:100px;border:2px solid #000;margin-left: 33px;"></div>
+          
+          <div class="tooltip" id="row14" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo14"></span>
+            <script>
+
+            if({{ matrix[7][3] }} == -5)
+            {
+              document.getElementById("demo14").innerHTML = "	Black: 14";
+            }
+            else if({{ matrix[7][3] }} == 3)
+            {
+              document.getElementById("demo14").innerHTML = "No Injury "+ "<br>" +" Plot : 14 ";
+            }
+            else if({{ matrix[7][3] }} == 4)
+            {
+              document.getElementById("demo14").innerHTML = "Minor Injury "+ "<br>" +" Plot : 14 ";
+            }
+            else if({{ matrix[7][3] }} == 5)
+            {
+              document.getElementById("demo14").innerHTML = "Major Injury "+ "<br>" +" Plot : 14 ";
+            }
+
+           </script>
+          </div>
+          
+          <div id="18r" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+          
+          <div class="tooltip" id="row15" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo15"></span>
+            <script>
+              if({{ matrix[7][5] }} == -5)
+            {
+              document.getElementById("demo15").innerHTML = "	Black: 15";
+            }
+            else if({{ matrix[7][5] }} == 3)
+            {
+              document.getElementById("demo15").innerHTML = "No Injury "+ "<br>" +" Plot : 15 ";
+            }
+            else if({{ matrix[7][5] }} == 4)
+            {
+              document.getElementById("demo15").innerHTML = "Minor Injury "+ "<br>" +" Plot : 15 ";
+            }
+            else if({{ matrix[7][5] }} == 5)
+            {
+              document.getElementById("demo15").innerHTML = "Major Injury "+ "<br>" +" Plot : 15 ";
+            }
+
+            </script>
+          </div>
+          
+          <div id="19r" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+          
+          <div class="tooltip" id="row16" style="width:55px;height:55px;border:2px solid #000;margin-left: 33px;">
+            <span class="tooltiptext" id = "demo16"></span>
+            <script>
+            if({{ matrix[7][7] }} == -5)
+            {
+              document.getElementById("demo16").innerHTML = "	Black: 16";
+            }
+            else if({{ matrix[7][7] }} == 3)
+            {
+              document.getElementById("demo16").innerHTML = "No Injury "+ "<br>" +" Plot : 16 ";
+            }
+            else if({{ matrix[7][7] }} == 4)
+            {
+              document.getElementById("demo16").innerHTML = "Minor Injury "+ "<br>" +" Plot : 16 ";
+            }
+            else if({{ matrix[7][7] }} == 5)
+            {
+              document.getElementById("demo16").innerHTML = "Major Injury "+ "<br>" +" Plot : 16 ";
+            }
+            </script>
+          </div>
+          
+          
+          <div id="20r" style="width:2px;height:100px;border:2px solid #000;margin-left: 37px;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="17c" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="18c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="19c" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="20c" style="width:134px;height:2px;border:2px solid #000;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <div style="width:0px;height:0px;border:0px solid #000;margin-left:191px">
+          <img src="{{ start_img }}" alt="Trulli" width="50" height="50" style="margin-bottom:-50px;">
+          </div>
+        </div>
+
+        <br> 
+        <script>
+          function myFunction() {
+            if( {{ matrix[1][1] }} == -5)
+            {
+            document.getElementById("row1").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][1] }} == 3)
+            {
+            document.getElementById("row1").style.backgroundColor = "white"
+            }
+            else if({{ matrix[1][1] }} == 4)
+            {
+            document.getElementById("row1").style.backgroundColor = "green"
+            }
+            else if({{ matrix[1][1] }} == 5)
+            {
+            document.getElementById("row1").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[1][3] }} == -5)
+            {
+            document.getElementById("row2").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][3] }} == 3)
+            {
+            document.getElementById("row2").style.backgroundColor = "white"
+            }
+            else if({{ matrix[1][3] }} == 4)
+            {
+            document.getElementById("row2").style.backgroundColor = "green"
+            }
+            else if({{ matrix[1][3] }} == 5)
+            {
+            document.getElementById("row2").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[1][5] }} == -5)
+            {
+            document.getElementById("row3").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][5] }} == 3)
+            {
+            document.getElementById("row3").style.backgroundColor = "white"
+            }
+            else if({{ matrix[1][5] }} == 4)
+            {
+            document.getElementById("row3").style.backgroundColor = "green"
+            }
+            else if({{ matrix[1][5] }} == 5)
+            {
+            document.getElementById("row3").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[1][7] }} == -5)
+            {
+            document.getElementById("row4").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][7] }} == 3)
+            {
+            document.getElementById("row4").style.backgroundColor = "white"
+            }
+            else if({{ matrix[1][7] }} == 4)
+            {
+            document.getElementById("row4").style.backgroundColor = "green"
+            }
+            else if({{ matrix[1][7] }} == 5)
+            {
+            document.getElementById("row4").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[3][1] }} == -5)
+            {
+            document.getElementById("row5").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][1] }} == 3)
+            {
+            document.getElementById("row5").style.backgroundColor = "white"
+            }
+            else if({{ matrix[3][1] }} == 4)
+            {
+            document.getElementById("row5").style.backgroundColor = "green"
+            }
+            else if({{ matrix[3][1] }} == 5)
+            {
+            document.getElementById("row5").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[3][3] }} == -5)
+            {
+            document.getElementById("row6").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][3] }} == 3)
+            {
+            document.getElementById("row6").style.backgroundColor = "white"
+            }
+            else if({{ matrix[3][3] }} == 4)
+            {
+            document.getElementById("row6").style.backgroundColor = "green"
+            }
+            else if({{ matrix[3][3] }} == 5)
+            {
+            document.getElementById("row6").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[3][5] }} == -5)
+            {
+            document.getElementById("row7").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][5] }} == 3)
+            {
+            document.getElementById("row7").style.backgroundColor = "white"
+            }
+            else if({{ matrix[3][5] }} == 4)
+            {
+            document.getElementById("row7").style.backgroundColor = "green"
+            }
+            else if({{ matrix[3][5] }} == 5)
+            {
+            document.getElementById("row7").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[3][7] }} == -5)
+            {
+            document.getElementById("row8").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][7] }} == 3)
+            {
+            document.getElementById("row8").style.backgroundColor = "white"
+            }
+            else if({{ matrix[3][7] }} == 4)
+            {
+            document.getElementById("row8").style.backgroundColor = "green"
+            }
+            else if({{ matrix[3][7] }} == 5)
+            {
+            document.getElementById("row8").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[5][1] }} == -5)
+            {
+            document.getElementById("row9").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][1] }} == 3)
+            {
+            document.getElementById("row9").style.backgroundColor = "white"
+            }
+            else if({{ matrix[5][1] }} == 4)
+            {
+            document.getElementById("row9").style.backgroundColor = "green"
+            }
+            else if({{ matrix[5][1] }} == 5)
+            {
+            document.getElementById("row9").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[5][3] }} == -5)
+            {
+            document.getElementById("row10").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][3] }} == 3)
+            {
+            document.getElementById("row10").style.backgroundColor = "white"
+            }
+            else if({{ matrix[5][3] }} == 4)
+            {
+            document.getElementById("row10").style.backgroundColor = "green"
+            }
+            else if({{ matrix[5][3] }} == 5)
+            {
+            document.getElementById("row10").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[5][5] }} == -5)
+            {
+            document.getElementById("row11").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][5] }} == 3)
+            {
+            document.getElementById("row11").style.backgroundColor = "white"
+            }
+            else if({{ matrix[5][5] }} == 4)
+            {
+            document.getElementById("row11").style.backgroundColor = "green"
+            }
+            else if({{ matrix[5][5] }} == 5)
+            {
+            document.getElementById("row11").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[5][7] }} == -5)
+            {
+            document.getElementById("row12").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][7] }} == 3)
+            {
+            document.getElementById("row12").style.backgroundColor = "white"
+            }
+            else if({{ matrix[5][7] }} == 4)
+            {
+            document.getElementById("row12").style.backgroundColor = "green"
+            }
+            else if({{ matrix[5][7] }} == 5)
+            {
+            document.getElementById("row12").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[7][1] }} == -5)
+            {
+            document.getElementById("row13").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][1] }} == 3)
+            {
+            document.getElementById("row13").style.backgroundColor = "white"
+            }
+            else if({{ matrix[7][1] }} == 4)
+            {
+            document.getElementById("row13").style.backgroundColor = "green"
+            }
+            else if({{ matrix[7][1] }} == 5)
+            {
+            document.getElementById("row13").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[7][3] }} == -5)
+            {
+            document.getElementById("row14").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][3] }} == 3)
+            {
+            document.getElementById("row14").style.backgroundColor = "white"
+            }
+            else if({{ matrix[7][3] }} == 4)
+            {
+            document.getElementById("row14").style.backgroundColor = "green"
+            }
+            else if({{ matrix[7][3] }} == 5)
+            {
+            document.getElementById("row14").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[7][5] }} == -5)
+            {
+            document.getElementById("row15").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][5] }} == 3)
+            {
+            document.getElementById("row15").style.backgroundColor = "white"
+            }
+            else if({{ matrix[7][5] }} == 4)
+            {
+            document.getElementById("row15").style.backgroundColor = "green"
+            }
+            else if({{ matrix[7][5] }} == 5)
+            {
+            document.getElementById("row15").style.backgroundColor = "red"
+            }
+
+            if({{ matrix[7][7] }} == -5)
+            {
+            document.getElementById("row16").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][7] }} == 3)
+            {
+            document.getElementById("row16").style.backgroundColor = "white"
+            }
+            else if({{ matrix[7][7] }} == 4)
+            {
+            document.getElementById("row16").style.backgroundColor = "green"
+            }
+            else if({{ matrix[7][7] }} == 5)
+            {
+            document.getElementById("row16").style.backgroundColor = "red"
+            }
+
+            //================ horizontal lines==========================================
+            if({{ matrix[0][1] }} == 1)
+            {
+            document.getElementById("1c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[0][1] }} == 0)
+            {
+            document.getElementById("1c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[0][3] }} == 1)
+            {
+            document.getElementById("2c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[0][3] }} == 0)
+            {
+            document.getElementById("2c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[0][5] }} == 1)
+            {
+            document.getElementById("3c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[0][5] }} == 0)
+            {
+            document.getElementById("3c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[0][7] }} == 1)
+            {
+            document.getElementById("4c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[0][7] }} == 0)
+            {
+            document.getElementById("4c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[2][1] }} == 1)
+            {
+            document.getElementById("5c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[2][1] }} == 0)
+            {
+            document.getElementById("5c").style.backgroundColor = "white"
+            }
+
+
+            if({{ matrix[2][3] }} == 1)
+            {
+            document.getElementById("6c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[2][3] }} == 0)
+            {
+            document.getElementById("6c").style.backgroundColor = "white"
+            }
+
+
+            if({{ matrix[2][5] }} == 1)
+            {
+            document.getElementById("7c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[2][5] }} == 0)
+            {
+            document.getElementById("7c").style.backgroundColor = "white"
+            }
+
+
+            if({{ matrix[2][7] }} == 1)
+            {
+            document.getElementById("8c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[2][7] }} == 0)
+            {
+            document.getElementById("8c").style.backgroundColor = "white"
+            }
+
+            
+            if({{ matrix[4][1] }} == 1)
+            {
+            document.getElementById("9c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[4][1] }} == 0)
+            {
+            document.getElementById("9c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[4][3] }} == 1)
+            {
+            document.getElementById("10c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[4][3] }} == 0)
+            {
+            document.getElementById("10c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[4][5] }} == 1)
+            {
+            document.getElementById("11c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[4][5] }} == 0)
+            {
+            document.getElementById("11c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[4][7] }} == 1)
+            {
+            document.getElementById("12c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[4][7] }} == 0)
+            {
+            document.getElementById("12c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[6][1] }} == 1)
+            {
+            document.getElementById("13c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[6][1] }} == 0)
+            {
+            document.getElementById("13c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[6][3] }} == 1)
+            {
+            document.getElementById("14c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[6][3] }} == 0)
+            {
+            document.getElementById("14c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[6][5] }} == 1)
+            {
+            document.getElementById("15c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[6][5] }} == 0)
+            {
+            document.getElementById("15c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[6][7] }} == 1)
+            {
+            document.getElementById("16c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[6][7] }} == 0)
+            {
+            document.getElementById("16c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[8][1] }} == 1)
+            {
+            document.getElementById("17c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[8][1] }} == 0)
+            {
+            document.getElementById("17c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[8][3] }} == 1)
+            {
+            document.getElementById("18c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[8][3] }} == 0)
+            {
+            document.getElementById("18c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[8][5] }} == 1)
+            {
+            document.getElementById("19c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[8][5] }} == 0)
+            {
+            document.getElementById("19c").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[8][7] }} == 1)
+            {
+            document.getElementById("20c").style.backgroundColor = "black"
+            }
+            else if({{ matrix[8][7] }} == 0)
+            {
+            document.getElementById("20c").style.backgroundColor = "white"
+            }
+            //================== Vertical lines========================================
+
+            if({{ matrix[1][0] }} == 1)
+            {
+            document.getElementById("1r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][0] }} == 0)
+            {
+            document.getElementById("1r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[1][2] }} == 1)
+            {
+            document.getElementById("2r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][2] }} == 0)
+            {
+            document.getElementById("2r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[1][4] }} == 1)
+            {
+            document.getElementById("3r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][4] }} == 0)
+            {
+            document.getElementById("3r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[1][6] }} == 1)
+            {
+            document.getElementById("4r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][6] }} == 0)
+            {
+            document.getElementById("4r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[1][8] }} == 1)
+            {
+            document.getElementById("5r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[1][8] }} == 0)
+            {
+            document.getElementById("5r").style.backgroundColor = "white"
+            }
+
+
+            if({{ matrix[3][0] }} == 1)
+            {
+            document.getElementById("6r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][0] }} == 0)
+            {
+            document.getElementById("6r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[3][2] }} == 1)
+            {
+            document.getElementById("7r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][2] }} == 0)
+            {
+            document.getElementById("7r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[3][4] }} == 1)
+            {
+            document.getElementById("8r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][4] }} == 0)
+            {
+            document.getElementById("8r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[3][6] }} == 1)
+            {
+            document.getElementById("9r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][6] }} == 0)
+            {
+            document.getElementById("9r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[3][8] }} == 1)
+            {
+            document.getElementById("10r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[3][8] }} == 0)
+            {
+            document.getElementById("10r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[5][0] }} == 1)
+            {
+            document.getElementById("11r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][0] }} == 0)
+            {
+            document.getElementById("11r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[5][2] }} == 1)
+            {
+            document.getElementById("12r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][2] }} == 0)
+            {
+            document.getElementById("12r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[5][4] }} == 1)
+            {
+            document.getElementById("13r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][4] }} == 0)
+            {
+            document.getElementById("13r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[5][6] }} == 1)
+            {
+            document.getElementById("14r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][6] }} == 0)
+            {
+            document.getElementById("14r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[5][8] }} == 1)
+            {
+            document.getElementById("15r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[5][8] }} == 0)
+            {
+            document.getElementById("15r").style.backgroundColor = "white"
+            }
+
+
+            if({{ matrix[7][0] }} == 1)
+            {
+            document.getElementById("16r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][0] }} == 0)
+            {
+            document.getElementById("16r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[7][2] }} == 1)
+            {
+            document.getElementById("17r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][2] }} == 0)
+            {
+            document.getElementById("17r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[7][4] }} == 1)
+            {
+            document.getElementById("18r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][4] }} == 0)
+            {
+            document.getElementById("18r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[7][6] }} == 1)
+            {
+            document.getElementById("19r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][6] }} == 0)
+            {
+            document.getElementById("19r").style.backgroundColor = "white"
+            }
+
+            if({{ matrix[7][8] }} == 1)
+            {
+            document.getElementById("20r").style.backgroundColor = "black"
+            }
+            else if({{ matrix[7][8] }} == 0)
+            {
+            document.getElementById("20r").style.backgroundColor = "white"
+            }          
+          }
+          myFunction()
+      </script>
+
+    </div>
+
+    <div class="top-right" style="margin-right: 50px;margin-top: 20px;">
+        
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="1cr" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="2cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="3cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="4cr" style="width:134px;height:2px;border:2px solid #000;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; align-items: center">
+          
+          <div id="1rr" style="width:2px;height:100px;border:2px solid #000;margin-left:305px;margin-top: 0px;"></div>
+
+          <div class="tooltip" id="row1r" style="width:55px;height:55px;border:2px solid #000;margin-left: 32px;margin-top: 0px;">
+            <span class="tooltiptext" id = "demo1r"></span>
+           <script>
+           if({{ matrixr[1][1] }} == -5)
+            {
+              document.getElementById("demo1r").innerHTML = "Plot : 1 ";
+            }
+            else if({{ matrixr[1][1] }} == 3)
+            {
+              document.getElementById("demo1r").innerHTML = "No Injury "+ "<br>" +" Plot : 1 ";
+            }
+            else if({{ matrixr[1][1] }} == 4)
+            {
+              document.getElementById("demo1r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 1 ";
+            }
+            else if({{ matrixr[1][1] }} == 5)
+            {
+              document.getElementById("demo1r").innerHTML = "Major Injury "+ "<br>" +" Plot : 1 ";
+            }
+
+           </script>
+          </div>
+          
+          <div id="2rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 36px;margin-top: 0px;"></div>
+
+
+          <div class="tooltip" id="row2r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;margin-top: 0px;">
+            <span class="tooltiptext" id = "demo2r"></span>
+           <script>
+            if({{ matrixr[1][3] }} == -5)
+            {
+              document.getElementById("demo2r").innerHTML = "Plot : 2 ";
+            }
+            else if({{ matrixr[1][3] }} == 3)
+            {
+              document.getElementById("demo2r").innerHTML = "No Injury "+ "<br>" +" Plot : 2 ";
+            }
+            else if({{ matrixr[1][3] }} == 4)
+            {
+              document.getElementById("demo2r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 2 ";
+            }
+            else if({{ matrixr[1][3] }} == 5)
+            {
+              document.getElementById("demo2r").innerHTML = "Major Injury "+ "<br>" +" Plot : 2 ";
+            }
+
+           </script>
+          </div>
+
+
+          <div id="3rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;margin-top: 0px;"></div>
+
+
+          <div class="tooltip" id="row3r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;margin-top: 0px;">
+            <span class="tooltiptext" id = "demo3r"></span>
+           <script>
+            if({{ matrixr[1][5] }} == -5)
+            {
+              document.getElementById("demo3r").innerHTML = "	Black: 3";
+            }
+            else if({{ matrixr[1][5] }} == 3)
+            {
+              document.getElementById("demo3r").innerHTML = "No Injury "+ "<br>" +" Plot : 3 ";
+            }
+            else if({{ matrixr[1][5] }} == 4)
+            {
+              document.getElementById("demo3r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 3 ";
+            }
+            else if({{ matrixr[1][5] }} == 5)
+            {
+              document.getElementById("demo3r").innerHTML = "Major Injury "+ "<br>" +" Plot : 3 ";
+            }
+
+           </script>
+          </div>
+
+
+          <div id="4rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 35px;margin-top: 0px;"></div>
+
+
+          <div class="tooltip" id="row4r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;margin-top: 0px;">
+            <span class="tooltiptext" id = "demo4r"></span>
+           <script>
+            if({{ matrixr[1][7] }} == -5)
+            {
+              document.getElementById("demo4r").innerHTML = "	Black: 4";
+            }
+            else if({{ matrixr[1][7] }} == 3)
+            {
+              document.getElementById("demo4r").innerHTML = "No Injury "+ "<br>" +" Plot : 4 ";
+            }
+            else if({{ matrixr[1][7] }} == 4)
+            {
+              document.getElementById("demo4r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 4 ";
+            }
+            else if({{ matrixr[1][7] }} == 5)
+            {
+              document.getElementById("demo4r").innerHTML = "Major Injury "+ "<br>" +" Plot : 4 ";
+            }
+
+           </script>
+          </div>
+
+
+          <div id="5rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;margin-top: 0px;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="5cr" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="6cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="7cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="8cr" style="width:134px;height:2px;border:2px solid #000;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; align-items: center">
+          <div id="6rr" style="width:2px;height:100px;border:2px solid #000;margin-left:305px"></div>
+
+
+          <div class="tooltip" id="row5r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo5r"></span>
+            <script>
+             if({{ matrixr[3][1] }} == -5)
+            {
+              document.getElementById("demo5r").innerHTML = "	Black: 5";
+            }
+            else if({{ matrixr[3][1] }} == 3)
+            {
+              document.getElementById("demo5r").innerHTML = "No Injury "+ "<br>" +" Plot : 5 ";
+            }
+            else if({{ matrixr[3][1] }} == 4)
+            {
+              document.getElementById("demo5r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 5 ";
+            }
+            else if({{ matrixr[3][1] }} == 5)
+            {
+              document.getElementById("demo5r").innerHTML = "Major Injury "+ "<br>" +" Plot : 5 ";
+            }
+ 
+            </script>
+          </div>
+
+
+          <div id="7rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 33px;"></div>
+
+
+          <div class="tooltip" id="row6r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo6r"></span>
+            <script>
+              if({{ matrixr[3][3] }} == -5)
+            {
+              document.getElementById("demo6r").innerHTML = "	Black: 6";
+            }
+            else if({{ matrixr[3][3] }} == 3)
+            {
+              document.getElementById("demo6r").innerHTML = "No Injury "+ "<br>" +" Plot : 6 ";
+            }
+            else if({{ matrixr[3][3] }} == 4)
+            {
+              document.getElementById("demo6r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 6 ";
+            }
+            else if({{ matrixr[3][3] }} == 5)
+            {
+              document.getElementById("demo6r").innerHTML = "Major Injury "+ "<br>" +" Plot : 6 ";
+            }
+ 
+            </script>
+          </div>
+
+
+          <div id="8rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+
+
+          <div class="tooltip" id="row7r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo7r"></span>
+            <script>
+              if({{ matrixr[3][5] }} == -5)
+            {
+              document.getElementById("demo7r").innerHTML = "	Black: 7";
+            }
+            else if({{ matrixr[3][5] }} == 3)
+            {
+              document.getElementById("demo7r").innerHTML = "No Injury "+ "<br>" +" Plot : 7 ";
+            }
+            else if({{ matrixr[3][5] }} == 4)
+            {
+              document.getElementById("demo7r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 7 ";
+            }
+            else if({{ matrixr[3][5] }} == 5)
+            {
+              document.getElementById("demo7r").innerHTML = "Major Injury "+ "<br>" +" Plot : 7 ";
+            }
+ 
+            </script>
+          </div>
+
+
+          <div id="9rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 35px;"></div>
+
+
+          <div class="tooltip" id="row8r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo8r"></span>
+            <script>
+              if({{ matrixr[3][7] }} == -5)
+            {
+              document.getElementById("demo8r").innerHTML = "	Black: 8";
+            }
+            else if({{ matrixr[3][7] }} == 3)
+            {
+              document.getElementById("demo8r").innerHTML = "No Injury "+ "<br>" +" Plot : 8 ";
+            }
+            else if({{ matrixr[3][7] }} == 4)
+            {
+              document.getElementById("demo8r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 8 ";
+            }
+            else if({{ matrixr[3][7] }} == 5)
+            {
+              document.getElementById("demo8r").innerHTML = "Major Injury "+ "<br>" +" Plot : 8 ";
+            }
+ 
+            </script>
+          </div>
+
+
+          <div id="10rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="9cr" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="10cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="11cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="12cr" style="width:134px;height:2px;border:2px solid #000;"></div>
+          <div style="width:60px;height:2px;border:2px solid #000;background-color: #000;">
+            <img src="{{ aid_img }}" alt="Trulli" width="35" height="35" style="margin-left:40px;margin-top:-17px">
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; align-items: center">
+          
+          <div id="11rr" style="width:2px;height:100px;border:2px solid #000;margin-left:305px"></div>
+          
+          <div class="tooltip" id="row9r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo9r"></span>
+            <script>
+            if({{ matrixr[5][1] }} == -5)
+            {
+              document.getElementById("demo9r").innerHTML = "	Black: 9";
+            }
+            else if({{ matrixr[5][1] }} == 3)
+            {
+              document.getElementById("demo9r").innerHTML = "No Injury "+ "<br>" +" Plot : 9 ";
+            }
+            else if({{ matrixr[5][1] }} == 4)
+            {
+              document.getElementById("demo9r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 9 ";
+            }
+            else if({{ matrixr[5][1] }} == 5)
+            {
+              document.getElementById("demo9r").innerHTML = "Major Injury "+ "<br>" +" Plot : 9 ";
+            }
+ 
+            </script>
+          </div>
+          
+          <div id="12rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 33px;"></div>
+          
+          <div class="tooltip" id="row10r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo10r"></span>
+            <script>
+              if({{ matrixr[5][3] }} == -5)
+            {
+              document.getElementById("demo10r").innerHTML = "	Black: 10";
+            }
+            else if({{ matrixr[5][3] }} == 3)
+            {
+              document.getElementById("demo10r").innerHTML = "No Injury "+ "<br>" +" Plot : 10 ";
+            }
+            else if({{ matrixr[5][3] }} == 4)
+            {
+              document.getElementById("demo10r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 10 ";
+            }
+            else if({{ matrixr[5][3] }} == 5)
+            {
+              document.getElementById("demo10r").innerHTML = "Major Injury "+ "<br>" +" Plot : 10 ";
+            }
+ 
+            </script>
+          </div>
+          
+          <div id="13rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+          
+          <div class="tooltip" id="row11r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo11r"></span>
+            <script>
+              if({{ matrixr[5][5] }} == -5)
+            {
+              document.getElementById("demo11r").innerHTML = "	Black: 11";
+            }
+            else if({{ matrixr[5][5] }} == 3)
+            {
+              document.getElementById("demo11r").innerHTML = "No Injury "+ "<br>" +" Plot : 11 ";
+            }
+            else if({{ matrixr[5][5] }} == 4)
+            {
+              document.getElementById("demo11r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 11 ";
+            }
+            else if({{ matrixr[5][5] }} == 5)
+            {
+              document.getElementById("demo11r").innerHTML = "Major Injury "+ "<br>" +" Plot : 11 ";
+            }
+ 
+            </script>
+          </div>
+          
+          <div id="14rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 35px;"></div>
+          
+          <div class="tooltip" id="row12r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo12r"></span>
+            <script>
+              if({{ matrixr[5][7] }} == -5)
+            {
+              document.getElementById("demo12r").innerHTML = "	Black: 12";
+            }
+            else if({{ matrixr[5][7] }} == 3)
+            {
+              document.getElementById("demo12r").innerHTML = "No Injury "+ "<br>" +" Plot : 12 ";
+            }
+            else if({{ matrixr[5][7] }} == 4)
+            {
+              document.getElementById("demo12r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 12 ";
+            }
+            else if({{ matrixr[5][7] }} == 5)
+            {
+              document.getElementById("demo12r").innerHTML = "Major Injury "+ "<br>" +" Plot : 12 ";
+            }
+ 
+            </script>
+          </div>
+          
+          <div id="15rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="13cr" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="14cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="15cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="16cr" style="width:134px;height:2px;border:2px solid #000;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; align-items: center">
+          
+          <div id="16rr" style="width:2px;height:100px;border:2px solid #000;margin-left:305px"></div>
+          
+          <div class="tooltip" id="row13r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo13r"></span>
+            <script>
+            if({{ matrixr[7][1] }} == -5)
+            {
+              document.getElementById("demo13r").innerHTML = "	Black: 13";
+            }
+            else if({{ matrixr[7][1] }} == 3)
+            {
+              document.getElementById("demo13r").innerHTML = "No Injury "+ "<br>" +" Plot : 13 ";
+            }
+            else if({{ matrixr[7][1] }} == 4)
+            {
+              document.getElementById("demo13r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 13 ";
+            }
+            else if({{ matrixr[7][1] }} == 5)
+            {
+              document.getElementById("demo13r").innerHTML = "Major Injury "+ "<br>" +" Plot : 13 ";
+            }
+ 
+ 
+            </script>
+          </div>
+          
+          <div id="17rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 33px;"></div>
+          
+          <div class="tooltip" id="row14r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo14r"></span>
+            <script>
+
+            if({{ matrixr[7][3] }} == -5)
+            {
+              document.getElementById("demo14r").innerHTML = "	Black: 14";
+            }
+            else if({{ matrixr[7][3] }} == 3)
+            {
+              document.getElementById("demo14r").innerHTML = "No Injury "+ "<br>" +" Plot : 14 ";
+            }
+            else if({{ matrixr[7][3] }} == 4)
+            {
+              document.getElementById("demo14r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 14 ";
+            }
+            else if({{ matrixr[7][3] }} == 5)
+            {
+              document.getElementById("demo14r").innerHTML = "Major Injury "+ "<br>" +" Plot : 14 ";
+            }
+
+           </script>
+          </div>
+          
+          <div id="18rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+          
+          <div class="tooltip" id="row15r" style="width:55px;height:55px;border:2px solid #000;margin-left: 35px;">
+            <span class="tooltiptext" id = "demo15r"></span>
+            <script>
+              if({{ matrixr[7][5] }} == -5)
+            {
+              document.getElementById("demo15r").innerHTML = "	Black: 15";
+            }
+            else if({{ matrixr[7][5] }} == 3)
+            {
+              document.getElementById("demo15r").innerHTML = "No Injury "+ "<br>" +" Plot : 15 ";
+            }
+            else if({{ matrixr[7][5] }} == 4)
+            {
+              document.getElementById("demo15r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 15 ";
+            }
+            else if({{ matrixr[7][5] }} == 5)
+            {
+              document.getElementById("demo15r").innerHTML = "Major Injury "+ "<br>" +" Plot : 15 ";
+            }
+
+            </script>
+          </div>
+          
+          <div id="19rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 34px;"></div>
+          
+          <div class="tooltip" id="row16r" style="width:55px;height:55px;border:2px solid #000;margin-left: 33px;">
+            <span class="tooltiptext" id = "demo16r"></span>
+            <script>
+            if({{ matrixr[7][7] }} == -5)
+            {
+              document.getElementById("demo16r").innerHTML = "	Black: 16";
+            }
+            else if({{ matrixr[7][7] }} == 3)
+            {
+              document.getElementById("demo16r").innerHTML = "No Injury "+ "<br>" +" Plot : 16 ";
+            }
+            else if({{ matrixr[7][7] }} == 4)
+            {
+              document.getElementById("demo16r").innerHTML = "Minor Injury "+ "<br>" +" Plot : 16 ";
+            }
+            else if({{ matrixr[7][7] }} == 5)
+            {
+              document.getElementById("demo16r").innerHTML = "Major Injury "+ "<br>" +" Plot : 16 ";
+            }
+            </script>
+          </div>
+          
+          
+          <div id="20rr" style="width:2px;height:100px;border:2px solid #000;margin-left: 37px;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row;align-items: center">
+          <div id="17cr" style="width:132px;height:2px;border:2px solid #000;margin-left:305px"></div>
+          <div id="18cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="19cr" style="width:130px;height:2px;border:2px solid #000;"></div>
+          <div id="20cr" style="width:134px;height:2px;border:2px solid #000;"></div>
+        </div>
+
+        <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <div style="width:0px;height:0px;border:0px solid #000;margin-left:191px">
+          <img src="{{ start_img }}" alt="Trulli" width="50" height="50" style="margin-bottom:-50px;">
+          </div>
+        </div>
+
+        <br> 
+        <script>
+          function myFunctionr() {
+            if( {{ matrixr[1][1] }} == -5)
+            {
+            document.getElementById("row1r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[1][1] }} == 3)
+            {
+            document.getElementById("row1r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][1] }} == 4)
+            {
+            document.getElementById("row1r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[1][1] }} == 5)
+            {
+            document.getElementById("row1r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[1][3] }} == -5)
+            {
+            document.getElementById("row2r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[1][3] }} == 3)
+            {
+            document.getElementById("row2r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][3] }} == 4)
+            {
+            document.getElementById("row2r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[1][3] }} == 5)
+            {
+            document.getElementById("row2r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[1][5] }} == -5)
+            {
+            document.getElementById("row3r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[1][5] }} == 3)
+            {
+            document.getElementById("row3r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][5] }} == 4)
+            {
+            document.getElementById("row3r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[1][5] }} == 5)
+            {
+            document.getElementById("row3r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[1][7] }} == -5)
+            {
+            document.getElementById("row4r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[1][7] }} == 3)
+            {
+            document.getElementById("row4r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][7] }} == 4)
+            {
+            document.getElementById("row4r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[1][7] }} == 5)
+            {
+            document.getElementById("row4r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[3][1] }} == -5)
+            {
+            document.getElementById("row5r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[3][1] }} == 3)
+            {
+            document.getElementById("row5r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][1] }} == 4)
+            {
+            document.getElementById("row5r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[3][1] }} == 5)
+            {
+            document.getElementById("row5r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[3][3] }} == -5)
+            {
+            document.getElementById("row6r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[3][3] }} == 3)
+            {
+            document.getElementById("row6r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][3] }} == 4)
+            {
+            document.getElementById("row6r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[3][3] }} == 5)
+            {
+            document.getElementById("row6r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[3][5] }} == -5)
+            {
+            document.getElementById("row7r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[3][5] }} == 3)
+            {
+            document.getElementById("row7r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][5] }} == 4)
+            {
+            document.getElementById("row7r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[3][5] }} == 5)
+            {
+            document.getElementById("row7r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[3][7] }} == -5)
+            {
+            document.getElementById("row8r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[3][7] }} == 3)
+            {
+            document.getElementById("row8r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][7] }} == 4)
+            {
+            document.getElementById("row8r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[3][7] }} == 5)
+            {
+            document.getElementById("row8r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[5][1] }} == -5)
+            {
+            document.getElementById("row9r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[5][1] }} == 3)
+            {
+            document.getElementById("row9r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][1] }} == 4)
+            {
+            document.getElementById("row9r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[5][1] }} == 5)
+            {
+            document.getElementById("row9r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[5][3] }} == -5)
+            {
+            document.getElementById("row10r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[5][3] }} == 3)
+            {
+            document.getElementById("row10r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][3] }} == 4)
+            {
+            document.getElementById("row10r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[5][3] }} == 5)
+            {
+            document.getElementById("row10r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[5][5] }} == -5)
+            {
+            document.getElementById("row11r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[5][5] }} == 3)
+            {
+            document.getElementById("row11r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][5] }} == 4)
+            {
+            document.getElementById("row11r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[5][5] }} == 5)
+            {
+            document.getElementById("row11r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[5][7] }} == -5)
+            {
+            document.getElementById("row12r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[5][7] }} == 3)
+            {
+            document.getElementById("row12r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][7] }} == 4)
+            {
+            document.getElementById("row12r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[5][7] }} == 5)
+            {
+            document.getElementById("row12r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[7][1] }} == -5)
+            {
+            document.getElementById("row13r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[7][1] }} == 3)
+            {
+            document.getElementById("row13r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][1] }} == 4)
+            {
+            document.getElementById("row13r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[7][1] }} == 5)
+            {
+            document.getElementById("row13r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[7][3] }} == -5)
+            {
+            document.getElementById("row14r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[7][3] }} == 3)
+            {
+            document.getElementById("row14r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][3] }} == 4)
+            {
+            document.getElementById("row14r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[7][3] }} == 5)
+            {
+            document.getElementById("row14r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[7][5] }} == -5)
+            {
+            document.getElementById("row15r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[7][5] }} == 3)
+            {
+            document.getElementById("row15r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][5] }} == 4)
+            {
+            document.getElementById("row15r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[7][5] }} == 5)
+            {
+            document.getElementById("row15r").style.backgroundColor = "red"
+            }
+
+            if({{ matrixr[7][7] }} == -5)
+            {
+            document.getElementById("row16r").style.backgroundColor = "pink"
+            }
+            else if({{ matrixr[7][7] }} == 3)
+            {
+            document.getElementById("row16r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][7] }} == 4)
+            {
+            document.getElementById("row16r").style.backgroundColor = "green"
+            }
+            else if({{ matrixr[7][7] }} == 5)
+            {
+            document.getElementById("row16r").style.backgroundColor = "red"
+            }
+
+            //================ horizontal lines==========================================
+            if({{ matrixr[0][1] }} == 1)
+            {
+            document.getElementById("1cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[0][1] }} == 0)
+            {
+            document.getElementById("1cr").style.backgroundColor = "white"
+            document.getElementById("p01r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[0][1] }} == -1)
+            {
+            document.getElementById("1cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[0][3] }} == 1)
+            {
+            document.getElementById("2cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[0][3] }} == 0)
+            {
+            document.getElementById("2cr").style.backgroundColor = "white"
+            document.getElementById("p03r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[0][3] }} == -1)
+            {
+            document.getElementById("2cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[0][5] }} == 1)
+            {
+            document.getElementById("3cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[0][5] }} == 0)
+            {
+            document.getElementById("3cr").style.backgroundColor = "white"
+            document.getElementById("p05r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[0][5] }} == -1)
+            {
+            document.getElementById("3cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[0][7] }} == 1)
+            {
+            document.getElementById("4cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[0][7] }} == 0)
+            {
+            document.getElementById("4cr").style.backgroundColor = "white"
+            document.getElementById("p07r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[0][7] }} == -1)
+            {
+            document.getElementById("4cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[2][1] }} == 1)
+            {
+            document.getElementById("5cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[2][1] }} == 0)
+            {
+            document.getElementById("5cr").style.backgroundColor = "white"
+            document.getElementById("p21r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[2][1] }} == -1)
+            {
+            document.getElementById("5cr").style.backgroundColor = "yellow"
+            }
+
+
+            if({{ matrixr[2][3] }} == 1)
+            {
+            document.getElementById("6cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[2][3] }} == 0)
+            {
+            document.getElementById("6cr").style.backgroundColor = "white"
+            document.getElementById("p23r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[2][3] }} == -1)
+            {
+            document.getElementById("6cr").style.backgroundColor = "yellow"
+            }
+
+
+            if({{ matrixr[2][5] }} == 1)
+            {
+            document.getElementById("7cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[2][5] }} == 0)
+            {
+            document.getElementById("7cr").style.backgroundColor = "white"
+            document.getElementById("p25r").style.backgroundColor = "white"
+            
+            }
+            else if({{ matrixr[2][5] }} == -1)
+            {
+            document.getElementById("7cr").style.backgroundColor = "yellow"
+            }
+
+
+            if({{ matrixr[2][7] }} == 1)
+            {
+            document.getElementById("8cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[2][7] }} == 0)
+            {
+            document.getElementById("8cr").style.backgroundColor = "white"
+            document.getElementById("p27r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[2][7] }} == -1)
+            {
+            document.getElementById("8cr").style.backgroundColor = "yellow"
+            }
+
+            
+            if({{ matrixr[4][1] }} == 1)
+            {
+            document.getElementById("9cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[4][1] }} == 0)
+            {
+            document.getElementById("9cr").style.backgroundColor = "white"
+            document.getElementById("p41r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[4][1] }} == -1)
+            {
+            document.getElementById("9cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[4][3] }} == 1)
+            {
+            document.getElementById("10cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[4][3] }} == 0)
+            {
+            document.getElementById("10cr").style.backgroundColor = "white"
+            document.getElementById("p43r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[4][3] }} == -1)
+            {
+            document.getElementById("10cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[4][5] }} == 1)
+            {
+            document.getElementById("11cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[4][5] }} == 0)
+            {
+            document.getElementById("11cr").style.backgroundColor = "white"
+            document.getElementById("p45r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[4][5] }} == -1)
+            {
+            document.getElementById("11cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[4][7] }} == 1)
+            {
+            document.getElementById("12cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[4][7] }} == 0)
+            {
+            document.getElementById("12cr").style.backgroundColor = "white"
+            document.getElementById("p47r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[4][7] }} == -1)
+            {
+            document.getElementById("12cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[6][1] }} == 1)
+            {
+            document.getElementById("13cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[6][1] }} == 0)
+            {
+            document.getElementById("13cr").style.backgroundColor = "white"
+            document.getElementById("p61r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[6][1] }} == -1)
+            {
+            document.getElementById("13cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[6][3] }} == 1)
+            {
+            document.getElementById("14cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[6][3] }} == 0)
+            {
+            document.getElementById("14cr").style.backgroundColor = "white"
+            document.getElementById("p63r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[6][3] }} == -1)
+            {
+            document.getElementById("14cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[6][5] }} == 1)
+            {
+            document.getElementById("15cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[6][5] }} == 0)
+            {
+            document.getElementById("15cr").style.backgroundColor = "white"
+            document.getElementById("p65r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[6][5] }} == -1)
+            {
+            document.getElementById("15cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[6][7] }} == 1)
+            {
+            document.getElementById("16cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[6][7] }} == 0)
+            {
+            document.getElementById("16cr").style.backgroundColor = "white"
+            document.getElementById("p67r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[6][7] }} == -1)
+            {
+            document.getElementById("16cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[8][1] }} == 1)
+            {
+            document.getElementById("17cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[8][1] }} == 0)
+            {
+            document.getElementById("17cr").style.backgroundColor = "white"
+            document.getElementById("p81r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[8][1] }} == -1)
+            {
+            document.getElementById("17cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[8][3] }} == 1)
+            {
+            document.getElementById("18cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[8][3] }} == 0)
+            {
+            document.getElementById("18cr").style.backgroundColor = "white"
+            document.getElementById("p83r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[8][3] }} == -1)
+            {
+            document.getElementById("18cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[8][5] }} == 1)
+            {
+            document.getElementById("19cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[8][5] }} == 0)
+            {
+            document.getElementById("19cr").style.backgroundColor = "white"
+            document.getElementById("p85r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[8][5] }} == -1)
+            {
+            document.getElementById("19cr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[8][7] }} == 1)
+            {
+            document.getElementById("20cr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[8][7] }} == 0)
+            {
+            document.getElementById("20cr").style.backgroundColor = "white"
+            document.getElementById("p87r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[8][7] }} == -1)
+            {
+            document.getElementById("20cr").style.backgroundColor = "yellow"
+            }
+            //================== Vertical lines========================================
+
+            if({{ matrixr[1][0] }} == 1)
+            {
+            document.getElementById("1rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[1][0] }} == 0)
+            {
+            document.getElementById("1rr").style.backgroundColor = "white"
+            document.getElementById("p10r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][0] }} == -1)
+            {
+            document.getElementById("1rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[1][2] }} == 1)
+            {
+            document.getElementById("2rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[1][2] }} == 0)
+            {
+            document.getElementById("2rr").style.backgroundColor = "white"
+            document.getElementById("p12r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][2] }} == -1)
+            {
+            document.getElementById("2rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[1][4] }} == 1)
+            {
+            document.getElementById("3rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[1][4] }} == 0)
+            {
+            document.getElementById("3rr").style.backgroundColor = "white"
+            document.getElementById("p14r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][4] }} == -1)
+            {
+            document.getElementById("3rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[1][6] }} == 1)
+            {
+            document.getElementById("4rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[1][6] }} == 0)
+            {
+            document.getElementById("4rr").style.backgroundColor = "white"
+            document.getElementById("p16r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][6] }} == -1)
+            {
+            document.getElementById("4rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[1][8] }} == 1)
+            {
+            document.getElementById("5rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[1][8] }} == 0)
+            {
+            document.getElementById("5rr").style.backgroundColor = "white"
+            document.getElementById("p18r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[1][8] }} == -1)
+            {
+            document.getElementById("5rr").style.backgroundColor = "yellow"
+            }
+
+
+            if({{ matrixr[3][0] }} == 1)
+            {
+            document.getElementById("6rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[3][0] }} == 0)
+            {
+            document.getElementById("6rr").style.backgroundColor = "white"
+            document.getElementById("p30r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][0] }} == -1)
+            {
+            document.getElementById("6rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[3][2] }} == 1)
+            {
+            document.getElementById("7rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[3][2] }} == 0)
+            {
+            document.getElementById("7rr").style.backgroundColor = "white"
+            document.getElementById("p32r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][2] }} == -1)
+            {
+            document.getElementById("7rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[3][4] }} == 1)
+            {
+            document.getElementById("8rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[3][4] }} == 0)
+            {
+            document.getElementById("8rr").style.backgroundColor = "white"
+            document.getElementById("p34r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][4] }} == -1)
+            {
+            document.getElementById("8rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[3][6] }} == 1)
+            {
+            document.getElementById("9rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[3][6] }} == 0)
+            {
+            document.getElementById("9rr").style.backgroundColor = "white"
+            document.getElementById("p36r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][6] }} == -1)
+            {
+            document.getElementById("9rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[3][8] }} == 1)
+            {
+            document.getElementById("10rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[3][8] }} == 0)
+            {
+            document.getElementById("10rr").style.backgroundColor = "white"
+            document.getElementById("p38r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[3][8] }} == -1)
+            {
+            document.getElementById("10rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[5][0] }} == 1)
+            {
+            document.getElementById("11rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[5][0] }} == 0)
+            {
+            document.getElementById("11rr").style.backgroundColor = "white"
+            document.getElementById("p50r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][0] }} == -1)
+            {
+            document.getElementById("11rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[5][2] }} == 1)
+            {
+            document.getElementById("12rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[5][2] }} == 0)
+            {
+            document.getElementById("12rr").style.backgroundColor = "white"
+            document.getElementById("p52r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][2] }} == -1)
+            {
+            document.getElementById("12rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[5][4] }} == 1)
+            {
+            document.getElementById("13rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[5][4] }} == 0)
+            {
+            document.getElementById("13rr").style.backgroundColor = "white"
+            document.getElementById("p54r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][4] }} == -1)
+            {
+            document.getElementById("13rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[5][6] }} == 1)
+            {
+            document.getElementById("14rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[5][6] }} == 0)
+            {
+            document.getElementById("14rr").style.backgroundColor = "white"
+            document.getElementById("p56r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][6] }} == -1)
+            {
+            document.getElementById("14rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[5][8] }} == 1)
+            {
+            document.getElementById("15rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[5][8] }} == 0)
+            {
+            document.getElementById("15rr").style.backgroundColor = "white"
+            document.getElementById("p58r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[5][8] }} == -1)
+            {
+            document.getElementById("15rr").style.backgroundColor = "yellow"
+            }
+
+
+            if({{ matrixr[7][0] }} == 1)
+            {
+            document.getElementById("16rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[7][0] }} == 0)
+            {
+            document.getElementById("16rr").style.backgroundColor = "white"
+            document.getElementById("p70r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][0] }} == -1)
+            {
+            document.getElementById("16rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[7][2] }} == 1)
+            {
+            document.getElementById("17rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[7][2] }} == 0)
+            {
+            document.getElementById("17rr").style.backgroundColor = "white"
+            document.getElementById("p72r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][2] }} == -1)
+            {
+            document.getElementById("17rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[7][4] }} == 1)
+            {
+            document.getElementById("18rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[7][4] }} == 0)
+            {
+            document.getElementById("18rr").style.backgroundColor = "white"
+            document.getElementById("p74r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][4] }} == -1)
+            {
+            document.getElementById("18rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[7][6] }} == 1)
+            {
+            document.getElementById("19rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[7][6] }} == 0)
+            {
+            document.getElementById("19rr").style.backgroundColor = "white"
+            document.getElementById("p76r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][6] }} == -1)
+            {
+            document.getElementById("19rr").style.backgroundColor = "yellow"
+            }
+
+            if({{ matrixr[7][8] }} == 1)
+            {
+            document.getElementById("20rr").style.backgroundColor = "black"
+            }
+            else if({{ matrixr[7][8] }} == 0)
+            {
+            document.getElementById("20rr").style.backgroundColor = "white"
+            document.getElementById("p78r").style.backgroundColor = "white"
+            }
+            else if({{ matrixr[7][8] }} == -1)
+            {
+            document.getElementById("20rr").style.backgroundColor = "yellow"
+            }                    
+          }
+          myFunctionr()
+      </script>
+
+    </div>
+
+    
+
+  </body>
+</html> 

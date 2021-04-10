@@ -48,12 +48,13 @@ void callback(char *topic, byte *message, unsigned int length)
   Serial.print(topic);
   Serial.print(". Message: ");
   char recdJsonStr[100];
-
-  for (int i = 0; i < length; i++)
+  int i;
+  for (i = 0; i < length; i++)
   {
     Serial.print((char)message[i]);
     recdJsonStr[i] = (char)message[i];
   }
+  recdJsonStr[i]='\0';
   Serial.printf("\nRecevied JSON String: %s\n", recdJsonStr);
   StaticJsonDocument<100> doc;
   

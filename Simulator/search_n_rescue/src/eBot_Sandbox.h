@@ -8,21 +8,18 @@
 #ifndef EBOT_SANDBOX_H_
 #define EBOT_SANDBOX_H_
 
-
 //---------------------------------- INCLUDES ----------------------------------
 
 #ifdef NON_MATLAB_PARSING
-	#include "eBot_Sim_Predef.h"
+#include "eBot_Sim_Predef.h"
 #else
 	extern "C" {
 		#include "eBot_MCU_Predef.h"
 	}
 #endif
 
-
 //---------------------------------- FUNCTIONS ----------------------------------
 
 void traverse(void);
-
 
 #endif /* EBOT_SANDBOX_H_ */
