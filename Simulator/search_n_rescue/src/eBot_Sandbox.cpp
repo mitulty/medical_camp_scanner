@@ -824,7 +824,7 @@ void dijkstra(int G[25][25], int n, int startnode, int v)
     }
 }
 
-void move_robot(tuple n_loc)
+void move_robot()
 {
 	forward_wls(1);
 	check_plot_scan_status();
