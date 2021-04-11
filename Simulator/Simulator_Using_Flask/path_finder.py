@@ -200,15 +200,15 @@ def check_midpoint(a):
     global curr_loc
     global dir_flag
     plotcoord = plot_coord_matrix[a][4]
+    print("Plot Coordinate: ",plotcoord)
     midpoint1_x = curr_loc[0]
     midpoint1_y = plotcoord[1]
     dir_mp1 = get_direction(curr_loc, (midpoint1_x, midpoint1_y), dir_flag)
-    #print("Midpoint 1: ",(midpoint1_x,midpoint1_y),dir_mp1)
+    print("Midpoint 1: ",(midpoint1_x,midpoint1_y),dir_mp1)
     midpoint2_x = plotcoord[0]
     midpoint2_y = curr_loc[1]
     dir_mp2 = get_direction(curr_loc, (midpoint2_x, midpoint2_y), dir_flag)
-    #print("Midpoint 2: ",(midpoint2_x,midpoint2_y),dir_mp2)
-    
+    print("Midpoint 2: ",(midpoint2_x,midpoint2_y),dir_mp2)
     if(dir_flag == dir_mp1):
         mid_point_reachable((midpoint1_x, midpoint1_y))
         time.sleep(2)
@@ -357,7 +357,7 @@ time.sleep(2)
 while(plot_no < 16):
     plot_scan = plot_order[plot_no] - 1
     plot_coord = plot_coord_matrix[plot_scan][4]
-    #print("Scanning(No:", plot_no, ")Plot: ", plot_scan, plot_coord)
+    print("Scanning(No:", plot_no, ")Plot: ", plot_scan, plot_coord)
     if(grid_matrix[plot_coord[1]][plot_coord[0]] == -5):
         while(True):
             if(status == 0):
