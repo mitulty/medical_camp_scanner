@@ -28,14 +28,13 @@ void setup(void);
 void wls_readings_print_lcd(void);
 void check_plot_scan_status();
 void allign_at_node(void);
-void receive_uart_data(void);
 void uturn(void);
 void wls_loc_orient_print_lcd(void);
 int check_path_for_debris(void);
 int final_mid_point(int);
 void send_data_uart_b(int, int, int, int);
 void send_data_uart_a(int, int, int);
-void traverse(int, tuple);
+void traverse(tuple);
 void move_robot(void);
 void turn_accordingly(tuple);
 void turn_towards_mid_point(char);
@@ -55,7 +54,7 @@ int main(int argc, char *argv[])
 	//---------------------------------------------Setup Zone-----------------------------------------------
 
 	setup();
-	//forward_wls(1);
+	forward_wls(1);
 	curr_loc.x = 4;
 	curr_loc.y = 8;
 	dir_flag = 'n';
@@ -64,12 +63,7 @@ int main(int argc, char *argv[])
 	int plot_scan = -1;
 	send_data_uart_a(2, 4, 8);
 	tuple dest_loc, plot_coordinate;
-	//wls_loc_orient_print_lcd();
-	while (1)
-	{
-		receive_uart_data();
-		_delay_ms(2000);
-	}
+	wls_loc_orient_print_lcd();
 	//---------------------------------------------Test Zone-----------------------------------------------
 	//forward_wls(8);
 	//while (1);
@@ -134,9 +128,9 @@ int main(int argc, char *argv[])
 				lcd_wr_char(2, 3, ',');
 				lcd_numeric_value(2, 5, dest_loc.y, 1);
 				lcd_wr_char(2, 6, ')');
-				_delay_ms(2000);
+				_delay_ms(1000);
 
-				traverse(plot_scan, dest_loc);
+				traverse(dest_loc);
 
 				lcd_clear();
 				lcd_string(1, 1, "Corner Node");
@@ -145,16 +139,16 @@ int main(int argc, char *argv[])
 				buzzer_off();
 
 				if (grid_matrix[plot_coord.y][plot_coord.x] != -5)
-					{
-						status = 0;
-						plot_no++;
-						break;
-					}
+				{
+					status = 0;
+					plot_no++;
+					break;
+				}
 				status = final_mid_point(plot_scan);
 				lcd_clear();
 				lcd_string(1, 1, "Status Returned");
 				lcd_numeric_value(2, 2, status, 2);
-				_delay_ms(2000);
+				_delay_ms(500);
 				if (status == 1)
 				{
 					plot_no++;
@@ -183,6 +177,7 @@ int main(int argc, char *argv[])
 			status = 0;
 		}
 	}
+	traverse(goal_loc);
 	return 1;
 }
 void move_robot()
@@ -197,7 +192,7 @@ void move_robot()
 	send_data_uart_a(2, curr_loc.x, curr_loc.y);
 	_delay_ms(100);
 	wls_loc_orient_print_lcd();
-	_delay_ms(1000);
+	_delay_ms(500);
 }
 
 void turn_accordingly(tuple n_loc)
@@ -258,56 +253,68 @@ int check_path_for_debris(void)
 {
 	lcd_clear();
 	lcd_string(1, 2, "Checking Debris");
-	_delay_ms(1000);
+	_delay_ms(500);
 	left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 	center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 	right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
 	wls_readings_print_lcd();
-	if (left_wl_sensor_data < THRESHOLD_WLS || center_wl_sensor_data < THRESHOLD_WLS || right_wl_sensor_data < THRESHOLD_WLS)
+	if (left_wl_sensor_data > THRESHOLD_WLS || center_wl_sensor_data > THRESHOLD_WLS || right_wl_sensor_data > THRESHOLD_WLS)
 		return 1;
 
 	float ReqdShaftCount = 0;
 	unsigned long int ReqdShaftCountInt = 0;
 
-	ReqdShaftCount = 40 / distance_resolution; // division by resolution to get shaft count
-	ReqdShaftCountInt = (unsigned long int)ReqdShaftCount;
+	ReqdShaftCount = 30 / angle_resolution; // division by resolution to get shaft count
+	ReqdShaftCountInt = (float)(unsigned long int)ReqdShaftCount;
 
-	velocity(50, 50);
 	left();
+	velocity(150, 150);
+	// _delay_ms(500);
+	// right();
+	// _delay_ms(1000);
+	// left();
+	// _delay_ms(500);
 	ShaftCountRight = 0;
 	ShaftCountLeft = 0;
-	while ((ShaftCountRight >= ReqdShaftCountInt) || (ShaftCountLeft >= ReqdShaftCountInt))
+	while ((ShaftCountRight <= ReqdShaftCountInt) && (ShaftCountLeft <= ReqdShaftCountInt))
 	{
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
+		if (left_wl_sensor_data > THRESHOLD_WLS || center_wl_sensor_data > THRESHOLD_WLS || right_wl_sensor_data > THRESHOLD_WLS)
 		{
 			stop();
 			velocity(0, 0);
 			return 1;
 		}
 	}
-	while ((ShaftCountRight >= 2 * ReqdShaftCountInt) || (ShaftCountLeft >= 2 * ReqdShaftCountInt))
+	ShaftCountRight = 0;
+	ShaftCountLeft = 0;
+	while ((ShaftCountRight <= 2 * ReqdShaftCountInt) && (ShaftCountLeft <= 2 * ReqdShaftCountInt))
 	{
 		right();
+		velocity(200, 200);
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
+
+		if (left_wl_sensor_data > THRESHOLD_WLS || center_wl_sensor_data > THRESHOLD_WLS || right_wl_sensor_data > THRESHOLD_WLS)
 		{
 			stop();
 			velocity(0, 0);
 			return 1;
 		}
 	}
-	while ((ShaftCountRight >= ReqdShaftCountInt) || (ShaftCountLeft >= ReqdShaftCountInt))
+	ShaftCountRight = 0;
+	ShaftCountLeft = 0;
+	while ((ShaftCountRight <= ReqdShaftCountInt) && (ShaftCountLeft <= ReqdShaftCountInt))
 	{
 		left();
+		velocity(200, 200);
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-		if (left_wl_sensor_data < THRESHOLD_WLS && center_wl_sensor_data < THRESHOLD_WLS && right_wl_sensor_data < THRESHOLD_WLS)
+		if (left_wl_sensor_data > THRESHOLD_WLS || center_wl_sensor_data > THRESHOLD_WLS || right_wl_sensor_data > THRESHOLD_WLS)
 		{
 			stop();
 			velocity(0, 0);
@@ -332,7 +339,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y][curr_loc.x + 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x + 1, curr_loc.y);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y][curr_loc.x + 1]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -342,7 +349,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y][curr_loc.x + 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x + 1, curr_loc.y);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y][curr_loc.x + 1]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -359,7 +366,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y][curr_loc.x - 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x - 1, curr_loc.y);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y][curr_loc.x - 1]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -369,7 +376,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y][curr_loc.x - 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x - 1, curr_loc.y);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y][curr_loc.x - 1]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -386,7 +393,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y + 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y + 1);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y + 1][curr_loc.x]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -396,7 +403,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y + 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y + 1);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y + 1][curr_loc.x]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -413,7 +420,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y - 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y - 1);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y - 1][curr_loc.x]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -423,7 +430,7 @@ void check_plot_scan_status()
 				_delay_ms(100);
 				grid_matrix[curr_loc.y - 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y - 1);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y - 1][curr_loc.x]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -440,7 +447,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y - 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y - 1);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y - 1][curr_loc.x]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -450,7 +457,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y - 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y - 1);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y - 1][curr_loc.x]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -459,22 +466,22 @@ void check_plot_scan_status()
 		{
 			if (dir_flag == 'w')
 			{
-				right_degrees(90);
+				left_degrees(90);
 				_delay_ms(10);
 				grid_matrix[curr_loc.y + 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y + 1);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
-				left_degrees(90);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+				right_degrees(90);
 				_delay_ms(100);
 			}
 			else
 			{
-				left_degrees(90);
+				right_degrees(90);
 				_delay_ms(10);
 				grid_matrix[curr_loc.y + 1][curr_loc.x] = color_type();
 				plot = get_plot_from_coord(curr_loc.x, curr_loc.y + 1);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y + 1][curr_loc.x]);
-				right_degrees(90);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+				left_degrees(90);
 				_delay_ms(100);
 			}
 		}
@@ -491,7 +498,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y][curr_loc.x - 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x - 1, curr_loc.y);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y][curr_loc.x - 1]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -501,7 +508,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y][curr_loc.x - 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x - 1, curr_loc.y);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y][curr_loc.x - 1]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -514,7 +521,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y][curr_loc.x + 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x + 1, curr_loc.y);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y][curr_loc.x + 1]);
 				left_degrees(90);
 				_delay_ms(100);
 			}
@@ -524,7 +531,7 @@ void check_plot_scan_status()
 				_delay_ms(10);
 				grid_matrix[curr_loc.y][curr_loc.x + 1] = color_type();
 				plot = get_plot_from_coord(curr_loc.x + 1, curr_loc.y);
-				send_data_uart_a(1, plot, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+				send_data_uart_a(1, plot + 1, grid_matrix[curr_loc.y][curr_loc.x + 1]);
 				right_degrees(90);
 				_delay_ms(100);
 			}
@@ -633,6 +640,16 @@ void setup(void)
 	_delay_ms(500);
 	goal_loc.x = 8;
 	goal_loc.y = 4;
+	int c = 0;
+	send_data_uart_a(-1, -1, -1);
+	lcd_string(1, 2, "Send 's' to topic");
+	lcd_string(2, 2, "data_recv to start");
+	while (1)
+	{
+		c = dequeue();
+		if (c == 's')
+			break;
+	}
 }
 
 void wls_readings_print_lcd(void)
@@ -641,18 +658,17 @@ void wls_readings_print_lcd(void)
 	lcd_clear();
 	lcd_string(1, 2, "Left Sensor");
 	lcd_numeric_value(2, 5, left_wl_sensor_data, 3);
-	_delay_ms(1000);
+	_delay_ms(500);
 	center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 	lcd_clear();
 	lcd_string(1, 2, "Center Sensor");
 	lcd_numeric_value(2, 5, center_wl_sensor_data, 3);
-	_delay_ms(1000);
+	_delay_ms(500);
 	right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
 	lcd_clear();
 	lcd_string(1, 2, "Right Sensor");
 	lcd_numeric_value(2, 5, right_wl_sensor_data, 3);
-	_delay_ms(1000);
-	lcd_clear();
+	_delay_ms(500);
 }
 
 void wls_loc_orient_print_lcd(void)
@@ -665,7 +681,7 @@ void wls_loc_orient_print_lcd(void)
 	lcd_numeric_value(2, 5, curr_loc.y, 1);
 	lcd_wr_char(2, 6, ')');
 	lcd_wr_char(2, 9, dir_flag);
-	_delay_ms(2000);
+	_delay_ms(500);
 }
 
 void send_data_uart_a(int x, int y, int z)
@@ -682,31 +698,19 @@ void send_data_uart_b(int a, int x, int y, int z)
 	uart3_puts(uart_data_Tx);
 }
 
-void receive_uart_data(void)
-{
-	rx_byte = uart3_readByte();
-	int order = rx_byte - 96;
-	lcd_clear();
-	lcd_wr_char(2, 2, rx_byte);
-	lcd_numeric_value(2, 5, order, 2);
-	if (order <= 17 && order >= 0)
-	{
-		buzzer_on();
-		_delay_ms(1000);
-		send_data_uart_a(1, 4, 3);
-		buzzer_off();
-		_delay_ms(500);
-	}
-	uart3_flush();
-}
-
 void left_turn_wls_degress(int degrees)
 {
 	velocity(200, 200);
-	forward_mm(60);
-	left_degrees(50);
+	forward_mm(40);
+	left_degrees(60);
 	float ReqdShaftCount = 0;
 	unsigned long int ReqdShaftCountInt = 0;
+	ReqdShaftCount = (float)(degrees - 50) / angle_resolution; // division by resolution to get shaft count
+	ReqdShaftCountInt = (unsigned long int)ReqdShaftCount;
+
+	ShaftCountRight = 0;
+	ShaftCountLeft = 0;
+
 	while (1)
 	{
 		// get the ADC converted data of center white line sensors from their appropriate channel number
@@ -714,11 +718,6 @@ void left_turn_wls_degress(int degrees)
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-		ReqdShaftCount = (degrees - 20) / distance_resolution; // division by resolution to get shaft count
-		ReqdShaftCountInt = (unsigned long int)ReqdShaftCount;
-
-		ShaftCountRight = 0;
-		ShaftCountLeft = 0;
 
 		if ((center_wl_sensor_data > THRESHOLD_WLS) || (right_wl_sensor_data > THRESHOLD_WLS) || (ShaftCountRight >= ReqdShaftCountInt) || (ShaftCountLeft >= ReqdShaftCountInt))
 		{
@@ -745,10 +744,15 @@ void left_turn_wls_degress(int degrees)
 void right_turn_wls_degress(int degrees)
 {
 	velocity(200, 200);
-	forward_mm(60);
-	right_degrees(50);
+	forward_mm(40);
+	right_degrees(60);
 	float ReqdShaftCount = 0;
 	unsigned long int ReqdShaftCountInt = 0;
+	ReqdShaftCount = (float)(degrees - 50) / angle_resolution; // division by resolution to get shaft count
+	ReqdShaftCountInt = (unsigned long int)ReqdShaftCount;
+
+	ShaftCountRight = 0;
+	ShaftCountLeft = 0;
 	while (1)
 	{
 		// get the ADC converted data of center white line sensors from their appropriate channel number
@@ -756,11 +760,6 @@ void right_turn_wls_degress(int degrees)
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-		ReqdShaftCount = (degrees - 20) / distance_resolution; // division by resolution to get shaft count
-		ReqdShaftCountInt = (unsigned long int)ReqdShaftCount;
-
-		ShaftCountRight = 0;
-		ShaftCountLeft = 0;
 
 		if ((center_wl_sensor_data > THRESHOLD_WLS) || (left_wl_sensor_data > THRESHOLD_WLS) || (ShaftCountRight >= ReqdShaftCountInt) || (ShaftCountLeft >= ReqdShaftCountInt))
 
@@ -799,7 +798,7 @@ void uturn(void)
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
-		ReqdShaftCount = (50) / distance_resolution; // division by resolution to get shaft count
+		ReqdShaftCount = (30) / angle_resolution; // division by resolution to get shaft count
 		ReqdShaftCountInt = (unsigned long int)ReqdShaftCount;
 
 		ShaftCountRight = 0;
@@ -860,58 +859,50 @@ int final_mid_point(int plot_no)
 	else if ((curr_loc.y == mid_point_2.y) && ((mid_point_2.x - curr_loc.x) == 1))
 		dir_2 = 'e';
 
-	lcd_clear();
-	lcd_string(1, 2, "Mid-Point 1");
-	lcd_wr_char(2, 1, '(');
-	lcd_numeric_value(2, 2, mid_point_1.x, 1);
-	lcd_wr_char(2, 3, ',');
-	lcd_numeric_value(2, 5, mid_point_1.y, 1);
-	lcd_wr_char(2, 6, ')');
-	lcd_wr_char(2, 9, dir_1);
-	_delay_ms(2500);
+	// lcd_clear();
+	// lcd_string(1, 2, "Mid-Point 1");
+	// lcd_wr_char(2, 1, '(');
+	// lcd_numeric_value(2, 2, mid_point_1.x, 1);
+	// lcd_wr_char(2, 3, ',');
+	// lcd_numeric_value(2, 5, mid_point_1.y, 1);
+	// lcd_wr_char(2, 6, ')');
+	// lcd_wr_char(2, 9, dir_1);
+	// _delay_ms(500);
 
-	lcd_clear();
-	lcd_string(1, 2, "Mid-Point 2");
-	lcd_wr_char(2, 1, '(');
-	lcd_numeric_value(2, 2, mid_point_2.x, 1);
-	lcd_wr_char(2, 3, ',');
-	lcd_numeric_value(2, 5, mid_point_2.y, 1);
-	lcd_wr_char(2, 6, ')');
-	lcd_wr_char(2, 9, dir_2);
-	_delay_ms(2500);
-	if(dir_flag == dir_1)
+	// lcd_clear();
+	// lcd_string(1, 2, "Mid-Point 2");
+	// lcd_wr_char(2, 1, '(');
+	// lcd_numeric_value(2, 2, mid_point_2.x, 1);
+	// lcd_wr_char(2, 3, ',');
+	// lcd_numeric_value(2, 5, mid_point_2.y, 1);
+	// lcd_wr_char(2, 6, ')');
+	// lcd_wr_char(2, 9, dir_2);
+	// _delay_ms(500);
+	if (dir_flag == dir_1)
 	{
 		if (grid_matrix[mid_point_1.y][mid_point_1.x] == -1)
+		{
 			grid_matrix[mid_point_1.y][mid_point_1.x] = check_path_for_debris();
+			send_data_uart_b(4, mid_point_1.x, mid_point_1.y, grid_matrix[mid_point_1.y][mid_point_1.x]);
+			update_adjacency_matrix();
+		}
 		if (grid_matrix[mid_point_1.y][mid_point_1.x] == 1)
 		{
-			forward_wls(1);
-			send_data_uart_a(2, curr_loc.x, curr_loc.y);
-			_delay_ms(100);
-			check_plot_scan_status();
-			forward_wls(1);
-			send_data_uart_a(2, curr_loc.x, curr_loc.y);
-			_delay_ms(100);
-			wls_loc_orient_print_lcd();
-			_delay_ms(1000);
+			move_robot();
 			return 1;
 		}
 	}
-	else if(dir_flag == dir_2)
+	else if (dir_flag == dir_2)
 	{
 		if (grid_matrix[mid_point_2.y][mid_point_2.x] == -1)
+		{
 			grid_matrix[mid_point_2.y][mid_point_2.x] = check_path_for_debris();
+			send_data_uart_b(4, mid_point_2.x, mid_point_2.y, grid_matrix[mid_point_2.y][mid_point_2.x]);
+			update_adjacency_matrix();
+		}
 		if (grid_matrix[mid_point_2.y][mid_point_2.x] == 1)
 		{
-			forward_wls(1);
-			send_data_uart_a(2, curr_loc.x, curr_loc.y);
-			_delay_ms(100);
-			check_plot_scan_status();
-			forward_wls(1);
-			send_data_uart_a(2, curr_loc.x, curr_loc.y);
-			_delay_ms(100);
-			wls_loc_orient_print_lcd();
-			_delay_ms(1000);
+			move_robot();
 			return 1;
 		}
 	}
@@ -919,18 +910,14 @@ int final_mid_point(int plot_no)
 	{
 		turn_towards_mid_point(dir_1);
 		if (grid_matrix[mid_point_1.y][mid_point_1.x] == -1)
+		{
 			grid_matrix[mid_point_1.y][mid_point_1.x] = check_path_for_debris();
+			send_data_uart_b(4, mid_point_1.x, mid_point_1.y, grid_matrix[mid_point_1.y][mid_point_1.x]);
+			update_adjacency_matrix();
+		}
 		if (grid_matrix[mid_point_1.y][mid_point_1.x] == 1)
 		{
-			forward_wls(1);
-			send_data_uart_a(2, curr_loc.x, curr_loc.y);
-			_delay_ms(100);
-			check_plot_scan_status();
-			forward_wls(1);
-			send_data_uart_a(2, curr_loc.x, curr_loc.y);
-			_delay_ms(100);
-			wls_loc_orient_print_lcd();
-			_delay_ms(1000);
+			move_robot();
 			return 1;
 		}
 	}
@@ -938,18 +925,14 @@ int final_mid_point(int plot_no)
 	{
 		turn_towards_mid_point(dir_2);
 		if (grid_matrix[mid_point_2.y][mid_point_2.x] == -1)
+		{
 			grid_matrix[mid_point_2.y][mid_point_2.x] = check_path_for_debris();
+			send_data_uart_b(4, mid_point_2.x, mid_point_2.y, grid_matrix[mid_point_2.y][mid_point_2.x]);
+			update_adjacency_matrix();
+		}
 		if (grid_matrix[mid_point_2.y][mid_point_2.x] == 1)
 		{
-			forward_wls(1);
-			send_data_uart_a(2, curr_loc.x, curr_loc.y);
-			_delay_ms(100);
-			check_plot_scan_status();
-			forward_wls(1);
-			send_data_uart_a(2, curr_loc.x, curr_loc.y);
-			_delay_ms(100);
-			wls_loc_orient_print_lcd();
-			_delay_ms(1000);
+			move_robot();
 			return 1;
 		}
 	}
@@ -999,18 +982,18 @@ void turn_towards_mid_point(char dir)
 	}
 }
 
-void traverse(int plot, tuple destination_location)
+void traverse(tuple destination_location)
 {
 	tuple next_loc;
 	int d_node, s_node, node;
 	d_node = get_node_from_coord(destination_location);
-	lcd_clear();
-	lcd_string(1, 1, "Scanning Algo..");
-	_delay_ms(1000);
+	// lcd_clear();
+	// lcd_string(1, 1, "Scanning Algo..");
+	// _delay_ms(1000);
 	lcd_clear();
 	lcd_string(1, 1, "Destination Node");
 	lcd_numeric_value(2, 1, d_node, 2);
-	_delay_ms(1000);
+	_delay_ms(2000);
 	while (!((destination_location.x == curr_loc.x) && (destination_location.y == curr_loc.y)))
 	{
 		s_node = get_node_from_coord(curr_loc);
@@ -1057,10 +1040,11 @@ void traverse(int plot, tuple destination_location)
 				}
 				if (grid_matrix[curr_loc.y][curr_loc.x + 1] == 1)
 				{
-					move_robot(next_loc);
+					move_robot();
 				}
 				else
 				{
+					top = -1;
 					break;
 				}
 			}
@@ -1074,10 +1058,11 @@ void traverse(int plot, tuple destination_location)
 				}
 				if (grid_matrix[curr_loc.y][curr_loc.x - 1] == 1)
 				{
-					move_robot(next_loc);
+					move_robot();
 				}
 				else
 				{
+					top = -1;
 					break;
 				}
 			}
@@ -1092,10 +1077,11 @@ void traverse(int plot, tuple destination_location)
 				}
 				if (grid_matrix[curr_loc.y + 1][curr_loc.x] == 1)
 				{
-					move_robot(next_loc);
+					move_robot();
 				}
 				else
 				{
+					top = -1;
 					break;
 				}
 			}
@@ -1109,10 +1095,11 @@ void traverse(int plot, tuple destination_location)
 				}
 				if (grid_matrix[curr_loc.y - 1][curr_loc.x] == 1)
 				{
-					move_robot(next_loc);
+					move_robot();
 				}
 				else
 				{
+					top = -1;
 					break;
 				}
 			}

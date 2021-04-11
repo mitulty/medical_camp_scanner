@@ -150,13 +150,13 @@ int color_type(void)
 	green_read();
 	_delay_ms(200);
 	blue_read();
-	if (red > COLOR_THRESHOLD && blue < COLOR_THRESHOLD && green < COLOR_THRESHOLD) // Red
+	if (red > 1200 && blue < 1200 && green < 1200) // Red
 		return 5;
-	if (red < COLOR_THRESHOLD && blue < COLOR_THRESHOLD && green > COLOR_THRESHOLD) // Green
-		return 3;
-	if (red > COLOR_THRESHOLD && blue > COLOR_THRESHOLD && green > COLOR_THRESHOLD)// White
+	if (red > 1200 && blue > 1200 && green > 1200)// White
 		return 2;
-	return -1; // Some other color
+	// if (red < 1000 && blue < 1000 && green > 1000) // Green
+	// 	return 3;
+	return 3; // Some other color
 }
 /*
 * Sample Main Code

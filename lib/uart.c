@@ -1299,6 +1299,9 @@ Purpose:  called when the UART3 has received a character
 		UART3_RxBuf[tmphead] = data;
 	}
 	UART3_LastRxError = lastRxError;
+	// Added to store the received value in a queue
+	char rx = uart3_readByte();
+	enqueue(rx);
 }
 
 

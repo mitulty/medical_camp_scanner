@@ -35,7 +35,7 @@ def on_message(client, userdata, message):
 	if pos == 3 or pos == 4:
 		deb_val = int(temp[3])
 
-	if pos == 1:
+	if pos == 1: # Plot Color
 		if plot == 1:
 			arr_2d[1][1] = color
 		elif plot ==2:
@@ -43,7 +43,7 @@ def on_message(client, userdata, message):
 		elif plot ==3:
 			arr_2d[1][5] = color
 		elif plot ==4:
-			arr_2d[3][7] = color
+			arr_2d[1][7] = color
 		elif plot ==5:
 			arr_2d[3][1] = color
 		elif plot ==6:
@@ -69,15 +69,15 @@ def on_message(client, userdata, message):
 		elif plot == 16:
 			arr_2d[7][7] = color
 	
-	if pos == 3:
+	if pos == 3: # RPC Response
 		plot_value["Plot_Val"]=plot
 		color_value["Color_Val"]=color
 
-	if pos == 2:
+	if pos == 2: # Robot Location
 		thisdict["m"] = color
 		thisdict["n"] = plot
 
-	if pos == 4:
+	if pos == 4:# Debris
 		arr_2d[color][plot] = deb_val
 
 
@@ -101,4 +101,4 @@ def home():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

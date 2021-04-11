@@ -11,6 +11,7 @@ AIM: To send data from UART#0 of ATMega 2560 to ESP32
 #include <util/delay.h>			// Standard AVR Delay Library
 #include <avr/interrupt.h>		// Standard AVR Interrupt Library
 #include "uart.h"				// Third Party UART Library
+#include "lcd.h"
 #define MESSAGE	"Initialised Tx from ATmega 2560> Hello ESP32!\n" // Message to be sent on UART #0
 
 
@@ -69,8 +70,62 @@ char uart3_readByte(void)
 void setup_uart(void) 
 {
 	init_timer2();
-
+	front = -1;
+	rear = -1;
+	init_queue(); // RPC Queue is intialised to 0
 	uart3_init(UART_BAUD_SELECT(115200, F_CPUL));
 	uart3_flush();
 	//uart3_puts(MESSAGE);
+}
+
+
+void init_queue()
+{
+	for(int i =0;i<20;i++)
+		queue[i] = 0;
+}
+void enqueue(char item)
+{
+	if (rear == 19)
+	{
+		// printf("Can't enqueue as the queue is full\n");
+		return;
+	}
+	else
+	{
+		//The first element condition
+		if (front == -1)
+		{
+			front = 0;
+		}
+		rear = rear + 1;
+		queue[rear] = item;
+		//printf("We have enqueued %d\n",item);
+		return;
+	}
+}
+
+char dequeue(void)
+{
+	char c = 0;
+	if (front == -1)
+	{
+		//printf("Can't dequeue as the queue is empty\n");
+		return 'z';
+	}
+	else
+	{
+		// printf("We have dequeued : %d\n", queue[front]);
+		c = queue[front];
+		queue[front] = 0;
+		front = front + 1;
+
+		//Only happens when the last element was dequeued
+		if (front > rear)
+		{
+			front = -1;
+			rear = -1;
+		}
+		return c;
+	}
 }

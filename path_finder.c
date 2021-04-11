@@ -136,7 +136,7 @@ int get_node_from_coord(tuple coord)
 int get_plot_from_coord(int x, int y)
 {
     for (int i = 0; i < 16; i++)
-        if ((x == plot_coord_matrix[i][5].x) && (y == plot_coord_matrix[i][5].y))
+        if ((x == plot_coord_matrix[i][4].x) && (y == plot_coord_matrix[i][4].y))
             return i;
     return -1;
 }
@@ -223,7 +223,6 @@ int pop()
     }
 }
 
-
 /*
 void print_stack_content(void)
 {
@@ -253,7 +252,7 @@ void print_plot_coord_matrix(void)
 
 void print_ind_plot_coord_arr(int plot)
 {
-    printf("\nFor plot %d:", plot + 1);
+    printf("\nFor plot %d:", plot);
     for (int j = 0; j < 4; j++)
         printf(" (%d,%d) ", plot_coord_matrix[plot][j].x, plot_coord_matrix[plot][j].y);
     printf("\n");
@@ -316,16 +315,25 @@ int main(int argc, char *argv[])
     print_adjacency_matrix();
     print_node_coord_matrix();
     print_stack_content();
-    printf("\n-------------------------------------------------------------------------------------------------------------------------------\n");
-    dijkstra(adjacency_matrix, 25, 0, 23);
+    dijkstra(adjacency_matrix, 25, 6, 0);
     print_stack_content();
-    grid_matrix[0][1]= 0;
+    printf("\n-------------------------------------------------------------------------------------------------------------------------------\n");
+    dijkstra(adjacency_matrix, 25, 22, 22);
+    print_stack_content();
+    grid_matrix[7][4]= 1;
     update_adjacency_matrix();
-    print_grid_matrix();
-    print_adjacency_matrix();
-    dijkstra(adjacency_matrix, 25, 0, 23);
+    printf("\n-------------------------------------------------------------------------------------------------------------------------------\n");
+    dijkstra(adjacency_matrix, 25, 17, 16);
+    print_stack_content();
+    grid_matrix[6][3] = 1;
+    grid_matrix[6][1] = 0;
+    grid_matrix[7][2] = 0;
+    update_adjacency_matrix();
+    printf("\n-------------------------------------------------------------------------------------------------------------------------------\n");
+    dijkstra(adjacency_matrix, 25, 16, 20);
     print_stack_content();
     printf("\n-------------------------------------------------------------------------------------------------------------------------------\n");
+    
     return 1;
 }
 */
