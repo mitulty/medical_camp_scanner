@@ -70,8 +70,6 @@ char uart3_readByte(void)
 void setup_uart(void) 
 {
 	init_timer2();
-	front = -1;
-	rear = -1;
 	init_queue(); // RPC Queue is intialised to 0
 	uart3_init(UART_BAUD_SELECT(115200, F_CPUL));
 	uart3_flush();
@@ -82,7 +80,9 @@ void setup_uart(void)
 void init_queue()
 {
 	for(int i =0;i<20;i++)
-		queue[i] = 0;
+		queue[i] = 'z';
+	front = -1;
+	rear = -1;
 }
 void enqueue(char item)
 {
