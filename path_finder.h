@@ -57,6 +57,10 @@ void update_adjacency_matrix(void);
 void dijkstra(int G[25][25], int , int , int );
 
 
+// Fetches nearest block of a particular type injury
+int fetch_nearest_plot(int);
+
+
 // void print_ind_plot_coord_arr(int);
 // void print_plot_coord_matrix(void);
 // void print_node_coord_matrix(void);

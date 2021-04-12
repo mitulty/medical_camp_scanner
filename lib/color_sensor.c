@@ -153,10 +153,10 @@ int color_type(void)
 	if (red > 1200 && blue < 1200 && green < 1200) // Red
 		return 5;
 	if (red > 1200 && blue > 1200 && green > 1200)// White
-		return 2;
+		return 3;
 	// if (red < 1000 && blue < 1000 && green > 1000) // Green
 	// 	return 3;
-	return 3; // Some other color
+	return 4; // Some other color
 }
 /*
 * Sample Main Code

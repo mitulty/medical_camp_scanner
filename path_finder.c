@@ -125,6 +125,29 @@ tuple get_nearest_coordinate(tuple cloc, int plot)
     return node;
 }
 
+int fetch_nearest_plot(int color_type)
+{
+	int x_dis, y_dis,plot_no;
+	float d, max = 100.0;
+	int node;
+	for (int plot = 0; plot < 16; plot++)
+	{
+		if(grid_matrix[plot_coord_matrix[plot][4].y][plot_coord_matrix[plot][4].x] != color_type)
+			continue;
+		for (int i = 0; i < 4; i++)
+		{
+			x_dis = pow((curr_loc.x - plot_coord_matrix[plot][i].x), 2);
+			y_dis = pow((curr_loc.y - plot_coord_matrix[plot][i].y), 2);
+			d = sqrt(x_dis + y_dis);
+			if (d < max)
+			{
+				max = d;
+				plot_no = plot;
+			}
+		}
+	}
+	return plot_no;
+}
 int get_node_from_coord(tuple coord)
 {
     for (int i = 0; i < 25; i++)

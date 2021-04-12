@@ -8,7 +8,7 @@ def coap_send(payload):
     client = HelperClient(server=(host,port))
     token = "QoUDGL9Ky2x72LCV6FIe"
     path = f"api/v1/{token}/telemetry"
-    print("Sending to thingsboard")
+    print("Sending to thingsboard ",payload)
     response = client.post(path,payload=str(payload))
     print ("response.code",response.code)
     client.stop ()

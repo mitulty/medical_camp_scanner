@@ -34,12 +34,13 @@ def on_message(client, userdata, msg):
         fner_data['type'] = req['params']['type']
         if(req['params']['type'] == 'majorInjury'):
             order = 17 + 96
+        elif(req['params']['type'] == 'minorInjury'):
+            oredr = 18 + 96
         else:
-            order = 18 + 96
+            order = 19 + 96
         fner_data['timeTaken'] = 0
         with open('data.json', 'r') as outfile:
             json_data=outfile.read()
-
         rpc_list = json.loads(json_data)
         rpc_list.append(fner_data)
     with open('data.json', 'w') as outfile:
