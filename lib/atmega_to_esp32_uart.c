@@ -73,7 +73,6 @@ void setup_uart(void)
 	init_queue(); // RPC Queue is intialised to 0
 	uart3_init(UART_BAUD_SELECT(115200, F_CPUL));
 	uart3_flush();
-	//uart3_puts(MESSAGE);
 }
 
 

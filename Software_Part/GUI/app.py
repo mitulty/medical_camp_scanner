@@ -23,7 +23,7 @@ thisdict = {
 
 def on_message(client, userdata, message):
 	temp = (message.payload.decode("utf-8"))
-	# print(temp)
+	print(temp)
 	temp = str(temp)
 	temp = temp.replace("\"","")
 	temp = temp.split(":")
@@ -32,7 +32,7 @@ def on_message(client, userdata, message):
 	plot = int(temp[1])
 	color = int(temp[2])
 
-	if pos == 3 or pos == 4:
+	if pos == 4:
 		deb_val = int(temp[3])
 
 	if pos == 1: # Plot Color
