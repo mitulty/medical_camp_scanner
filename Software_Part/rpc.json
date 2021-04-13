@@ -1,20 +1,20 @@
 [
     {
-        "method": "fetchNearest",
-        "params": {
-            "type": "majorInjury",
-            "id": 2415498415,
-            "serverTime": 1616352000,
-            "completeIn": 10
-        }
-    },
-    {
         "method": "scan",
         "params": {
             "plot": 7,
             "id": 65318,
             "serverTime": 1616352045,
             "completeIn": 40
+        }
+    },
+    {
+        "method": "fetchNearest",
+        "params": {
+            "type": "majorInjury",
+            "id": 2415498415,
+            "serverTime": 1616352000,
+            "completeIn": 10
         }
     },
     {

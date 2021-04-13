@@ -71,7 +71,7 @@ void setup_uart(void)
 {
 	init_timer2();
 	init_queue(); // RPC Queue is intialised to 0
-	uart3_init(UART_BAUD_SELECT(115200, F_CPUL));
+	uart3_init(UART_BAUD_SELECT(9600, F_CPUL));
 	uart3_flush();
 }
 
@@ -79,9 +79,10 @@ void setup_uart(void)
 void init_queue()
 {
 	for(int i =0;i<20;i++)
-		queue[i] = 'z';
-	front = -1;
-	rear = -1;
+		queue[i] = 0;
+	front = -1 ;
+	rear = -1 ;
+	counter_queue_val = 0;
 }
 void enqueue(char item)
 {
@@ -97,6 +98,7 @@ void enqueue(char item)
 		{
 			front = 0;
 		}
+		counter_queue_val++;
 		rear = rear + 1;
 		queue[rear] = item;
 		//printf("We have enqueued %d\n",item);
@@ -110,7 +112,7 @@ char dequeue(void)
 	if (front == -1)
 	{
 		//printf("Can't dequeue as the queue is empty\n");
-		return 'z';
+		return 0;
 	}
 	else
 	{
@@ -118,12 +120,11 @@ char dequeue(void)
 		c = queue[front];
 		queue[front] = 0;
 		front = front + 1;
-
+		counter_queue_val --;
 		//Only happens when the last element was dequeued
 		if (front > rear)
 		{
-			front = -1;
-			rear = -1;
+			init_queue();
 		}
 		return c;
 	}

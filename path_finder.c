@@ -127,7 +127,7 @@ tuple get_nearest_coordinate(tuple cloc, int plot)
 
 int fetch_nearest_plot(int color_type)
 {
-	int x_dis, y_dis,plot_no;
+	int x_dis, y_dis,plot_no = -1;
 	float d, max = 100.0;
 	int node;
 	for (int plot = 0; plot < 16; plot++)
@@ -146,7 +146,7 @@ int fetch_nearest_plot(int color_type)
 			}
 		}
 	}
-	return plot_no;
+	return (plot_no+1);
 }
 int get_node_from_coord(tuple coord)
 {

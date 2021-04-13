@@ -44,18 +44,18 @@ void setup_wifi()
 
 void callback(char *topic, byte *message, unsigned int length)
 {
-  Serial.print("Topic: ");
-  Serial.print(topic);
-  Serial.print(". Message: ");
+//  Serial.print("Topic: ");
+ // Serial.print(topic);
+ // Serial.print(". Message: ");
   char recdJsonStr[100];
   int i;
   for (i = 0; i < length; i++)
   {
-    Serial.print((char)message[i]);
+  //  Serial.print((char)message[i]);
     recdJsonStr[i] = (char)message[i];
   }
   recdJsonStr[i]='\0';
-  Serial.printf("\nRecevied JSON String: %s\n", recdJsonStr);
+ // Serial.printf("\nRecevied JSON String: %s\n", recdJsonStr);
   StaticJsonDocument<100> doc;
   
   deserializeJson(doc, recdJsonStr);
@@ -68,22 +68,22 @@ void reconnect()
   // Loop until we're reconnected
   while (!client.connected())
   {
-    Serial.print("Attempting MQTT connection...");
+  //  Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     if (client.connect("ESP32", "AfDmr6rrnImHE3ZbrxtD", ""))
     {
-      Serial.println("connected");
+    //  Serial.println("connected");
       // Subscribe
       // v1/devices/me/telemetry
       client.subscribe("data_recv");
     }
     else
     {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
+    //  Serial.print("failed, rc=");
+    //  Serial.print(client.state());
+    //  Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
-      delay(5000);
+      delay(2000);
     }
   }
 }
@@ -92,7 +92,7 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
+  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
@@ -109,7 +109,6 @@ void loop()
   client.loop();
   if (Serial2.available())
   {
-    bool buttonState = digitalRead(BUTTON_PIN);
     doc_main = Serial2.readString();
     serializeJson(doc_main, jsonStr);
     Serial.printf("Serialized JSON: %s\n", jsonStr);

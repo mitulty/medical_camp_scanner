@@ -433,8 +433,10 @@ void setup_uart(void);
 
 char uart3_readByte(void);
 
-char queue[20], front , rear ;
+char queue[20];
+int front , rear ;
 void enqueue(char item);
 char dequeue(void);
-void init_queue();
+void init_queue(); 
+int counter_queue_val;
 #endif // UART_H
