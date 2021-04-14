@@ -3,7 +3,7 @@ import time
 import requests
 
 
-TIME = 10
+TIME = 1
 scan_data = {}
 fner_data = {}
 DEVICE_ID = '2dd5ffa0-9c78-11eb-950e-efef5c07c810'

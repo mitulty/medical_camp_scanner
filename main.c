@@ -67,6 +67,10 @@ int main(int argc, char *argv[])
 	send_data_uart(2, 4, 8, -1);
 	tuple dest_loc, plot_coordinate;
 	//wls_loc_orient_print_lcd();
+	while (1)
+	{
+		service_rpc_request();
+	}
 
 	//---------------------------------------------Test Zone-----------------------------------------------
 
@@ -1102,6 +1106,7 @@ void traverse(tuple destination_location)
 void service_rpc_request()
 {
 	int status = 0;
+	return;
 	tuple dest_loc, plot_coordinate;
 	char p, t;
 	int order, time, Ctime;
@@ -1110,9 +1115,9 @@ void service_rpc_request()
 	lcd_string(1, 2,"RPC Request Served");
 	lcd_numeric_value(2,2,counter_queue_val,2);
 	_delay_ms(3000);
+	rpc = 0;
 	while (counter_queue_val > 0 && counter_queue_val % 2 == 0)
 	{
-		rpc = 0;
 		buzzer_on();
 		_delay_ms(500);
 		buzzer_off();
@@ -1157,6 +1162,9 @@ void service_rpc_request()
 				continue;
 			}
 		}
+		lcd_clear();
+		lcd_string(1, 2,"Serving");
+		_delay_ms(3000);
 		int plot_scan = order - 1;
 		tuple plot_coord = plot_coord_matrix[plot_scan][4];
 		dest_loc = get_nearest_coordinate(curr_loc, plot_scan);

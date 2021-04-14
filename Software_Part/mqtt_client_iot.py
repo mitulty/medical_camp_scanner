@@ -21,6 +21,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     req = json.loads(msg.payload)
     taken = 0
+    gui_data = ""
     ts = int(time.time())
     if(req['method'] == 'scan'):
 
@@ -34,6 +35,7 @@ def on_message(client, userdata, msg):
             json_data=outfile.read()
         rpc_list = json.loads(json_data)
         rpc_list.append(scan_data)
+        gui_data = "\""+str(5)+":"+str(req['method'])+":"+str(req['params']['id'])+":"+str(req['params']['plot'])+":"+str(req['params']['serverTime'])+":"+str(req['params']['completeIn'])+"\""
 
     else:
 
@@ -53,7 +55,8 @@ def on_message(client, userdata, msg):
             json_data=outfile.read()
         rpc_list = json.loads(json_data)
         rpc_list.append(fner_data)
-
+        gui_data = "\""+str(5)+":"+str(req['method'])+":"+str(req['params']['id'])+":"+str(req['params']['type'])+":"+str(req['params']['serverTime'])+":"+str(req['params']['completeIn'])+"\""
+    
     with open('data.json', 'w') as outfile:
         json.dump(rpc_list,outfile)
     time_taken = req['params']['completeIn']
@@ -63,8 +66,10 @@ def on_message(client, userdata, msg):
         taken = time_taken+ 55
     else:
         taken = time_taken+ 61
+    print("Seding",gui_data)
     os.system("mosquitto_pub -h localhost -t data_recv -m "+ chr(order))
     os.system("mosquitto_pub -h localhost -t data_recv -m " + chr(taken))
+    os.system("mosquitto_pub -h localhost -t LOCATION_CS684 -m "+ gui_data)
     print(req,chr(order),chr(taken))
 
 host_url = "thingsboard.e-yantra.org"
