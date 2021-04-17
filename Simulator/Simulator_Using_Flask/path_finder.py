@@ -7,7 +7,7 @@ import time
 curr_loc = (4, 8)
 dir_flag = 'n'
 goal_loc = (8, 4)
-plot_order = [14, 13, 9, 10, 6, 5, 1, 2, 3, 4, 8, 7, 11, 12, 16, 15]
+plot_order = [9, 1, 12, 3, 6, 5, 14, 2, 13, 4, 8, 7, 11, 12, 16, 15, 10]
 plot_no = 0
 path_array = []
 data = {}

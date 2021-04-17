@@ -19,7 +19,7 @@
 #include <util/delay.h> // Standard AVR Delay Library
 #include <string.h>
 #include <stdio.h>
-#define THRESHOLD_WLS 25
+#define THRESHOLD_WLS 40
 
 void forward_wls(unsigned char);
 void left_turn_wls_degress(int);
@@ -27,9 +27,8 @@ void right_turn_wls_degress(int);
 void setup(void);
 void wls_readings_print_lcd(void);
 void check_plot_scan_status();
-void allign_at_node(void);
 void uturn(void);
-void wls_loc_orient_print_lcd(void);
+void loc_orient_print_lcd(void);
 int check_path_for_debris(void);
 int final_mid_point(int, int);
 void send_data_uart(int, int, int, int);
@@ -38,6 +37,8 @@ void move_robot(int);
 void turn_accordingly(tuple);
 void turn_towards_mid_point(char);
 void service_rpc_request(void);
+void traverse_rpc(tuple);
+void stack_content_print_lcd(int);
 
 // To store 8-bit data of left, center and right white line sensors
 unsigned char left_wl_sensor_data, center_wl_sensor_data, right_wl_sensor_data;
@@ -47,7 +48,8 @@ int prev = 0;
 char dir_flag = 'n';
 char rx_byte = 0;
 uint8_t rx_data;
-int turn,rpc;
+int turn, rpc;
+tuple plot_coord;
 int main(int argc, char *argv[])
 {
 	//---------------------------------------------Setup Zone-----------------------------------------------
@@ -66,19 +68,20 @@ int main(int argc, char *argv[])
 	lcd_clear();
 	send_data_uart(2, 4, 8, -1);
 	tuple dest_loc, plot_coordinate;
-	//wls_loc_orient_print_lcd();
-	while (1)
-	{
-		service_rpc_request();
-	}
-
+	update_adjacency_matrix();
+	//loc_orient_print_lcd();
 	//---------------------------------------------Test Zone-----------------------------------------------
+	// lcd_clear();
+	// while (1)
+	//  {
+	//  	service_rpc_request();
+	//  }
 
 	//----------------------------------------------Main Code--------------------------------------------------------
 	while (plot_no < 16)
 	{
 		plot_scan = plot_order[plot_no] - 1;
-		tuple plot_coord = plot_coord_matrix[plot_scan][4];
+		plot_coord = plot_coord_matrix[plot_scan][4];
 		// lcd_clear();
 		// lcd_string(1, 2, "Scanning Plot");
 		// lcd_numeric_value(2, 1, plot_scan, 2);
@@ -160,10 +163,12 @@ void move_robot(int type)
 	{
 		check_plot_scan_status();
 	}
-	else
+	else if(type == 1)
 	{
 		buzzer_on();
-		send_data_uart(3, seconds_time, -1, -1);
+		send_data_uart(3, seconds_time, 1, -1);
+		seconds_time = 0;
+		count_time = 0;
 		_delay_ms(1000);
 		buzzer_off();
 	}
@@ -171,7 +176,7 @@ void move_robot(int type)
 	forward_wls(1);
 	send_data_uart(2, curr_loc.x, curr_loc.y, -1);
 	_delay_ms(100);
-	//wls_loc_orient_print_lcd();
+	//loc_orient_print_lcd();
 	//_delay_ms(500);
 }
 
@@ -247,8 +252,8 @@ int check_path_for_debris(void)
 	ReqdShaftCount = 20 / angle_resolution; // division by resolution to get shaft count
 	ReqdShaftCountInt = (float)(unsigned long int)ReqdShaftCount;
 
+	velocity(150, 150);
 	left();
-	velocity(120, 120);
 	ShaftCountRight = 0;
 	ShaftCountLeft = 0;
 	while ((ShaftCountRight <= ReqdShaftCountInt) && (ShaftCountLeft <= ReqdShaftCountInt))
@@ -265,10 +270,10 @@ int check_path_for_debris(void)
 	}
 	ShaftCountRight = 0;
 	ShaftCountLeft = 0;
-	while ((ShaftCountRight <= 2 * ReqdShaftCountInt) && (ShaftCountLeft <= 2 * ReqdShaftCountInt))
+	while ((ShaftCountRight <= (3 * ReqdShaftCountInt)) && (ShaftCountLeft <= (3 * ReqdShaftCountInt)))
 	{
+		velocity(150, 150);
 		right();
-		velocity(200, 200);
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
@@ -284,8 +289,8 @@ int check_path_for_debris(void)
 	ShaftCountLeft = 0;
 	while ((ShaftCountRight <= ReqdShaftCountInt) && (ShaftCountLeft <= ReqdShaftCountInt))
 	{
+		velocity(150, 150);
 		left();
-		velocity(200, 200);
 		left_wl_sensor_data = convert_analog_channel_data(left_wl_sensor_channel);
 		center_wl_sensor_data = convert_analog_channel_data(center_wl_sensor_channel);
 		right_wl_sensor_data = convert_analog_channel_data(right_wl_sensor_channel);
@@ -520,6 +525,7 @@ void forward_wls(unsigned char node)
 	unsigned char node_reached = 0;
 	for (int i = 0; i < node; i++)
 	{
+		velocity(210, 210);
 		forward();
 		while (1)
 		{
@@ -536,40 +542,40 @@ void forward_wls(unsigned char node)
 				++node_reached;
 				//lcd_numeric_value(2, 5, node_reached, 2);
 				//wls_readings_print_lcd();
-				_delay_ms(50);
+				_delay_ms(5);
 				break;
 			}
 			else if (center_wl_sensor_data > THRESHOLD_WLS)
 			{
 				prev = 0;
-				velocity(200, 200);
+				velocity(210, 210);
 				// printf("\n forward");
 			}
 			else if (left_wl_sensor_data > THRESHOLD_WLS)
 			{
 				prev = 1;
-				velocity(120, 200);
+				velocity(120, 210);
 				// printf("\n left");
 			}
 			else if (right_wl_sensor_data > THRESHOLD_WLS)
 			{
 				prev = 2;
-				velocity(200, 120);
+				velocity(210, 120);
 				// printf("\n right");
 			}
 			else
 			{
 				if (prev == 1)
-					velocity(120, 200);
+					velocity(120, 210);
 				else if (prev == 2)
-					velocity(200, 120);
+					velocity(210, 120);
 			}
 			_delay_ms(10);
 		}
-		velocity(200, 200);
+		velocity(210, 210);
 		forward_mm(35);
-		//wls_readings_print_lcd();
-		//_delay_ms(2000);
+		// wls_readings_print_lcd();
+		// _delay_ms(500);
 	}
 	if (dir_flag == 'n')
 		curr_loc.y -= node;
@@ -647,7 +653,7 @@ void wls_readings_print_lcd(void)
 	_delay_ms(500);
 }
 
-void wls_loc_orient_print_lcd(void)
+void loc_orient_print_lcd(void)
 {
 	lcd_clear();
 	lcd_string(1, 2, "Loc & Orient");
@@ -660,6 +666,17 @@ void wls_loc_orient_print_lcd(void)
 	_delay_ms(250);
 }
 
+void stack_content_print_lcd(int t)
+{
+	for (int i = 0; i < t; i++)
+	{
+		lcd_clear();
+		lcd_string(1, 2, "PATH:");
+		lcd_numeric_value(1, 7, i, 2);
+		lcd_numeric_value(2, 2, path_stack[i], 2);
+		_delay_ms(3000);
+	}
+}
 void send_data_uart(int a, int x, int y, int z)
 {
 	char uart_data_Tx[11];
@@ -757,7 +774,6 @@ void right_turn_wls_degress(int degrees)
 
 void uturn(void)
 {
-	//allign_at_node();
 	velocity(200, 200);
 	if (turn != 1)
 		forward_mm(20);
@@ -970,10 +986,13 @@ void traverse(tuple destination_location)
 	// lcd_clear();
 	// lcd_string(1, 1, "Destination Node");
 	// lcd_numeric_value(2, 1, d_node, 2);
-	// _delay_ms(500);
+	//	_delay_ms(3000);
 	while (!((destination_location.x == curr_loc.x) && (destination_location.y == curr_loc.y)))
 	{
+		if (grid_matrix[plot_coord.y][plot_coord.x] != -5)
+					break;
 		s_node = get_node_from_coord(curr_loc);
+		top = -1;
 		// lcd_clear();
 		// lcd_string(1, 1, "Source Node");
 		// lcd_numeric_value(2, 1, s_node, 2);
@@ -982,11 +1001,11 @@ void traverse(tuple destination_location)
 		// lcd_wr_char(2, 5, ',');
 		// lcd_numeric_value(2, 6, curr_loc.y, 1);
 		// lcd_wr_char(2, 7, ')');
-		// _delay_ms(500);
+		// _delay_ms(300);
 		// lcd_clear();
 		// lcd_string(1, 1, "Top Value Initial");
 		// lcd_numeric_value(2, 2, top, 2);
-		// _delay_ms(2000);
+		// _delay_ms(3000);
 		dijkstra(adjacency_matrix, 25, s_node, d_node);
 		while (top > -1)
 		{
@@ -996,17 +1015,16 @@ void traverse(tuple destination_location)
 			// _delay_ms(2000);
 			node = pop();
 			next_loc = node_coord_matrix[node];
-			// lcd_clear();
-			// lcd_string(1, 1, "Next Node");
-			// lcd_numeric_value(2, 1, node, 2);
-			// lcd_wr_char(2, 3, '(');
-			// lcd_numeric_value(2, 4, next_loc.x, 1);
-			// lcd_wr_char(2, 5, ',');
-			// lcd_numeric_value(2, 6, next_loc.y, 1);
-			// lcd_wr_char(2, 7, ')');
-			// _delay_ms(500);
 			turn_accordingly(next_loc);
-			wls_loc_orient_print_lcd();
+			loc_orient_print_lcd();
+			lcd_clear();
+			lcd_string(1, 1, "Next Node");
+			lcd_numeric_value(2, 1, node, 2);
+			lcd_wr_char(2, 3, '(');
+			lcd_numeric_value(2, 4, next_loc.x, 1);
+			lcd_wr_char(2, 5, ',');
+			lcd_numeric_value(2, 6, next_loc.y, 1);
+			lcd_wr_char(2, 7, ')');
 			if ((next_loc.x == curr_loc.x + 2) && (next_loc.y == curr_loc.y))
 			{
 				if (grid_matrix[curr_loc.y][curr_loc.x + 1] == -1)
@@ -1022,9 +1040,8 @@ void traverse(tuple destination_location)
 				}
 				else
 				{
-					if(rpc == 0)
+					if (rpc == 0)
 						service_rpc_request();
-					top = -1;
 					break;
 				}
 			}
@@ -1043,9 +1060,8 @@ void traverse(tuple destination_location)
 				}
 				else
 				{
-					if(rpc == 0)
+					if (rpc == 0)
 						service_rpc_request();
-					top = -1;
 					break;
 				}
 			}
@@ -1065,9 +1081,8 @@ void traverse(tuple destination_location)
 				}
 				else
 				{
-					if(rpc == 0)
+					if (rpc == 0)
 						service_rpc_request();
-					top = -1;
 					break;
 				}
 			}
@@ -1086,14 +1101,13 @@ void traverse(tuple destination_location)
 				}
 				else
 				{
-					if(rpc == 0)
+					if (rpc == 0)
 						service_rpc_request();
-					top = -1;
 					break;
 				}
 			}
-			if(rpc == 0)
-						service_rpc_request();
+			if (rpc == 0)
+				service_rpc_request();
 			if (rpc == 1)
 			{
 				rpc = 0;
@@ -1106,27 +1120,28 @@ void traverse(tuple destination_location)
 void service_rpc_request()
 {
 	int status = 0;
-	return;
-	tuple dest_loc, plot_coordinate;
+	tuple dest_loc;
 	char p, t;
 	int order, time, Ctime;
 	int s_node, d_node;
 	lcd_clear();
-	lcd_string(1, 2,"RPC Request Served");
-	lcd_numeric_value(2,2,counter_queue_val,2);
-	_delay_ms(3000);
+	lcd_string(1, 2, "RPC Request Served");
+	lcd_numeric_value(2, 2, counter_queue_val, 2);
+	_delay_ms(1000);
 	rpc = 0;
 	while (counter_queue_val > 0 && counter_queue_val % 2 == 0)
 	{
 		buzzer_on();
-		_delay_ms(500);
+		_delay_ms(100);
 		buzzer_off();
-		_delay_ms(500);
+		_delay_ms(50);
 		buzzer_on();
-		_delay_ms(500);
+		_delay_ms(100);
 		buzzer_off();
 		p = dequeue();
 		t = dequeue();
+		// send_data_uart(3,12,1,-1);
+		// return;
 		count_time = 0;
 		seconds_time = 0;
 		order = (int)p - 64;
@@ -1137,12 +1152,12 @@ void service_rpc_request()
 			Ctime = time - 55;
 		else
 			Ctime = time - 61;
-		lcd_clear();
-		lcd_string(1, 2,"PT");
-		lcd_numeric_value(1, 5, order, 2);
-		lcd_string(2, 2,"Time");
-		lcd_numeric_value(2, 6, Ctime, 2);
-		_delay_ms(3000);
+		// lcd_clear();
+		// lcd_string(1, 2, "PT");
+		// lcd_numeric_value(1, 5, order, 2);
+		// lcd_string(2, 2, "Time");
+		// lcd_numeric_value(2, 6, Ctime, 2);
+		// _delay_ms(1500);
 		if (order == 17 || order == 18 || order == 19)
 		{
 			if (order == 17)
@@ -1154,62 +1169,62 @@ void service_rpc_request()
 
 			if (order == -1)
 			{
-				lcd_clear();
-				lcd_string(1, 2,"No Injury ");
-				lcd_string(2, 2,"Type Found");
-				_delay_ms(3000);
+				// lcd_clear();
+				// lcd_string(1, 2, "No Injury ");
+				// lcd_string(2, 2, "Type Found");
+				// _delay_ms(1500);
 				send_data_uart(3, -1, -1, -1);
 				continue;
 			}
 		}
 		lcd_clear();
-		lcd_string(1, 2,"Serving");
-		_delay_ms(3000);
+		lcd_string(1, 2, "Serving");
+		_delay_ms(1500);
 		int plot_scan = order - 1;
-		tuple plot_coord = plot_coord_matrix[plot_scan][4];
+		tuple plot_coordinate = plot_coord_matrix[plot_scan][4];
 		dest_loc = get_nearest_coordinate(curr_loc, plot_scan);
 		d_node = get_node_from_coord(dest_loc);
 		s_node = get_node_from_coord(curr_loc);
 		dijkstra(adjacency_matrix, 25, s_node, d_node);
 		if (top > -1)
 		{
-			if ((((top + 1) * 1) + 2) >= Ctime)
+			if ((((top + 1) * 1) + 5) >= Ctime)
 			{
-				lcd_clear();
-				lcd_string(1, 2,"Plot Not ");
-				lcd_string(2, 2,"Reachable");
-				_delay_ms(3000);
+				// lcd_clear();
+				// lcd_string(1, 2, "Plot Not ");
+				// lcd_string(2, 2, "Reachable");
+				// _delay_ms(1500);
 				send_data_uart(3, -1, -1, -2);
 				continue;
 			}
 		}
 		rpc = 1;
-		lcd_clear();
-		lcd_string(1, 2,"Serving Plot");
-		lcd_numeric_value(2, 1, plot_scan, 2);
-		lcd_wr_char(2, 4, '(');
-		lcd_numeric_value(2, 5, plot_coord.x, 1);
-		lcd_wr_char(2, 6, ',');
-		lcd_numeric_value(2, 7, plot_coord.y, 1);
-		lcd_wr_char(2, 8, ')');
-		_delay_ms(3000);
+		// lcd_clear();
+		// lcd_string(1, 2, "Serving Plot");
+		// lcd_numeric_value(2, 1, plot_scan, 2);
+		// lcd_wr_char(2, 4, '(');
+		// lcd_numeric_value(2, 5, plot_coordinate.x, 1);
+		// lcd_wr_char(2, 6, ',');
+		// lcd_numeric_value(2, 7, plot_coordinate.y, 1);
+		// lcd_wr_char(2, 8, ')');
+		// _delay_ms(1500);
 		while (1)
 		{
 			if (status == 0)
 				dest_loc = get_nearest_coordinate(curr_loc, plot_scan);
-			lcd_clear();
-			lcd_string(1, 2,"Dest Loc");
-			lcd_wr_char(2, 1, '(');
-			lcd_numeric_value(2, 2, dest_loc.x, 1);
-			lcd_wr_char(2, 3, ',');
-			lcd_numeric_value(2, 5, dest_loc.y, 1);
-			lcd_wr_char(2, 6, ')');
-			_delay_ms(3000);
+			// lcd_clear();
+			// lcd_string(1, 2, "Dest Loc");
+			// lcd_wr_char(2, 1, '(');
+			// lcd_numeric_value(2, 2, dest_loc.x, 1);
+			// lcd_wr_char(2, 3, ',');
+			// lcd_numeric_value(2, 5, dest_loc.y, 1);
+			// lcd_wr_char(2, 6, ')');
+			// _delay_ms(1500);
 
-			traverse(dest_loc);
-			lcd_clear();
-			lcd_string(1, 2,"Mid Point");
-			_delay_ms(3000);
+			traverse_rpc(dest_loc);
+			// lcd_clear();
+			// lcd_string(1, 2, "Mid Point");
+			// _delay_ms(1500);
 
 			status = final_mid_point(plot_scan, 1);
 
@@ -1230,6 +1245,129 @@ void service_rpc_request()
 					dest_loc.y = curr_loc.y - 2;
 				else
 					dest_loc.y = curr_loc.y + 2;
+			}
+		}
+	}
+}
+
+void traverse_rpc(tuple destination_location)
+{
+	tuple next_loc;
+	int d_node, s_node, node;
+	d_node = get_node_from_coord(destination_location);
+	// lcd_clear();
+	// lcd_string(1, 1, "RPC Serve Algo");
+	// _delay_ms(1000);
+	while (!((destination_location.x == curr_loc.x) && (destination_location.y == curr_loc.y)))
+	{
+		s_node = get_node_from_coord(curr_loc);
+		top = -1;
+		// lcd_clear();
+		// lcd_string(1, 1, "Source Node");
+		// lcd_numeric_value(2, 1, s_node, 2);
+		// lcd_wr_char(2, 3, '(');
+		// lcd_numeric_value(2, 4, curr_loc.x, 1);
+		// lcd_wr_char(2, 5, ',');
+		// lcd_numeric_value(2, 6, curr_loc.y, 1);
+		// lcd_wr_char(2, 7, ')');
+		// _delay_ms(1500);
+		// lcd_clear();
+		// lcd_string(1, 1, "Top Value Initial");
+		// lcd_numeric_value(2, 2, top, 2);
+		// _delay_ms(1500);
+		dijkstra(adjacency_matrix, 25, s_node, d_node);
+		// stack_content_print_lcd(top + 1);
+		while (top > -1)
+		{
+			// lcd_clear();
+			// lcd_string(1, 1, "Top Value Final");
+			// lcd_numeric_value(2, 2, top, 2);
+			// _delay_ms(1500);
+			node = pop();
+			next_loc = node_coord_matrix[node];
+			// lcd_clear();
+			// lcd_string(1, 1, "Next Node");
+			// lcd_numeric_value(2, 1, node, 2);
+			// lcd_wr_char(2, 3, '(');
+			// lcd_numeric_value(2, 4, next_loc.x, 1);
+			// lcd_wr_char(2, 5, ',');
+			// lcd_numeric_value(2, 6, next_loc.y, 1);
+			// lcd_wr_char(2, 7, ')');
+			// _delay_ms(1500);
+			turn_accordingly(next_loc);
+			loc_orient_print_lcd();
+			if ((next_loc.x == curr_loc.x + 2) && (next_loc.y == curr_loc.y))
+			{
+				if (grid_matrix[curr_loc.y][curr_loc.x + 1] == -1)
+				{
+					grid_matrix[curr_loc.y][curr_loc.x + 1] = check_path_for_debris();
+					send_data_uart(4, curr_loc.x + 1, curr_loc.y, grid_matrix[curr_loc.y][curr_loc.x + 1]);
+					update_adjacency_matrix();
+				}
+				if (grid_matrix[curr_loc.y][curr_loc.x + 1] == 1)
+				{
+					move_robot(2);
+					turn = 0;
+				}
+				else
+				{
+					break;
+				}
+			}
+			else if ((next_loc.x == curr_loc.x - 2) && (next_loc.y == curr_loc.y))
+			{
+				if (grid_matrix[curr_loc.y][curr_loc.x - 1] == -1)
+				{
+					grid_matrix[curr_loc.y][curr_loc.x - 1] = check_path_for_debris();
+					send_data_uart(4, curr_loc.x - 1, curr_loc.y, grid_matrix[curr_loc.y][curr_loc.x - 1]);
+					update_adjacency_matrix();
+				}
+				if (grid_matrix[curr_loc.y][curr_loc.x - 1] == 1)
+				{
+					move_robot(2);
+					turn = 0;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y + 2))
+			{
+				if (grid_matrix[curr_loc.y + 1][curr_loc.x] == -1)
+				{
+					grid_matrix[curr_loc.y + 1][curr_loc.x] = check_path_for_debris();
+					send_data_uart(4, curr_loc.x, curr_loc.y + 1, grid_matrix[curr_loc.y + 1][curr_loc.x]);
+					update_adjacency_matrix();
+				}
+				if (grid_matrix[curr_loc.y + 1][curr_loc.x] == 1)
+				{
+					move_robot(2);
+					turn = 0;
+				}
+				else
+				{
+					break;
+				}
+			}
+			else if ((next_loc.x == curr_loc.x) && (next_loc.y == curr_loc.y - 2))
+			{
+				if (grid_matrix[curr_loc.y - 1][curr_loc.x] == -1)
+				{
+					grid_matrix[curr_loc.y - 1][curr_loc.x] = check_path_for_debris();
+					send_data_uart(4, curr_loc.x, curr_loc.y - 1, grid_matrix[curr_loc.y - 1][curr_loc.x]);
+					update_adjacency_matrix();
+				}
+				if (grid_matrix[curr_loc.y - 1][curr_loc.x] == 1)
+				{
+					move_robot(2);
+					turn = 0;
+				}
+				else
+				{
+					break;
+				}
 			}
 		}
 	}

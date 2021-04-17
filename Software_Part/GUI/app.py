@@ -31,13 +31,17 @@ rpc_data = {
 }
 
 def on_message(client, userdata, message):
+	pos = -1
 	temp = (message.payload.decode("utf-8"))
 	print(temp)
 	temp = str(temp)
 	try:
 		pos = int(temp[1])
 	except:
-		pos = int(temp[0])
+		if (temp[1] == '-'):
+			pos = -1
+		else:
+			pos = int(temp[0])
 	if pos != 5:
 		temp = temp.replace("\"","")
 		temp = temp.split(":")
@@ -89,7 +93,7 @@ def on_message(client, userdata, message):
 
 		if pos == 4:# Debris
 			arr_2d[color][plot] = int(temp[3])
-	else:
+	elif pos ==5:
 		temp = temp.split(":")
 		print("Received",temp)
 		rpc_data["method_rpc"] = temp[1]
@@ -97,6 +101,8 @@ def on_message(client, userdata, message):
 		rpc_data["id_rpc"] = temp[2]
 		rpc_data["serverTime_rpc"] = temp[4]
 		rpc_data["completeIn_rpc"] = temp[5]
+	else:
+		pass
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = PEOPLE_FOLDER

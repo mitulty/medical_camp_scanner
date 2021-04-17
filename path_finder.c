@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <math.h>
 #define INFINITE 9999
-int r = -1, f = -1;
 void initialize_node_coord_matrix(void)
 {
     int j = 0;
@@ -129,7 +128,6 @@ int fetch_nearest_plot(int color_type)
 {
 	int x_dis, y_dis,plot_no = -1;
 	float d, max = 100.0;
-	int node;
 	for (int plot = 0; plot < 16; plot++)
 	{
 		if(grid_matrix[plot_coord_matrix[plot][4].y][plot_coord_matrix[plot][4].x] != color_type)
@@ -146,7 +144,7 @@ int fetch_nearest_plot(int color_type)
 			}
 		}
 	}
-	return (plot_no+1);
+	return (plot_no);
 }
 int get_node_from_coord(tuple coord)
 {

@@ -194,7 +194,7 @@ void left_degrees(unsigned int Degrees)
 {
 	// 88 pulses for 360 degrees rotation 4.090 degrees per count
 	left(); //Turn left
-	velocity(150, 150);
+	velocity(200, 200);
 	angle_rotate(Degrees);
 }
 
@@ -206,7 +206,7 @@ void right_degrees(unsigned int Degrees)
 {
 	// 88 pulses for 360 degrees rotation 4.090 degrees per count
 	right(); //Turn right
-	velocity(150, 150);
+	velocity(200, 200);
 	angle_rotate(Degrees);
 }
 
@@ -219,7 +219,7 @@ void soft_left_degrees(unsigned int Degrees)
 	// 176 pulses for 360 degrees rotation 2.045 degrees per count
 	soft_left(); //Turn soft left
 	Degrees = Degrees * 2;
-	velocity(150, 150);
+	velocity(200, 200);
 
 	angle_rotate(Degrees);
 }
@@ -233,7 +233,7 @@ void soft_right_degrees(unsigned int Degrees)
 	// 176 pulses for 360 degrees rotation 2.045 degrees per count
 	soft_right(); //Turn soft right
 	Degrees = Degrees * 2;
-	velocity(150, 150);
+	velocity(200, 200);
 	angle_rotate(Degrees);
 }
 
@@ -246,7 +246,7 @@ void soft_left_2_degrees(unsigned int Degrees)
 	// 176 pulses for 360 degrees rotation 2.045 degrees per count
 	backward_left(); //Turn reverse soft left
 	Degrees = Degrees * 2;
-	velocity(150, 150);
+	velocity(200, 200);
 
 	angle_rotate(Degrees);
 }
@@ -260,7 +260,7 @@ void soft_right_2_degrees(unsigned int Degrees)
 	// 176 pulses for 360 degrees rotation 2.045 degrees per count
 	backward_right(); //Turn reverse soft right
 	Degrees = Degrees * 2;
-	velocity(150, 150);
+	velocity(200, 200);
 
 	angle_rotate(Degrees);
 }

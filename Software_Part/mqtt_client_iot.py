@@ -4,8 +4,6 @@ import json
 import requests
 import os
 
-fner_data = {'id': -1,'type':'Injury','timeTaken':0,'timeStamp':-1}
-scan_data = {'id': -1,'plot':-1,'timeTaken':0,'timeStamp':-1}
 dummy_data = {
         "id": -1,
         "plot": -1,
@@ -19,12 +17,14 @@ def on_connect(client, userdata, flags, rc):
         json.dump([dummy_data],fp)
 
 def on_message(client, userdata, msg):
+    fner_data= {}
+    scan_data = {}
     req = json.loads(msg.payload)
     taken = 0
     gui_data = ""
     ts = int(time.time())
     if(req['method'] == 'scan'):
-
+        scan_data = {'id': -1,'plot':-1,'timeTaken':0,'timeStamp':-1}
         scan_data['id'] = req['params']['id']
         scan_data['plot'] = req['params']['plot']
         scan_data['timeStamp'] = ts
@@ -35,10 +35,10 @@ def on_message(client, userdata, msg):
             json_data=outfile.read()
         rpc_list = json.loads(json_data)
         rpc_list.append(scan_data)
+        print(rpc_list)
         gui_data = "\""+str(5)+":"+str(req['method'])+":"+str(req['params']['id'])+":"+str(req['params']['plot'])+":"+str(req['params']['serverTime'])+":"+str(req['params']['completeIn'])+"\""
-
     else:
-
+        fner_data = {'id': -1,'type':'Injury','timeTaken':0,'timeStamp':-1}
         fner_data['id'] = req['params']['id']
         fner_data['type'] = req['params']['type']
         fner_data['timeStamp'] = ts
@@ -55,6 +55,7 @@ def on_message(client, userdata, msg):
             json_data=outfile.read()
         rpc_list = json.loads(json_data)
         rpc_list.append(fner_data)
+        print(rpc_list)
         gui_data = "\""+str(5)+":"+str(req['method'])+":"+str(req['params']['id'])+":"+str(req['params']['type'])+":"+str(req['params']['serverTime'])+":"+str(req['params']['completeIn'])+"\""
     
     with open('data.json', 'w') as outfile:
@@ -66,11 +67,13 @@ def on_message(client, userdata, msg):
         taken = time_taken+ 55
     else:
         taken = time_taken+ 61
-    print("Seding",gui_data)
+    print("Sending",gui_data)
     os.system("mosquitto_pub -h localhost -t data_recv -m "+ chr(order))
     os.system("mosquitto_pub -h localhost -t data_recv -m " + chr(taken))
     os.system("mosquitto_pub -h localhost -t LOCATION_CS684 -m "+ gui_data)
     print(req,chr(order),chr(taken))
+    print("--------------------------------------------------------------------------------------")
+
 
 host_url = "thingsboard.e-yantra.org"
 device_access_token ="z6c3tqkoy1AhyM5alCgN"

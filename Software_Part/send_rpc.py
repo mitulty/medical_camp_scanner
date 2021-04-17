@@ -3,7 +3,7 @@ import time
 import requests
 
 
-TIME = 1
+TIME = 45
 scan_data = {}
 fner_data = {}
 DEVICE_ID = '2dd5ffa0-9c78-11eb-950e-efef5c07c810'
@@ -22,7 +22,8 @@ if __name__ == "__main__":
         json_data=fp.read()
     rpc_list = json.loads(json_data)
     for req in rpc_list:
-        time.sleep(TIME)
+        time.sleep(TIME)    
+        print("--------------------------------------------------------------------------------------")
         print(req)
         try:
             response = requests.post(f'{BASE}/plugins/rpc/oneway/{DEVICE_ID}', 
