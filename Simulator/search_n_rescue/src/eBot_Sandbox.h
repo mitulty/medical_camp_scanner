@@ -20,6 +20,6 @@
 
 //---------------------------------- FUNCTIONS ----------------------------------
 
-void traverse(void);
+void scanplot(void);
 
 #endif /* EBOT_SANDBOX_H_ */

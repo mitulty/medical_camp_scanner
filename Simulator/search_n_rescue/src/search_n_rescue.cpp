@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 		_delay_ms(4000);
 #endif
 
-		traverse();
+		scanplot();
 
 #ifdef NON_MATLAB_PARSING
 		clean_up();

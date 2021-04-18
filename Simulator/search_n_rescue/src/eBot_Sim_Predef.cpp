@@ -5,9 +5,7 @@
  *      Author: TAs of CS 684 Spring 2020
  */
 
-
 //---------------------------------- INCLUDES ----------------------------------
-
 #include "eBot_Sim_Predef.h"
 
 //------------------------------ GLOBAL VARIABLES -------------------------------
@@ -58,7 +56,7 @@ simxInt *front_prox_sensor_handle = new simxInt[1]();
 simxUChar front_prox_detection_state = 0;
 
 // store the front proximity sensor detected point of the object named as 'ProximitySensorFront' in the CoppeliaSim scene
-simxFloat front_prox_detected_point[3] = {0, 0, 0};
+simxFloat front_prox_detected_point[3] = { 0, 0, 0 };
 
 // store the pulse count value from color sensor to later filter them
 unsigned int color_sensor_pulse_count = 0;
@@ -66,14 +64,12 @@ unsigned int color_sensor_pulse_count = 0;
 // store the computed front proximity sensor distance w.r.t. the obstacle of the object named as 'ProximitySensorFront' in the CoppeliaSim scene
 unsigned char front_prox_sensor_distance = 140;
 
-
 //---------------------------------- FUNCTIONS ----------------------------------
 
 /**
  * @brief      Initializes the connection to CoppeliaSim Remote API Server
  */
-void init_remote_api_server(void)
-{
+void init_remote_api_server(void) {
 	int port_number = 19997;
 
 	// just in case, close all opened connections
@@ -83,143 +79,136 @@ void init_remote_api_server(void)
 	client_id = simxStart("127.0.0.1", port_number, true, true, 5000, 5);
 }
 
-
 /**
  * @brief      Collect the handles of all objects in the current CoppeliaSim scene
  */
-void get_object_handles(void)
-{
+void get_object_handles(void) {
 	return_code = -1;
 
-	return_code = simxGetObjectHandle(client_id, "eBot", eBot_handle, simx_opmode_blocking);
+	return_code = simxGetObjectHandle(client_id, "eBot", eBot_handle,
+			simx_opmode_blocking);
 
-	if (return_code == simx_return_ok)
-	{
-		simxGetObjectHandle(client_id, "LeftJoint", left_joint_handle, simx_opmode_blocking);
-		simxGetObjectHandle(client_id, "RightJoint", right_joint_handle, simx_opmode_blocking);
-		simxGetObjectHandle(client_id, "LineSensor", white_line_sensor_handle, simx_opmode_blocking);
-		simxGetObjectHandle(client_id, "ColorSensor", color_sensor_handle, simx_opmode_blocking);
-		simxGetObjectHandle(client_id, "ProximitySensorFront", front_prox_sensor_handle, simx_opmode_blocking);
+	if (return_code == simx_return_ok) {
+		simxGetObjectHandle(client_id, "LeftJoint", left_joint_handle,
+				simx_opmode_blocking);
+		simxGetObjectHandle(client_id, "RightJoint", right_joint_handle,
+				simx_opmode_blocking);
+		simxGetObjectHandle(client_id, "LineSensor", white_line_sensor_handle,
+				simx_opmode_blocking);
+		simxGetObjectHandle(client_id, "ColorSensor", color_sensor_handle,
+				simx_opmode_blocking);
+		simxGetObjectHandle(client_id, "ProximitySensorFront",
+				front_prox_sensor_handle, simx_opmode_blocking);
 	}
 }
-
 
 /**
  * @brief      Starts the simulation in CoppeliaSim
  */
-void start_simulation(void)
-{
+void start_simulation(void) {
 	return_code = -1;
 
 	printf("\n\tEnter 'Y' or 'y' to start the simulation: ");
 
 	char input_cmd = getchar();
 
-	if (input_cmd == 'Y' || input_cmd == 'y')
-	{
-		do
-		{
-			return_code = simxStartSimulation(client_id, simx_opmode_oneshot_wait);
+	if (input_cmd == 'Y' || input_cmd == 'y') {
+		do {
+			return_code = simxStartSimulation(client_id,
+					simx_opmode_oneshot_wait);
 		} while (return_code != simx_return_ok);
 	}
 }
 
-
-void get_white_line_sensor_data(void)
-{
+void get_white_line_sensor_data(void) {
 	return_code = -1;
-	return_code = simxGetVisionSensorImage(client_id, *white_line_sensor_handle, resolution, &white_line_sensor_data, 1, simx_opmode_buffer);
+	return_code = simxGetVisionSensorImage(client_id, *white_line_sensor_handle,
+			resolution, &white_line_sensor_data, 1, simx_opmode_buffer);
 }
 
-void get_color_sensor_data(void)
-{
+void get_color_sensor_data(void) {
 	return_code = -1;
-	return_code = simxGetVisionSensorImage(client_id, *color_sensor_handle, resolution, &color_sensor_data, 0, simx_opmode_buffer);
+	return_code = simxGetVisionSensorImage(client_id, *color_sensor_handle,
+			resolution, &color_sensor_data, 0, simx_opmode_buffer);
 }
 
-void init_vision_sensors(void)
-{
+void init_vision_sensors(void) {
 	return_code = -1;
 
-	do
-	{
-		return_code = simxGetVisionSensorImage(client_id, *white_line_sensor_handle, resolution, &white_line_sensor_data, 1, simx_opmode_streaming);
-		return_code = simxGetVisionSensorImage(client_id, *color_sensor_handle, resolution, &color_sensor_data, 0, simx_opmode_streaming);
+	do {
+		return_code = simxGetVisionSensorImage(client_id,
+				*white_line_sensor_handle, resolution, &white_line_sensor_data,
+				1, simx_opmode_streaming);
+		return_code = simxGetVisionSensorImage(client_id, *color_sensor_handle,
+				resolution, &color_sensor_data, 0, simx_opmode_streaming);
 		// get_white_line_sensor_data();
 		// get_color_sensor_data();
-	} while (return_code != simx_return_ok || return_code == simx_return_novalue_flag);
+	} while (return_code != simx_return_ok
+			|| return_code == simx_return_novalue_flag);
 
-	for (int i = 0; i < VIS_SEN_INITIAL_VAL; i++)
-	{
+	for (int i = 0; i < VIS_SEN_INITIAL_VAL; i++) {
 		get_white_line_sensor_data();
 		get_color_sensor_data();
 	}
 }
 
-
-unsigned char get_front_prox_sensor_distance(unsigned char prox_sensor_num)
-{
+unsigned char get_front_prox_sensor_distance(unsigned char prox_sensor_num) {
 	return_code = -1;
 
-	if (prox_sensor_num == FRONT_IR_PROX_NUMBER)
-	{
-		return_code = simxReadProximitySensor(client_id, *front_prox_sensor_handle, &front_prox_detection_state,
-													front_prox_detected_point, NULL, NULL, simx_opmode_blocking);
+	if (prox_sensor_num == FRONT_IR_PROX_NUMBER) {
+		return_code = simxReadProximitySensor(client_id,
+				*front_prox_sensor_handle, &front_prox_detection_state,
+				front_prox_detected_point, NULL, NULL, simx_opmode_blocking);
 	}
 
-	if (front_prox_detection_state != 0)
-	{
+	if (front_prox_detection_state != 0) {
 		front_prox_detection_state = 0;
-		front_prox_sensor_distance = (unsigned char)(front_prox_detected_point[2] * 1000);
-	}
-	else
-	{
+		front_prox_sensor_distance =
+				(unsigned char) (front_prox_detected_point[2] * 1000);
+	} else {
 		front_prox_sensor_distance = 200;
 	}
 
 	return front_prox_sensor_distance;
 }
 
-void init_prox_sensors(void)
-{
+void init_prox_sensors(void) {
 	return_code = -1;
 
-	do
-	{
+	do {
 		get_front_prox_sensor_distance(FRONT_IR_PROX_NUMBER);
 	} while (return_code != simx_return_ok); // || return_code == simx_return_novalue_flag);
 }
 
-void filter_red(void)
-{
+void filter_red(void) {
 	get_color_sensor_data();
-	color_sensor_pulse_count = (unsigned int)(color_sensor_data[0] * 5000 / 255.0)+(rand()%1001);
+	color_sensor_pulse_count = (unsigned int) (color_sensor_data[0] * 5000
+			/ 255.0) + (rand() % 1001);
 }
 
-void filter_green(void)
-{
+void filter_green(void) {
 	get_color_sensor_data();
-	color_sensor_pulse_count = (unsigned int)(color_sensor_data[1] * 5000 / 255.0)+(rand() % 1001);
+	color_sensor_pulse_count = (unsigned int) (color_sensor_data[1] * 5000
+			/ 255.0) + (rand() % 1001);
 }
 
-void filter_blue(void)
-{
+void filter_blue(void) {
 	get_color_sensor_data();
-	color_sensor_pulse_count = (unsigned int)(color_sensor_data[2] * 5000 / 255.0)+ (rand() % 1001);
+	color_sensor_pulse_count = (unsigned int) (color_sensor_data[2] * 5000
+			/ 255.0) + (rand() % 1001);
 }
 
-void filter_clear(void)
-{
+void filter_clear(void) {
 	get_color_sensor_data();
-	color_sensor_pulse_count = (unsigned int)((color_sensor_data[0]+ color_sensor_data[1]+ color_sensor_data[2]) * 5000 / 255.0)+(rand() % 1001);
+	color_sensor_pulse_count = (unsigned int) ((color_sensor_data[0]
+			+ color_sensor_data[1] + color_sensor_data[2]) * 5000 / 255.0)
+			+ (rand() % 1001);
 }
-
 
 /**
  * @brief      Initialize all sensor objects in CoppeliaSim
  */
-void init_sensors(void)
-{
+void init_sensors(void) {
 	init_vision_sensors();
 	init_prox_sensors();
 }
@@ -227,46 +216,44 @@ void init_sensors(void)
 /**
  * @brief      Initializes the setup by connecting to CoppeliaSim and starting the simulation
  */
-int init_setup(void)
-{
+int init_setup(void) {
 	// Initialize the connection to CoppeliaSim Remote API Server
 	printf("\n\tCoppeliaSim Remote API Server initiated.");
 	printf("\n\tTrying to connect to CoppeliaSim Remote API Server ...");
 
 	init_remote_api_server();
 
-	if (client_id == -1)
-	{
+	if (client_id == -1) {
 		printf("\n\tFailed connecting to remote API server!");
-		printf("\n\t[WARNING] Make sure the CoppeliaSim software is running and");
-		printf("\n\t[WARNING] Make sure the Port number for Remote API Server is set to 19997.");
+		printf(
+				"\n\t[WARNING] Make sure the CoppeliaSim software is running and");
+		printf(
+				"\n\t[WARNING] Make sure the Port number for Remote API Server is set to 19997.");
 
 		return 0;
-	}
-	else
-	{
-		printf("\n\tConnected successfully to Remote API Server in CoppeliaSim!");
+	} else {
+		printf(
+				"\n\tConnected successfully to Remote API Server in CoppeliaSim!");
 
 		// Get the handles of all objects in the scene if connection to CoppeliaSim was successful
 		get_object_handles();
 
-		if (return_code == simx_return_ok)
-		{
-			printf("\n\tCollected handles of all objects in the current CoppeliaSim scene.");
+		if (return_code == simx_return_ok) {
+			printf(
+					"\n\tCollected handles of all objects in the current CoppeliaSim scene.");
 
 			// Start the simulation
 			start_simulation();
 
-			if (return_code == simx_return_ok)
-			{
+			if (return_code == simx_return_ok) {
 				printf("\n\tSimulation started correctly.");
 
 				// Initialize the sensors in the scene
 				init_sensors();
 
-				if (return_code == simx_return_ok)
-				{
-					printf("\n\tInitialized all sensors in the current CoppeliaSim scene.");
+				if (return_code == simx_return_ok) {
+					printf(
+							"\n\tInitialized all sensors in the current CoppeliaSim scene.");
 
 					return 1;
 				}
@@ -277,9 +264,7 @@ int init_setup(void)
 	return 0;
 }
 
-
-unsigned char convert_analog_channel_data(unsigned char sensor_channel_num)
-{
+unsigned char convert_analog_channel_data(unsigned char sensor_channel_num) {
 	// Left White Line Sensor
 	if (sensor_channel_num == 1)
 		return ~white_line_sensor_data[LEFT_WL_SENS_NUMBER];
@@ -295,152 +280,142 @@ unsigned char convert_analog_channel_data(unsigned char sensor_channel_num)
 	return 255;
 }
 
-
-int print_ir_prox_5_data(unsigned char front_prox_sensor_data)
-{
-	printf("\n\tEnter 'Y' / 'y' to take the next sensor reading or 'Q' / 'q' to quit: ");
+int print_ir_prox_5_data(unsigned char front_prox_sensor_data) {
+	printf(
+			"\n\tEnter 'Y' / 'y' to take the next sensor reading or 'Q' / 'q' to quit: ");
 
 	char input_cmd = getchar();
 	input_cmd = getchar();
 
-	if (input_cmd == 'Y' || input_cmd == 'y')
-	{
-		printf("\t\nFront Proximity Sensor data: %03d\n", front_prox_sensor_data);
+	if (input_cmd == 'Y' || input_cmd == 'y') {
+		printf("\t\nFront Proximity Sensor data: %03d\n",
+				front_prox_sensor_data);
 		return 1;
-	}
-	else if (input_cmd == 'Q' || input_cmd == 'q')
-	{
+	} else if (input_cmd == 'Q' || input_cmd == 'q') {
 		return 0;
 	}
 	return 0;
 
 }
 
+char print_color_sensor_data(void) {
+	int red, green, blue;
 
-char print_color_sensor_data(void)
-{
-	int red,green,blue;
+	filter_red();
+	red = color_sensor_pulse_count;
+	//printf("\n\tRed data: %03d\n", color_sensor_pulse_count);
+	_delay_ms(50);
 
-			filter_red();
-			red = color_sensor_pulse_count;
-			//printf("\n\tRed data: %03d\n", color_sensor_pulse_count);
-			_delay_ms(50);
+	filter_green();
+	green = color_sensor_pulse_count;
+	//printf("\n\tGreen data: %03d\n", color_sensor_pulse_count);
+	_delay_ms(50);
 
-			filter_green();
-			green = color_sensor_pulse_count;
-			//printf("\n\tGreen data: %03d\n", color_sensor_pulse_count);
-			_delay_ms(50);
+	filter_blue();
+	blue = color_sensor_pulse_count;
+	//printf("\n\tBlue data: %03d\n", color_sensor_pulse_count);
+	_delay_ms(50);
 
-			filter_blue();
-			blue = color_sensor_pulse_count;
-			//printf("\n\tBlue data: %03d\n", color_sensor_pulse_count);
-			_delay_ms(50);
-
-	if(red > 2000 && blue < 2000 && green < 2000)
-		return 'R';
-	if(red < 2000 && blue < 2000 && green > 2000)
-		return 'G';
-	if(red > 2000 && blue > 2000 && green > 2000)
-		return 'B';
-	return 'W';
+	if (red > 2000 && blue < 2000 && green < 2000)
+		{
+		printf("\n Plot Color is red\n");
+		return 5;
+		}
+	if (red < 2000 && blue < 2000 && green > 2000)
+		{
+		printf("\n Plot Color is green\n");
+		return 4;
+		}	
+	if (red > 2000 && blue > 2000 && green > 2000)
+		{
+		printf("\n Plot Color is white\n");
+		return 3;
+		}
+	return 2;
 }
-
 
 /**
  * @brief      Updates the speed of robot's left and right motors
  */
-void set_motor_velocities(void)
-{
-	simxSetJointTargetVelocity(client_id, *left_joint_handle, linear_velocity_left_motor, simx_opmode_oneshot);
-	simxSetJointTargetVelocity(client_id, *right_joint_handle, linear_velocity_right_motor, simx_opmode_oneshot);
+void set_motor_velocities(void) {
+	simxSetJointTargetVelocity(client_id, *left_joint_handle,
+			linear_velocity_left_motor, simx_opmode_oneshot);
+	simxSetJointTargetVelocity(client_id, *right_joint_handle,
+			linear_velocity_right_motor, simx_opmode_oneshot);
 }
-
 
 /**
  * @brief      Makes the robot move forward
  */
-void forward(void)
-{
+void forward(void) {
 	dir_left_motor = dir_right_motor = 1;
-	linear_velocity_left_motor = linear_velocity_right_motor = LINEAR_VELOCITY_MAX;
+	linear_velocity_left_motor = linear_velocity_right_motor =
+			LINEAR_VELOCITY_MAX;
 }
-
 
 /**
  * @brief      Makes the robot move backward
  */
-void back(void)
-{
+void back(void) {
 	dir_left_motor = dir_right_motor = -1;
-	linear_velocity_left_motor = linear_velocity_right_motor = -LINEAR_VELOCITY_MAX;
+	linear_velocity_left_motor = linear_velocity_right_motor =
+			-LINEAR_VELOCITY_MAX;
 }
-
 
 /**
  * @brief      Makes the robot take hard left turn
  */
-void left(void)
-{
+void left(void) {
 	dir_left_motor = -1;
 	dir_right_motor = 1;
 	linear_velocity_left_motor = -LINEAR_VELOCITY_MAX;
 	linear_velocity_right_motor = LINEAR_VELOCITY_MAX;
 }
 
-
 /**
  * @brief      Makes the robot take hard right turn
  */
-void right(void)
-{
+void right(void) {
 	dir_left_motor = 1;
 	dir_right_motor = -1;
 	linear_velocity_left_motor = LINEAR_VELOCITY_MAX;
 	linear_velocity_right_motor = -LINEAR_VELOCITY_MAX;
 }
 
-
 /**
  * @brief      Makes the robot take soft left turn
  */
-void soft_left(void)
-{
+void soft_left(void) {
 	dir_left_motor = 0;
 	dir_right_motor = 1;
 	linear_velocity_left_motor = 0;
 	linear_velocity_right_motor = LINEAR_VELOCITY_MAX;
 }
 
-
 /**
  * @brief      Makes the robot take soft right turn
  */
-void soft_right(void)
-{
+void soft_right(void) {
 	dir_left_motor = 1;
 	dir_right_motor = 0;
 	linear_velocity_left_motor = LINEAR_VELOCITY_MAX;
 	linear_velocity_right_motor = 0;
 }
 
-
 /**
  * @brief      Stops the robot's left and right motors
  */
-void stop(void)
-{
+void stop(void) {
 	dir_left_motor = 0;
 	dir_right_motor = 0;
 	linear_velocity_left_motor = 0;
 	linear_velocity_right_motor = 0;
 }
 
-
 /**
  * @brief      Configures the speed of robot's left and right motors
  */
-void velocity(int left_motor_speed, int right_motor_speed)
-{
+void velocity(int left_motor_speed, int right_motor_speed) {
 	if (left_motor_speed > 255)
 		left_motor_speed = 255;
 
@@ -453,54 +428,47 @@ void velocity(int left_motor_speed, int right_motor_speed)
 	else if (right_motor_speed < 0)
 		right_motor_speed = 0;
 
-	linear_velocity_left_motor = ( dir_left_motor * LINEAR_VELOCITY_MAX * left_motor_speed ) / float(255.0);
-	linear_velocity_right_motor = ( dir_right_motor * LINEAR_VELOCITY_MAX * right_motor_speed ) / float(255.0);
+	linear_velocity_left_motor = (dir_left_motor * LINEAR_VELOCITY_MAX
+			* left_motor_speed) / float(255.0);
+	linear_velocity_right_motor = (dir_right_motor * LINEAR_VELOCITY_MAX
+			* right_motor_speed) / float(255.0);
 }
-
 
 /**
  * @brief      Starts the thread to set the motor velocities, get white line sensor and front proximity sensor data
  */
-void thread_calls(void)
-{
-	while (client_id != -1)
-	{
+void thread_calls(void) {
+	while (client_id != -1) {
 		set_motor_velocities();
 		get_white_line_sensor_data();
-	//	get_color_sensor_data();
-		front_prox_sensor_distance = get_front_prox_sensor_distance(FRONT_IR_PROX_NUMBER);
+		//	get_color_sensor_data();
+		front_prox_sensor_distance = get_front_prox_sensor_distance(
+				FRONT_IR_PROX_NUMBER);
 	}
 }
-
 
 /**
  * @brief      Generates the delay for the provided number of milliseconds
  */
-void _delay_ms(unsigned int ms)
-{
+void _delay_ms(unsigned int ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
-
 
 /**
  * @brief      Stops the simulation in CoppeliaSim
  */
-void stop_simulation(void)
-{
+void stop_simulation(void) {
 	return_code = -1;
 
-	do
-	{
+	do {
 		return_code = simxStopSimulation(client_id, simx_opmode_oneshot);
 	} while (return_code != simx_return_novalue_flag);
 }
 
-
 /**
  * @brief      Stops the connection to CoppeliaSim Remote API Server
  */
-void exit_remote_api_server(void)
-{
+void exit_remote_api_server(void) {
 	// before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive
 	simxGetPingTime(client_id, ping_time);
 
@@ -508,27 +476,25 @@ void exit_remote_api_server(void)
 	simxFinish(-1);
 }
 
-
 /**
  * @brief      Stops the robot's left and right motor, stops the simulation and
  * 			   closes the connection with CoppeliaSim Remote API Server
  */
-void clean_up(void)
-{
+void clean_up(void) {
 	velocity(0, 0);
 	set_motor_velocities();
 
 	// Stopping the simulation
 	stop_simulation();
 
-	if (return_code == simx_return_novalue_flag)
-	{
+	if (return_code == simx_return_novalue_flag) {
 		printf("\n\tSimulation stopped correctly.");
 
 		// Stop the connection with CoppeliaSim Remote API server
 		exit_remote_api_server();
 
-		printf("\n\tDisconnected successfully to Remote API Server in CoppeliaSim!");
+		printf(
+				"\n\tDisconnected successfully to Remote API Server in CoppeliaSim!");
 
 		// Reset the client_id
 		client_id = -1;
