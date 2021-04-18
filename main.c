@@ -40,6 +40,7 @@ void service_rpc_request(void);
 void traverse_rpc(tuple);
 void stack_content_print_lcd(int);
 
+
 // To store 8-bit data of left, center and right white line sensors
 unsigned char left_wl_sensor_data, center_wl_sensor_data, right_wl_sensor_data;
 
@@ -67,7 +68,7 @@ int main(int argc, char *argv[])
 	rpc = 0;
 	lcd_clear();
 	send_data_uart(2, 4, 8, -1);
-	tuple dest_loc, plot_coordinate;
+	tuple dest_loc;
 	update_adjacency_matrix();
 	//loc_orient_print_lcd();
 	//---------------------------------------------Test Zone-----------------------------------------------
@@ -131,13 +132,11 @@ int main(int argc, char *argv[])
 				else
 				{
 					status = -1;
-					plot_coordinate.x = plot_coord_matrix[plot_scan][4].x;
-					plot_coordinate.y = plot_coord_matrix[plot_scan][4].y;
-					if (curr_loc.x - plot_coordinate.x == 1)
+					if (curr_loc.x - plot_coord.x == 1)
 						dest_loc.x = curr_loc.x - 2;
 					else
 						dest_loc.x = curr_loc.x + 2;
-					if (curr_loc.y - plot_coordinate.y == 1)
+					if (curr_loc.y - plot_coord.y == 1)
 						dest_loc.y = curr_loc.y - 2;
 					else
 						dest_loc.y = curr_loc.y + 2;
@@ -150,7 +149,7 @@ int main(int argc, char *argv[])
 			status = 0;
 		}
 	}
-	traverse(goal_loc);
+	traverse_rpc(goal_loc);// This will take us to the goal location and no more rpcs will be checked.
 	forward_wls(1);
 	return 1;
 }
@@ -1163,9 +1162,9 @@ void service_rpc_request()
 			if (order == 17)
 				order = fetch_nearest_plot(5);
 			else if (order == 18)
-				order = fetch_nearest_plot(4);
+				order = fetch_nearest_plot(4) ;
 			else
-				order = fetch_nearest_plot(3);
+				order = fetch_nearest_plot(3) ;
 
 			if (order == -1)
 			{
@@ -1174,8 +1173,20 @@ void service_rpc_request()
 				// lcd_string(2, 2, "Type Found");
 				// _delay_ms(1500);
 				send_data_uart(3, -1, -1, -1);
+				buzzer_on();
+				_delay_ms(500);
+				buzzer_off();
+				_delay_ms(500);
+				buzzer_on();
+				_delay_ms(500);
+				buzzer_off();
+				_delay_ms(500);
+				buzzer_on();
+				_delay_ms(500);
+				buzzer_off();
 				continue;
 			}
+			order = order + 1;
 		}
 		lcd_clear();
 		lcd_string(1, 2, "Serving");
@@ -1195,6 +1206,17 @@ void service_rpc_request()
 				// lcd_string(2, 2, "Reachable");
 				// _delay_ms(1500);
 				send_data_uart(3, -1, -1, -2);
+				buzzer_on();
+				_delay_ms(500);
+				buzzer_off();
+				_delay_ms(500);
+				buzzer_on();
+				_delay_ms(500);
+				buzzer_off();
+				_delay_ms(500);
+				buzzer_on();
+				_delay_ms(500);
+				buzzer_off();
 				continue;
 			}
 		}
@@ -1372,3 +1394,4 @@ void traverse_rpc(tuple destination_location)
 		}
 	}
 }
+
