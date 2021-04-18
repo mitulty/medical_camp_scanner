@@ -15,13 +15,13 @@ arr_2d =    [[9, -1, 9, -1, 9, -1, 9, -1, 9],
 			[-1, -5, -1, -5, -1, -5, -1, -5, -1],
 			[9, -1, 9, -1, 9, -1, 9, -1, 9]]
 
-plot_value = {"Plot_Val":0}
-color_value = {"Color_Val":0}
+id_value = {"Id_Value":0}
+time_taken = {"timeTaken":0}
 thisdict = {
   "m": -1,
   "n": -1,
 }
-
+rpc_list=[]
 rpc_data = {
 	"method_rpc":"",
 	"plot_type_rpc":-1,
@@ -84,8 +84,9 @@ def on_message(client, userdata, message):
 				arr_2d[7][7] = color
 		
 		if pos == 3: # RPC Response
-			plot_value["Plot_Val"]=plot
-			color_value["Color_Val"]=color
+			id_value["Id_Value"]=rpc_list.pop(0)
+			#id_value["Id_Value"]=plot
+			time_taken["timeTaken"]=color
 
 		if pos == 2: # Robot Location
 			thisdict["m"] = color
@@ -101,6 +102,7 @@ def on_message(client, userdata, message):
 		rpc_data["id_rpc"] = temp[2]
 		rpc_data["serverTime_rpc"] = temp[4]
 		rpc_data["completeIn_rpc"] = temp[5]
+		rpc_list.append(temp[2])
 	else:
 		pass
 
@@ -116,11 +118,11 @@ client.subscribe("LOCATION_CS684")
 def home():
 	aid_img = os.path.join(app.config['UPLOAD_FOLDER'], 'aid.png')
 	start_img = os.path.join(app.config['UPLOAD_FOLDER'], 'start.png')
-	value = plot_value["Plot_Val"]
-	color_val = color_value["Color_Val"]
+	value = id_value["Id_Value"]
+	time_val = time_taken["timeTaken"]
 	m = thisdict["m"]
 	n = thisdict["n"]
-	return render_template("index.html", rpc_data = rpc_data ,value = value, color_val = color_val, matrix = arr_2d, aid_img = aid_img, start_img = start_img, m = m, n = n)
+	return render_template("index.html", rpc_data = rpc_data ,value = value, time_val = time_val, matrix = arr_2d, aid_img = aid_img, start_img = start_img, m = m, n = n)
 
 
 if __name__ == "__main__":
