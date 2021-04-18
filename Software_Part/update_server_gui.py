@@ -43,7 +43,7 @@ def on_message(client, userdata, message):
                 with open('data.json', 'w') as outfile:
                     json.dump(rpc_list, outfile)
                 if(int(j[1]) != -1):
-                    data['timeTaken'] = ts - data['timeStamp'] - 2 #Adjustment
+                    data['timeTaken'] = int(j[1])+ 5 #Adjustment
                     data.pop('timeStamp')
                     coap_send(data)
                 else:
