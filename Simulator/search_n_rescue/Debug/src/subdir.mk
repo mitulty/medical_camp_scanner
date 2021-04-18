@@ -33,14 +33,14 @@ CPP_DEPS += \
 src/%.o: ../src/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross G++ Compiler'
-	g++ -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -DDO_NOT_USE_SHARED_MEMORY -I"/home/morack/search_n_rescue_10042021/remoteApi" -I"/home/morack/search_n_rescue_10042021/include" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	g++ -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -DDO_NOT_USE_SHARED_MEMORY -I"/home/morack/Subjects/Embedded_System/Project/Firebird_Robot_Project/Simulator/search_n_rescue/remoteApi" -I"/home/morack/Subjects/Embedded_System/Project/Firebird_Robot_Project/Simulator/search_n_rescue/include" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross GCC Compiler'
-	gcc -DNON_MATLAB_PARSING -DDO_NOT_USE_SHARED_MEMORY -DMAX_EXT_API_CONNECTIONS=255 -I"/home/morack/search_n_rescue_10042021/include" -I"/home/morack/search_n_rescue_10042021/remoteApi" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	gcc -DNON_MATLAB_PARSING -DDO_NOT_USE_SHARED_MEMORY -DMAX_EXT_API_CONNECTIONS=255 -I"/home/morack/Subjects/Embedded_System/Project/Firebird_Robot_Project/Simulator/search_n_rescue/include" -I"/home/morack/Subjects/Embedded_System/Project/Firebird_Robot_Project/Simulator/search_n_rescue/remoteApi" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
