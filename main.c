@@ -51,6 +51,8 @@ char rx_byte = 0;
 uint8_t rx_data;
 int turn, rpc;
 tuple plot_coord;
+int color_rpc = -1;
+int plot_rpc = -1;
 int main(int argc, char *argv[])
 {
 	//---------------------------------------------Setup Zone-----------------------------------------------
@@ -164,10 +166,12 @@ void move_robot(int type)
 	}
 	else if(type == 1)
 	{
-		buzzer_on();
-		send_data_uart(3, seconds_time, 1, -1);
+		check_plot_scan_status();
+		color_rpc = grid_matrix[plot_coord_matrix[plot_rpc][4].y][plot_coord_matrix[plot_rpc][4].x];
+		send_data_uart(3, seconds_time, plot_rpc, color_rpc);
 		seconds_time = 0;
 		count_time = 0;
+		buzzer_on();
 		_delay_ms(1000);
 		buzzer_off();
 	}
@@ -1122,7 +1126,7 @@ void service_rpc_request()
 	tuple dest_loc;
 	char p, t;
 	int order, time, Ctime;
-	int s_node, d_node;
+	int s_node, d_node; 
 	lcd_clear();
 	lcd_string(1, 2, "RPC Request Served");
 	lcd_numeric_value(2, 2, counter_queue_val, 2);
@@ -1130,6 +1134,8 @@ void service_rpc_request()
 	rpc = 0;
 	while (counter_queue_val > 0 && counter_queue_val % 2 == 0)
 	{
+		plot_rpc = -1;
+		color_rpc = -1;
 		buzzer_on();
 		_delay_ms(100);
 		buzzer_off();
@@ -1160,12 +1166,22 @@ void service_rpc_request()
 		if (order == 17 || order == 18 || order == 19)
 		{
 			if (order == 17)
+			{
 				order = fetch_nearest_plot(5);
+				color_rpc = 5;
+			}
 			else if (order == 18)
-				order = fetch_nearest_plot(4) ;
+			{
+				order = fetch_nearest_plot(4);
+				color_rpc = 4;
+			}
+			
 			else
-				order = fetch_nearest_plot(3) ;
-
+				{
+				order = fetch_nearest_plot(3);
+				color_rpc = 3;
+			}
+			
 			if (order == -1)
 			{
 				// lcd_clear();
@@ -1192,6 +1208,8 @@ void service_rpc_request()
 		lcd_string(1, 2, "Serving");
 		_delay_ms(1500);
 		int plot_scan = order - 1;
+		plot_rpc = plot_scan;
+
 		tuple plot_coordinate = plot_coord_matrix[plot_scan][4];
 		dest_loc = get_nearest_coordinate(curr_loc, plot_scan);
 		d_node = get_node_from_coord(dest_loc);

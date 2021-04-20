@@ -22,13 +22,12 @@ def on_message(client, userdata, msg):
     req = json.loads(msg.payload)
     taken = 0
     gui_data = ""
-    ts = int(time.time())
     if(req['method'] == 'scan'):
-        scan_data = {'id': -1,'plot':-1,'timeTaken':0,'timeStamp':-1}
+        scan_data = {'id': -1,'timeTaken':0,'type':-1,'rpc_type':1}
         scan_data['id'] = req['params']['id']
-        scan_data['plot'] = req['params']['plot']
-        scan_data['timeStamp'] = ts
+        #scan_data['plot'] = req['params']['plot']
         scan_data['timeTaken'] = 0
+        scan_data['type'] = 0
 
         order = int(req['params']['plot']) + 64
         with open('data.json', 'r') as outfile:
@@ -38,11 +37,11 @@ def on_message(client, userdata, msg):
         print(rpc_list)
         gui_data = "\""+str(5)+":"+str(req['method'])+":"+str(req['params']['id'])+":"+str(req['params']['plot'])+":"+str(req['params']['serverTime'])+":"+str(req['params']['completeIn'])+"\""
     else:
-        fner_data = {'id': -1,'type':'Injury','timeTaken':0,'timeStamp':-1}
+        fner_data = {'id': -1,'timeTaken':0,'plot':-1,'rpc_type':2}
         fner_data['id'] = req['params']['id']
-        fner_data['type'] = req['params']['type']
-        fner_data['timeStamp'] = ts
+        #fner_data['type'] = req['params']['type']
         fner_data['timeTaken'] = 0
+        fner_data['plot'] = 0
 
         if(req['params']['type'] == 'majorInjury'):
             order = 17 + 64
@@ -76,7 +75,7 @@ def on_message(client, userdata, msg):
 
 
 host_url = "thingsboard.e-yantra.org"
-device_access_token ="z6c3tqkoy1AhyM5alCgN"
+device_access_token ="z6c3tqkoy1AhyM5alCgN" #"Yju85G2v378HSN7oXhQK"
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message

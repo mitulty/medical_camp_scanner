@@ -3,12 +3,19 @@ from coapthon.client.helperclient import HelperClient
 import json
 import time
 
+def get_color(color):
+    if(color == 5):
+        return 'majorInjury'
+    elif(color == 4):
+        return 'minorInjury'
+    else:
+        return 'noInjury'
 
 def coap_send(payload):
     host = "13.250.13.141"
     port = 5683
     client = HelperClient(server=(host, port))
-    token = "z6c3tqkoy1AhyM5alCgN"
+    token = "z6c3tqkoy1AhyM5alCgN" #"Yju85G2v378HSN7oXhQK"
     path = f"api/v1/{token}/telemetry"
     print("Sending to thingsboard ", payload)
     response = client.post(path, payload=str(payload))
@@ -42,13 +49,17 @@ def on_message(client, userdata, message):
                 rpc_list.pop(1)
                 with open('data.json', 'w') as outfile:
                     json.dump(rpc_list, outfile)
+                    
                 if(int(j[1]) != -1):
-                    data['timeTaken'] = int(j[1])+ 5 #Adjustment
-                    data.pop('timeStamp')
+                    data['timeTaken'] = int(j[1])+ 3 #Adjustment
+                    if(data['rpc_type'] == 1):
+                        data['type'] = get_color(int(j[3]))
+                    else:
+                        data['plot'] = int(j[2])
+                    data.pop('rpc_type') 
                     coap_send(data)
                 else:
                     data['timeTaken'] = 0
-                    data.pop('timeStamp')
                 print("COAP Received")
                 gui_data = "\""+str(j[0])+":" + \
                     str(data["id"])+":"+str(j[1])+"\""
