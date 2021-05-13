@@ -1,0 +1,9 @@
+BLE connection was not stable in the Ubuntu OS I was using. After every 20-25 seconds it used to disconnect automatically but with other lower versions of the ubuntu it used to work. It seems there were some kernel version issues. Following steps were taken to resolve the issue befor moving to Wifi:
+1. Installed a lower kernel version but that stopped other services on my laptop like mouse and touchpad.
+2. Installed Ubuntu 18.04 but there too the same kernel issue and the lower kernel version was not available.
+3. Changed kernel parameters realted to bluetooth like timeout parameters but that did not work.
+4. Raised an issue with the developers of Bleak Module (Python module that helps in interacting with BLE Device) but they had no idea about the issue. The link of the issue is:
+	https://github.com/hbldh/bleak/issues/507
+5. Tried on my other teammate's laptop but the same issue happened.
+
+Due to these issues we could not use BLE for communication but a separate code/folder is provided which actually test the scenario and it is working fine.

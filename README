@@ -1,0 +1,4 @@
+This project designs a medical camp scanner robot using Firebird V. The problem statement is described in the Problem_Statement.pdf. The idea is to develop an algorithm which can scan any given arena and produce the scanned result. The project folder contains the codes for both the hardware and software parts. The drive link given below has the video recording of the final run on one such arena configuration:
+https://drive.google.com/drive/folders/1ggd2H6BZM80cZXV_J3uuL8iKJ2WhuCe3?usp=sharing
+
+The repositry contains a code for a simulator project folder based on coppeliasim and eclipse. We have made one more simulator based gui on flask to check the correctness of the algorithm used in the project. 

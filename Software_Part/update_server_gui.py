@@ -14,13 +14,13 @@ def get_color(color):
 def coap_send(payload):
     host = "13.250.13.141"
     port = 5683
-    client = HelperClient(server=(host, port))
+    coap_client = HelperClient(server=(host, port))
     token = "z6c3tqkoy1AhyM5alCgN" #"Yju85G2v378HSN7oXhQK"
     path = f"api/v1/{token}/telemetry"
     print("Sending to thingsboard ", payload)
-    response = client.post(path, payload=str(payload))
+    response = coap_client.post(path, payload=str(payload))
     print("response.code", response.code)
-    client.stop()
+    coap_client.stop()
 
 
 def on_message(client, userdata, message):
@@ -77,9 +77,9 @@ def on_connect(client, userdata, flags, rc):
 
 client = mqtt.Client()
 client.connect("127.0.0.1", 1883, 60)
-client.loop_start()
 client.on_message = on_message
 client.on_connect = on_connect
+client.loop_start()
 try:
     while True:
         pass
